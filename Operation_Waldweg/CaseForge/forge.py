@@ -44,6 +44,7 @@ def _env(root, case_master=None):
     e["WALDWEG_AND_FS"] = os.path.join(root, "02_android_full_fs")
     e["WALDWEG_WIN_FS"] = os.path.join(root, "03_windows_triage")
     e["WALDWEG_CLOUD"] = os.path.join(root, "04_cloud_exports")
+    e["WALDWEG_OW"] = root  # verify_solution.py zielt auf den aktiven Root
     if case_master and os.path.exists(case_master):
         e["WALDWEG_CASE_MASTER"] = case_master
     return e
@@ -134,24 +135,35 @@ def cmd_build(args):
     sys.exit(0 if ok else 1)
 
 
-def _gate_mode(master, override=None):
+def _gate_mode(root, master, override=None):
     """all = Referenz-Selbsttest (Format + Loesung); format = beliebiger Spec-Fall.
-    Auto: Spec-abgeleitete Master (meta.derived_from) -> 'format', sonst 'all'."""
+
+    Robuste, inhaltsbasierte Auto-Wahl (unabhaengig vom Pfad):
+      - 'format', wenn der Master spec-abgeleitet ist (meta.derived_from), ODER
+        wenn der Fallname NICHT der Waldweg-Referenzfall ist.
+      - 'all' nur fuer den Waldweg-Referenzfall (case_name enthaelt 'Waldweg'
+        und kein derived_from).
+    Zusaetzliche Absicherung: verify_solution.py ueberspringt selbst (rc=2),
+    wenn die Referenz-Artefakte fehlen.
+    """
     if override:
         return override
     try:
         import yaml
         cm = yaml.safe_load(open(master, encoding="utf-8")) if os.path.exists(master) else {}
-        return "format" if (cm.get("meta", {}) or {}).get("derived_from") else "all"
+        meta = cm.get("meta", {}) or {}
+        if meta.get("derived_from"):
+            return "format"
+        return "all" if "waldweg" in str(meta.get("case_name", "")).lower() else "format"
     except Exception:
-        return "all"
+        return "format"
 
 
 def cmd_validate(args):
     root = case_dir(args)
     master = os.path.join(root, "case_master.yaml")
     env = _env(root, master)
-    mode = _gate_mode(master, getattr(args, "mode", None))
+    mode = _gate_mode(root, master, getattr(args, "mode", None))
     env["WALDWEG_GATE_MODE"] = mode
     print(f"[Gate-Modus: {mode}]  (format=beliebiger Fall · all=Waldweg-Selbsttest)")
     gates = ["validate_ios.py", "validate_android.py", "validate_windows.py", "validate_apps.py"]

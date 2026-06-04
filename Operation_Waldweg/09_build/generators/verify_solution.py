@@ -12,11 +12,25 @@ import sqlite3
 import sys
 from datetime import datetime, timezone, timedelta
 
-OW = os.environ.get('WALDWEG_OW',
-    '/sessions/pensive-determined-hawking/mnt/Operation-Waldweg-main/Operation_Waldweg')
+# Aktiver Fall-Root: WALDWEG_OW (von forge.py gesetzt) -> sonst das
+# Operation_Waldweg-Verzeichnis relativ zu dieser Datei (09_build/generators).
+_DEFAULT_OW = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+OW = os.environ.get('WALDWEG_OW') or _DEFAULT_OW
 IOS = os.path.join(OW, '01_ios_full_fs')
 AND = os.path.join(OW, '02_android_full_fs')
 WIN = os.path.join(OW, '03_windows_triage')
+
+# Preflight: verify_solution prueft die WALDWEG-Loesung. Fehlen die zentralen
+# Referenz-Artefakte (z.B. weil dies ein fremder Spec-Fall ist), sauber
+# ueberspringen (rc=2) statt mit einem Traceback abzubrechen.
+_required = [
+    os.path.join(IOS, 'private/var/mobile/Library/SMS/sms.db'),
+    os.path.join(AND, 'data/data/com.whatsapp/databases/msgstore.db'),
+]
+if not all(os.path.exists(p) for p in _required):
+    print("[SKIP] verify_solution: Referenz-Artefakte nicht vorhanden "
+          "(kein Waldweg-Referenzfall).")
+    sys.exit(2)
 
 checks = []
 

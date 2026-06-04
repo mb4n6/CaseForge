@@ -1,0 +1,11 @@
+Referenz-Transkripte fremdsprachiger Sprachnachrichten (nur Dozenten). Synthetisch.
+
+voice_projektpartner_en.wav  [James Carter -> Anna, EN]
+"Hi Anna, can you send the updated spreadsheet before noon? We need the final version for the meeting."
+DE: "Hi Anna, kannst du die aktualisierte Tabelle vor Mittag schicken? Wir brauchen die finale Version fürs Meeting."
+-> Relevanz: NOISE (Projektarbeit Stadtwerke).
+
+voice_bekannter_tr.wav  [Mehmet Y. -> Anna, TR]
+"Merhaba, toplantiyi yarina alabilir miyiz? Bu sabah gelmem biraz zor."
+DE: "Hallo, können wir das Treffen auf morgen verschieben? Heute Morgen zu kommen ist für mich schwierig."
+-> Relevanz: NOISE (privater Terminkontakt) — NICHT mit dem Jonas-Treffen verwechseln (anderer Kontakt, anderer Kanal).

@@ -1,0 +1,22 @@
+platform,os,id,artifact_classes,format,parser,generator,validator,produces,relevance,notes
+ios,ios>=14,ios.sms,messaging,sqlite,iLEAPP (iMessage),gen_ios_sms.py,validate_ios.py,private/var/mobile/Library/SMS/sms.db,ja,WAL-Fragment fuer geloeschte Nachricht (PI#4)
+ios,ios>=15,ios.photos_health,"media, health",sqlite,iLEAPP (Photos/Health),gen_ios_photos_health.py,validate_ios.py,private/var/mobile/Media/PhotoData/Photos.sqlite ; private/var/mobile/Library/Health/healthdb_secure.sqlite,ja,
+ios,ios>=14,ios.location,location,sqlite,iLEAPP (LocationD),gen_ios_location.py,validate_ios.py,private/var/mobile/Library/Caches/locationd/cache_encryptedB.db,ja,
+ios,ios>=15,ios.whatsapp,messaging,sqlite,iLEAPP (WhatsApp),gen_ios_whatsapp.py,validate_ios.py,...57T9237FN3~net~whatsapp~WhatsApp/ChatStorage.sqlite,ja,
+ios,ios>=17,ios.biome,"activity, browser, device_state",binxml,BIOME-Stream-Analyzer (mb4n6),gen_biome.py,gen_biome.py,private/var/db/biome/streams/restricted/*,ja,SEGB v2; ersetzt knowledgeC.db ab iOS 17
+ios,ios>=15,ios.extra,"browser, calls, snapshots",sqlite/plist/media,iLEAPP (Safari/CallHistory),gen_ios_extra.py,validate_ios.py,...Library/Safari/History.db ; private/var/mobile/Library/CallHistoryDB/CallHistory.storedata ; private/var/mobile/Library/Voicemail/voicemail.db ; private/var/mobile/Library/Caches/Snapshots/*,ja,
+ios,ios>=14,ios.apps,app_sandbox,plist/sqlite,iLEAPP (App-Mapping),gen_app_skeletons.py,validate_apps.py,private/var/mobile/Containers/Data/Application/<GUID>/*,ja,Skelette + teils Inhalt
+android,android>=12,android.core,"messaging, calls, contacts, browser",sqlite,ALEAPP,gen_android.py,validate_android.py,data/data/com.android.providers.telephony/databases/mmssms.db ; data/data/com.whatsapp/databases/msgstore.db ; data/data/com.android.chrome/app_chrome/Default/History,ja,
+android,android>=12,android.location,location,sqlite,ALEAPP (Loc),gen_android_location.py,validate_android.py,data/data/com.google.android.gms/databases/location_cache.db,ja,PI#1 WiFi vs. Cell
+android,android>=12,android.extra,"usage, health, maps, accounts",sqlite/xml,ALEAPP,gen_android_extra.py,validate_android.py,data/system/usagestats/* ; data/data/com.sec.android.app.shealth/databases/* ; data/data/com.google.android.apps.maps/databases/* ; data/system/sync/accounts.xml,ja,
+android,android>=12,android.apps,app_sandbox,xml/sqlite,ALEAPP,gen_app_skeletons.py,validate_apps.py,"data/data/<pkg>/{shared_prefs,databases}",ja,
+windows,win>=10,win.hives,registry,regf,RegRipper (samparse/compname/timezone/usbstor/bam/networklist/userassist/shellbags/amcache),gen_win_hives.py,validate_windows.py,"C/Windows/System32/config/{SAM,SYSTEM,SOFTWARE} ; C/Users/<U>/NTUSER.DAT ; C/Windows/AppCompat/Programs/Amcache.hve ; C/Users/<U>/AppData/Local/Microsoft/Windows/UsrClass.dat",ja,
+windows,win>=10,win.files,"recyclebin, setupapi, tasks, prefetch",binary/text/xml,RBCmd / Texteditor,gen_win_artifacts.py,validate_windows.py,C/$Recycle.Bin/<SID>/$I* ; C/Windows/INF/setupapi.dev.log ; C/Windows/System32/Tasks/* ; C/Windows/Prefetch/*.pf,ja,Prefetch = Platzhalter (kein SCCA)
+windows,win>=10,win.browser,browser,sqlite/json,Hindsight / DB-Browser,gen_win_browser.py,validate_windows.py,"C/Users/<U>/AppData/Local/Microsoft/Edge/User Data/Default/{History,Bookmarks,Web Data,Login Data}",ja,
+windows,win>=10,win.extra,"powershell, notifications",text/sqlite,Texteditor / SQLite,gen_win_extra.py,validate_windows.py,...PSReadline/ConsoleHost_history.txt ; ...Notifications/wpndatabase.db,ja,
+windows,win>=10,win.lnk,shortcuts,shelllink,LECmd / LnkParse3,gen_win_lnk.py,validate_windows.py,C/Users/<U>/AppData/Roaming/Microsoft/Windows/Recent/*.lnk,ja,
+windows,win>=10,win.evtx,eventlog,evtx,EvtxECmd / python-evtx,gen_win_evtx.py,validate_windows.py,"C/Windows/System32/winevt/Logs/{Security,System}.evtx",ja,template-basiertes BinXML
+cloud,*,cloud.exports,"cloud_location, cloud_sync",json/csv,Manuell / JSON-Viewer,gen_cloud.py,verify_solution.py,google/location-history.json ; icloud/icloud_sync.csv,ja,PI#5 Sync-Luecke
+crossdevice,*,media.embed,media_placement,media,—,embed_media.py,—,<geraet>/<realistische Medienpfade> ; 05_police_records/*,—,bettet Bild/Audio/Video schluessig ins FS ein
+crossdevice,*,docs.noise,documents,pdf/docx/xlsx/csv/txt,Office/Viewer,gen_documents.py,—,<Downloads>/<Dokumente> je Geraet,ja,Alltagsdokumente (Noise + dezent relevant)
+crossdevice,*,correlate,timeline,csv,—,correlate.py,—,08_master/Master_Timeline.csv,—,vereinheitlichte geraeteuebergreifende Zeitleiste

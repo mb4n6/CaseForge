@@ -1,0 +1,3 @@
+# net usage (vereinfacht)
+uid=10123(com.whatsapp) rx=1240321 tx=88231
+uid=10140(com.google.android.apps.maps) rx=552310 tx=12044

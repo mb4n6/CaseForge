@@ -1,0 +1,8 @@
+Get-Date
+cd $env:USERPROFILE\Documents\Finanzen
+dir
+robocopy . E:\Backup /MIR
+Remove-Item .\Schuldenaufstellung_Jan.xlsx
+Clear-RecycleBin -Force -ErrorAction SilentlyContinue
+cipher /w:C:\Users\Daniel\Documents\Finanzen
+Get-History | Clear-History

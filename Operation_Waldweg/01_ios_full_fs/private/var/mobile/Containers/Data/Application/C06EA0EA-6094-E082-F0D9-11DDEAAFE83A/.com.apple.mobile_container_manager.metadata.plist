@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>MCMMetadataIdentifier</key>
+	<string>ch.threema.iapp.ThreemaApp</string>
+	<key>MCMMetadataSchemaVersion</key>
+	<integer>2</integer>
+	<key>MCMMetadataUUID</key>
+	<string>C06EA0EA-6094-E082-F0D9-11DDEAAFE83A</string>
+</dict>
+</plist>

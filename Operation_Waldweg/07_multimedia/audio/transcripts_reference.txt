@@ -1,0 +1,14 @@
+Referenz-Transkripte (nur Dozenten). Synthetisch.
+Fremdsprachige Sprachnachrichten siehe 08_multilingual/audio_foreign/.
+
+voicemail/voicemail_anna_office_de.wav  [Stadtwerke Buero -> Anna, 25.01 vormittags]
+Hallo Anna, du bist heute Morgen nicht im Büro und auch nicht erreichbar. Bitte melde dich kurz, sobald du kannst.
+-> Relevanz: belegt, dass Anna am Tatmorgen nie zur Arbeit kam.
+
+whatsapp_voice/voice_lena_de.wav  [Lena Vogt -> Anna]
+Hey, alles gut bei dir? Du klangst neulich irgendwie gestresst. Melde dich, wenn du reden willst – ich bin da.
+-> Relevanz: stützt den emotionalen Druck/Belastungskontext (passt zum iMessage-Thread Anna<->Lena).
+
+ambient/forest_ambient_01.wav  [Umgebungston, Fundortnaehe Waldweg]
+Keine klare Sprache. Hörbar sind Wind, mehrere Schritte auf unebenem Untergrund und in der Distanz ein Fahrzeug- bzw. Motorgeräusch.
+-> Relevanz: konsistent mit dem Zeugenhinweis (Harald K.) auf ein dunkles Fahrzeug am Waldweg.

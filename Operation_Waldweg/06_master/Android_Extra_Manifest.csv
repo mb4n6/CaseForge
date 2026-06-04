@@ -1,0 +1,7 @@
+geraet,pfad,relevanz,beschreibung
+Samsung,data/system/usagestats/0/daily/...,context,"usagestats: App-Nutzung 24./25.01 (WhatsApp/Signal/Sparkasse abends, Maps 08:02, Dialer 08:25)"
+Samsung,data/data/com.sec.android.app.shealth/databases/SecureHealthData.db,context,Samsung Health: 25.01 nur 2110 Schritte; Exercise 08:00-08:30 (Bewegung am Tatmorgen)
+Samsung,data/data/com.google.android.apps.maps/databases/gmm_myplaces.db,critical,Google Maps: Suche/Ziel 'Waldweg Parkplatz' 25.01 07:31 (Kernindiz – Daniel kannte den Ort)
+Samsung,data/system/sync/accounts.xml,context,Accounts: Google/Outlook/WhatsApp (Geraetebindung an Daniel)
+Samsung,data/data/com.whatsapp/databases/wa.db,context,WhatsApp wa.db: Kontakte (Tobias Klenk/Anna/Lena) + Media-Thumbnails
+Samsung,data/system/batterystats.bin.txt,noise,batterystats/netstats (System-Telemetrie)

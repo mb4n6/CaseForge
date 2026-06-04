@@ -1,0 +1,3 @@
+file,typ,kontext,relevanz,notiz
+critical/critical_walkthrough.mp4,video,Wegsequenz Waldweg (Fundortnaehe),critical,Waldweg-Sequenz mit Umgebungston; Frame-Extraktion (frames_critical/) fuer Tatortrekonstruktion
+noise/home_clip_noise.mp4,video,harmloser Innenraum-Clip,noise,Alltagsaufnahme zuhause; Frames in frames_home/ -> reiner Noise

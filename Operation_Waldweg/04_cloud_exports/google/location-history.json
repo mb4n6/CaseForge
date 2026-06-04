@@ -1,0 +1,73 @@
+{
+  "timelineObjects": [
+    {
+      "placeVisit": {
+        "location": {
+          "latitudeE7": 487757999,
+          "longitudeE7": 91829000,
+          "name": "Zuhause"
+        },
+        "duration": {
+          "startTimestamp": "2026-01-24T17:30:00Z",
+          "endTimestamp": "2026-01-24T21:30:00Z"
+        }
+      }
+    },
+    {
+      "placeVisit": {
+        "location": {
+          "latitudeE7": 487757999,
+          "longitudeE7": 91829000,
+          "name": "Zuhause"
+        },
+        "duration": {
+          "startTimestamp": "2026-01-25T05:50:00Z",
+          "endTimestamp": "2026-01-25T06:14:00Z"
+        }
+      }
+    },
+    {
+      "placeVisit": {
+        "location": {
+          "latitudeE7": 487510000,
+          "longitudeE7": 92100000,
+          "name": "Gewerbegebiet"
+        },
+        "duration": {
+          "startTimestamp": "2026-01-25T08:05:00Z",
+          "endTimestamp": "2026-01-25T08:40:00Z"
+        }
+      }
+    },
+    {
+      "activitySegment": {
+        "startLocation": {
+          "latitudeE7": 487510000,
+          "longitudeE7": 92100000
+        },
+        "endLocation": {
+          "latitudeE7": 487757999,
+          "longitudeE7": 91829000
+        },
+        "duration": {
+          "startTimestamp": "2026-01-25T08:40:00Z",
+          "endTimestamp": "2026-01-25T09:10:00Z"
+        },
+        "activityType": "IN_VEHICLE"
+      }
+    },
+    {
+      "placeVisit": {
+        "location": {
+          "latitudeE7": 487757999,
+          "longitudeE7": 91829000,
+          "name": "Zuhause"
+        },
+        "duration": {
+          "startTimestamp": "2026-01-25T09:10:00Z",
+          "endTimestamp": "2026-01-25T11:30:00Z"
+        }
+      }
+    }
+  ]
+}

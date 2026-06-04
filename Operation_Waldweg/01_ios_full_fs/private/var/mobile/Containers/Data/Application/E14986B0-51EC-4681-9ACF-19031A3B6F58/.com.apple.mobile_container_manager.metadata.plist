@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>MCMMetadataIdentifier</key>
+	<string>ph.telegra.Telegraph</string>
+	<key>MCMMetadataSchemaVersion</key>
+	<integer>2</integer>
+	<key>MCMMetadataUUID</key>
+	<string>E14986B0-51EC-4681-9ACF-19031A3B6F58</string>
+</dict>
+</plist>

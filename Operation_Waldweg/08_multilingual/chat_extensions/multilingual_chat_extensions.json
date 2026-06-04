@@ -1,0 +1,35 @@
+{
+  "_comment": "Mehrsprachige Alltagskontakte Annas (Stadtwerke-Projektarbeit + Bekannte). Synthetisch, an case_master v3.0 angepasst. Didaktik: Sprache erkennen, transkribieren, uebersetzen, Relevanz BEGRUENDEN (die meisten sind Noise).",
+  "threads": [
+    {
+      "thread": "projektpartner_en",
+      "language": "en",
+      "participants": ["James Carter (Projektpartner, intl.)", "Anna Reuter"],
+      "relevance": "noise",
+      "messages": [
+        {"timestamp": "2026-01-24T11:21:12+01:00", "sender": "James Carter", "text": "Hi Anna, can you send the updated spreadsheet before noon? We need the final version for the meeting."},
+        {"timestamp": "2026-01-24T11:22:30+01:00", "sender": "Anna Reuter", "text": "Yes, give me twenty minutes."}
+      ]
+    },
+    {
+      "thread": "bekannter_tr",
+      "language": "tr",
+      "participants": ["Mehmet Y. (Terminkontakt)", "Anna Reuter"],
+      "relevance": "noise",
+      "messages": [
+        {"timestamp": "2026-01-24T14:40:18+01:00", "sender": "Mehmet Y.", "text": "Merhaba, toplantiyi yarina alabilir miyiz? Bu sabah gelmem biraz zor."},
+        {"timestamp": "2026-01-24T14:42:01+01:00", "sender": "Anna Reuter", "text": "Kein Problem, bitte morgen schriftlich bestätigen."}
+      ]
+    },
+    {
+      "thread": "bekannte_ru",
+      "language": "ru",
+      "participants": ["Olga (Bekannte)", "Anna Reuter"],
+      "relevance": "context",
+      "messages": [
+        {"timestamp": "2026-01-24T18:05:11+01:00", "sender": "Olga", "text": "Ты сегодня еще на работе?"},
+        {"timestamp": "2026-01-24T18:06:40+01:00", "sender": "Anna Reuter", "text": "Noch kurz, dann fahre ich heim."}
+      ]
+    }
+  ]
+}

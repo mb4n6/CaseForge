@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>MCMMetadataIdentifier</key>
+	<string>de.komoot.iphone</string>
+	<key>MCMMetadataSchemaVersion</key>
+	<integer>2</integer>
+	<key>MCMMetadataUUID</key>
+	<string>A64071B0-98D0-80DB-6637-1B4EA603A114</string>
+</dict>
+</plist>

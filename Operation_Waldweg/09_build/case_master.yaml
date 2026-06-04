@@ -1,0 +1,564 @@
+# =====================================================================
+# OPERATION WALDWEG — CASE MASTER (Single Source of Truth)
+# =====================================================================
+# Dieses Dokument definiert, WAS im Fall tatsaechlich passiert ist.
+# Alle Geraete-Artefakte (SQLite, plist, BIOME-Streams, Cloud-Exporte)
+# werden deterministisch aus diesem File projiziert -> garantierte
+# Cross-Device-Konsistenz. Gewollte Widersprueche sind unter
+# `planted_inconsistencies` explizit dokumentiert.
+#
+# Rein synthetisch. Nur ANGELEHNT an einen realen Fall. Keine echten
+# Personendaten, keine reproduzierbaren Tatanleitungen. Lehrzweck.
+# =====================================================================
+
+meta:
+  case_name: "Operation Waldweg"
+  version: "3.0-build"
+  generator_seed: 20260125        # deterministische Reproduzierbarkeit
+  timezone: "Europe/Berlin"
+  language_primary: "de-DE"
+  focus_window:
+    start: "2026-01-24T18:00:00+01:00"
+    end:   "2026-01-25T12:00:00+01:00"
+  data_period:                     # Gesamtzeitraum der erzeugten Spuren
+    start: "2025-12-01T00:00:00+01:00"
+    end:   "2026-01-25T13:00:00+01:00"
+  disclaimer: "synthetic_training_data_only"
+
+# ---------------------------------------------------------------------
+# PERSONEN
+# ---------------------------------------------------------------------
+persons:
+  - id: anna
+    name: "Anna Reuter"
+    role: victim
+    age: 38
+    job: "Projektleiterin, Stadtwerke (Buero)"
+    phone: "+4915123456789"
+    devices: [iphone_anna]
+    notes: "Opfer. Tod 25.01.2026 zwischen 07:45-08:15. Fundort Waldweg (nicht Primaer-Tatort)."
+
+  - id: daniel
+    name: "Daniel Reuter"
+    role: poi
+    age: 41
+    job: "Aussendienst, Medizintechnik"
+    phone: "+4915223456788"
+    devices: [samsung_daniel]
+    relationship: "Ehemann des Opfers"
+    notes: "Meldet Anna am 25.01 12:18 vermisst. Alibi-Luecke am Morgen. Finanzieller Druck."
+
+  - id: jonas
+    name: "Jonas Brehm"
+    role: poi
+    age: 35
+    job: "Architekt"
+    phone: "+4915333456787"
+    relationship: "Affaere mit Anna (verdeckt)"
+    notes: "Heimliche Beziehung zu Anna seit ca. Nov 2025. Letzter Kontakt Nacht vor der Tat."
+
+  - id: tobias
+    name: "Tobias Klenk"
+    role: poi
+    age: 44
+    job: "Inhaber Kfz-Werkstatt"
+    phone: "+4915443456786"
+    relationship: "Glaeubiger / Geschaeftskontakt Daniels"
+    notes: "Daniel schuldet Tobias Geld. Besitzt dunklen Kombi (Zeugenhinweis)."
+
+  - id: ben
+    name: "Ben Reuter"
+    role: family
+    age: 12
+    relationship: "Sohn von Anna und Daniel"
+    notes: "Noise-Quelle: Trainings-Abholung, Schul-Termine."
+
+  - id: harald
+    name: "Harald K."
+    role: witness
+    notes: "Sah 25.01 'kurz nach acht' Frau am Waldweg + dunkles Fahrzeug. Uhrzeit unsicher."
+
+  - id: lena
+    name: "Lena Vogt"
+    role: contact
+    relationship: "beste Freundin von Anna"
+    phone: "+4915512345670"
+    notes: "Vertraute. Anna deutet ihr gegenueber Eheprobleme an -> semantischer Kontext."
+
+# ---------------------------------------------------------------------
+# GERAETE  (OS-Versionen exakt fixiert -> Artefakt-Format)
+# ---------------------------------------------------------------------
+devices:
+  - id: iphone_anna
+    owner: anna
+    type: ios
+    model: "iPhone 14"
+    os_version: "17.5.1"
+    extraction: "Full File System (Cellebrite)"
+    path_skeleton: "09_build/path_skeletons/ios_path_skeleton.txt"
+    key_artifacts:
+      sms_db:        "private/var/mobile/Library/SMS/sms.db"
+      callhistory:   "private/var/mobile/Library/CallHistoryDB/CallHistory.storedata"
+      photos:        "private/var/mobile/Media/PhotoData/Photos.sqlite"
+      health:        "private/var/mobile/Library/Health/healthdb_secure.sqlite"
+      locationd:     "private/var/mobile/Library/Caches/locationd/cache_encryptedB.db"
+      biome_streams: "private/var/db/biome/streams/restricted/"
+      safari_history: "private/var/mobile/Containers/Data/Application/<GUID>/Library/Safari/History.db"
+      whatsapp:      "private/var/mobile/Library/Mobile Documents/57T9237FN3~net~whatsapp~WhatsApp/ChatStorage.sqlite"
+    biome_streams_built: ["_DKEvent.Safari.History", "App.InFocus", "Device.BootSession", "Device.ScreenLocked"]
+    note: "knowledgeC.db bewusst NICHT vorhanden (iOS 17 -> BIOME). App-Aktivitaet/Safari/MicroLocation via BIOME. WhatsApp im iOS-Core-Data-Schema (ZWAMESSAGE), nicht msgstore."
+
+  - id: samsung_daniel
+    owner: daniel
+    type: android
+    model: "Samsung Galaxy S23"
+    os_version: "Android 14 (One UI 6.1)"
+    extraction: "Full File System (Cellebrite)"
+    path_skeleton: "09_build/path_skeletons/android_path_skeleton.txt"
+    key_artifacts:
+      mmssms:   "data/data/com.android.providers.telephony/databases/mmssms.db"
+      calllog:  "data/data/com.samsung.android.providers.contacts/databases/calllog.db"
+      contacts: "data/data/com.samsung.android.providers.contacts/databases/contacts2.db"
+      whatsapp: "data/data/com.whatsapp/databases/msgstore.db"
+      chrome_history: "data/data/com.android.chrome/app_chrome/Default/History"
+      chrome_cookies: "data/data/com.android.chrome/app_chrome/Default/Cookies"
+      location_cache: "data/data/com.google.android.gms/databases/location_cache.db"
+    whatsapp_groups_built: ["Nachbarschaft Ahornweg", "Aussendienst Sued"]
+    note: "Multi-User-Pfade (user/150, user_de/0) aus realem Dump uebernehmen. location_cache.db traegt PI#1 (WiFi Home stale vs. Cell Waldweg)."
+
+  - id: windows_daniel
+    owner: daniel
+    type: windows
+    model: "Notebook (privat)"
+    os_version: "Windows 11 23H2"
+    extraction: "Logische Extraktion (Triage)"
+    status: "optional / Folgeerweiterung"
+    key_artifacts:
+      srum:     "C:/Windows/System32/sru/SRUDB.dat"
+      ntuser:   "C:/Users/Daniel/NTUSER.DAT"
+      sam:      "C:/Windows/System32/config/SAM"
+      system:   "C:/Windows/System32/config/SYSTEM"
+      software: "C:/Windows/System32/config/SOFTWARE"
+      amcache:  "C:/Windows/AppCompat/Programs/Amcache.hve"
+      prefetch: "C:/Windows/Prefetch/*.pf"
+      setupapi: "C:/Windows/INF/setupapi.dev.log"
+      tasks:    "C:/Windows/System32/Tasks/"
+      recyclebin: "C:/$Recycle.Bin/<SID>/$I*"
+      edge_history: "C:/Users/Daniel/AppData/Local/Microsoft/Edge/User Data/Default/History"
+    registry_coverage:
+      sam: "Administrator RID500 + Daniel RID1000 (F/V) — samparse"
+      system: "ComputerName DESKTOP-REUTER, TZ W.Europe, ShutdownTime 25.01 12:30; USBSTOR SanDisk Cruzer (mountdev/usbstor); MountedDevices; BAM msedge/EXCEL/explorer last-exec (bam)"
+      software: "NetworkList: Heim-WLAN Reuter / Werkstatt-Gast / Hotel_Adler (networklist); Windows-Version; Uninstall"
+      ntuser: "TypedPaths, RunMRU, RecentDocs, WordWheelQuery (schuldenaufstellung/lebensversicherung/kreditantrag), UserAssist msedge/EXCEL (userassist/wordwheelquery)"
+      usrclass: "ShellBags BagMRU: C:\\Users\\Daniel\\Documents\\Finanzen + E:\\Backup (shellbags; Shell-Items mit BEEF0004)"
+      office_mru: "Office 16.0 Excel/Word File MRU (Schuldenaufstellung auch auf E:\\Backup) — officedocs"
+      comdlg32: "OpenSavePidlMRU (xlsx/pdf) + LastVisitedPidlMRU (EXCEL.EXE) — comdlg32"
+      amcache: "InventoryApplicationFile: msedge.exe, rufus-4.4p.exe (USB-Tool)"
+    event_logs:
+      security: "Security.evtx — 4624 Anmeldung Daniel 25.01 06:40, 4648 RunAs, 4634 Abmeldung (template-basiertes BinXML, python-evtx/EvtxECmd-parsebar)"
+      system: "System.evtx — 6005 Boot, 6006 sauberer Shutdown 12:30, Kernel-Power 42"
+    browser_depth:
+      edge_history_downloads: "Kreditantrag_Sofort.pdf, rufus-4.4p.exe (downloads-Tabelle + url_chains)"
+      bookmarks: "Sparkasse, CHECK24 Kredit, Lebensversicherung (JSON)"
+      web_data: "Autofill: Suchbegriffe + d.reuter@example.de"
+      login_data: "logins: sparkasse.de, check24.de (DPAPI-Blob-Platzhalter)"
+    file_artifacts:
+      recyclebin: "geloeschte 'Schuldenaufstellung_Jan.xlsx' (Loeschzeit 25.01 09:10) — $I v2"
+      setupapi: "USB-Erstinstallation SanDisk 24.01 23:50"
+      tasks: "BackupFinanzen -> robocopy Finanzordner -> E:\\ (USB); Edge-Update (noise)"
+      zone_identifier: "ZoneId=3 fuer heruntergeladene PDFs (Herkunftsnachweis)"
+      prefetch: "MSEDGE/EXCEL/RUFUS/ROBOCOPY.pf — PLATZHALTER (kein valides SCCA)"
+      powershell_history: "ConsoleHost_history.txt: robocopy ->E:, Remove-Item Schuldenaufstellung, cipher /w (Wipe-Spur)"
+      notifications: "wpndatabase.db: Sparkasse-TAN, WhatsApp Tobias-Ultimatum, Outlook (Toasts)"
+      lnk: "Recent\\: Schuldenaufstellung.xlsx (belegt frueheres Vorhandensein), Finanzen, E:\\Backup, Kreditantrag (LECmd/LnkParse3-validiert)"
+    deferred_windows: ["SRUDB.dat (ESE)", "$MFT/$UsnJrnl/$LogFile", "valides Prefetch-SCCA", "ShimCache/AppCompatCache", "Windows.edb"]
+    note: "Hives RegRipper-parsebar (samparse/compname/timezone/shutdown/usbstor/mountdev/bam/networklist/userassist/wordwheelquery/recentdocs/shellbags/amcache). Browser-Tiefe + LNK + PowerShell + Notifications + Office/ComDlg32-MRU + EVTX (Security/System, template-basiert). Erzeugt via reg_hive.py + gen_win_hives/_artifacts/_browser/_extra/_lnk.py. Manifeste: 06_master/Windows_Artefakte_Manifest.csv."
+
+# ---------------------------------------------------------------------
+# ORTE  (Koordinaten generisch, BW-Raum; bewusst unscharf)
+# ---------------------------------------------------------------------
+locations:
+  - {id: home,        label: "Wohnhaus Reuter",     lat: 48.7758, lon: 9.1829}   # Stuttgart-Raum
+  - {id: work_anna,   label: "Stadtwerke Buero",    lat: 48.7831, lon: 9.1817}
+  - {id: school_ben,  label: "Schule Ben",          lat: 48.7702, lon: 9.1955}
+  - {id: gym,         label: "Fitnessstudio",       lat: 48.7689, lon: 9.1740}
+  - {id: workshop,    label: "Kfz-Werkstatt Klenk", lat: 48.7510, lon: 9.2100}
+  - {id: jonas_flat,  label: "Wohnung Jonas Brehm", lat: 48.7820, lon: 9.1600}
+  - {id: waldweg,     label: "Waldweg (Fundort)",   lat: 48.7305, lon: 9.2480}
+  - {id: supermarket, label: "Supermarkt",          lat: 48.7770, lon: 9.1880}
+
+# ---------------------------------------------------------------------
+# TIMELINE  — die "Wahrheit". Jedes Event projiziert in >=1 Artefakt.
+# event_type steuert, welche Builder es aufgreifen.
+# relevance: critical | context | noise
+# ---------------------------------------------------------------------
+timeline:
+  # --- Hintergrund / Beziehungskontext (context) ---
+  - t: "2025-11-20T21:30:00+01:00"
+    actor: anna
+    type: chat
+    channel: imessage
+    with: jonas
+    relevance: context
+    content: "Beginn verdeckter Kontakt Anna<->Jonas (iMessage)."
+
+  - t: "2026-01-10T19:12:00+01:00"
+    actor: anna
+    type: chat
+    channel: imessage
+    with: lena
+    relevance: context
+    content: "Anna an Lena: 'Mit Daniel wird es gerade echt schwierig. Erzaehl ich dir bald.'"
+
+  # --- 24.01. Abend: Fokusfenster beginnt ---
+  - t: "2026-01-24T18:40:00+01:00"
+    actor: anna
+    type: location
+    place: supermarket
+    source: [biome_microlocation, locationd]
+    relevance: context
+    content: "Anna kurzer Stopp Supermarkt nach Feierabend."
+
+  - t: "2026-01-24T20:05:00+01:00"
+    actor: daniel
+    type: chat
+    channel: whatsapp
+    with: tobias
+    relevance: critical
+    content: "Tobias an Daniel: 'Ich brauch das Geld bis Montag, Daniel. Kein Spiel mehr.'"
+
+  - t: "2026-01-24T21:48:00+01:00"
+    actor: anna
+    type: chat
+    channel: imessage
+    with: jonas
+    relevance: critical
+    content: "Anna<->Jonas: Anna will Beziehung Daniel beenden; Treffen fuer 25.01 morgens angedeutet."
+
+  - t: "2026-01-24T22:30:00+01:00"
+    actor: anna
+    type: device_state
+    stream: Device.ScreenLocked
+    source: [biome]
+    relevance: context
+    content: "iPhone gesperrt, Nachtruhe beginnt; Health: Schlafphase."
+
+  # --- 25.01. kritischer Morgen ---
+  - t: "2026-01-25T06:50:00+01:00"
+    actor: anna
+    type: health
+    metric: sleep_end
+    source: [healthdb]
+    relevance: context
+    content: "Anna wacht auf (Health Schlafende)."
+
+  - t: "2026-01-25T07:05:00+01:00"
+    actor: anna
+    type: app_activity
+    app: "com.apple.mobilesafari"
+    stream: _DKEvent.Safari.History
+    source: [biome, safari_history]
+    relevance: critical
+    content: "Anna sucht Safari: 'Anwalt Trennung Sorgerecht' + 'Zugverbindung <Nachbarstadt>' -> Trennungsabsicht."
+
+  - t: "2026-01-25T07:20:00+01:00"
+    actor: anna
+    type: chat
+    channel: imessage
+    with: jonas
+    relevance: critical
+    content: "Anna an Jonas: 'Bin in 30 Min am Parkplatz. Wir reden in Ruhe.'"
+
+  - t: "2026-01-25T07:25:00+01:00"
+    actor: daniel
+    type: chat
+    channel: whatsapp
+    with: anna
+    relevance: critical
+    content: "Daniel an Anna: 'Wo willst du so frueh hin?' (Anna: keine Antwort) -> Daniel wusste von Aufbruch."
+
+  - t: "2026-01-25T07:33:00+01:00"
+    actor: anna
+    type: location
+    place: home
+    transition_to: waldweg
+    source: [biome_activity, locationd]
+    relevance: critical
+    content: "Anna verlaesst Wohnhaus zu Fuss/Auto Richtung Waldweg-Parkplatz."
+
+  - t: "2026-01-25T07:38:00+01:00"
+    actor: daniel
+    type: location
+    place: home
+    source: [android_location, chrome]
+    relevance: critical
+    content: "Daniel-Telefon meldet noch Home -> ABER siehe planted_inconsistency #1 (Cell vs WiFi)."
+
+  - t: "2026-01-25T07:50:00+01:00"
+    actor: anna
+    type: health
+    metric: heart_rate_peak
+    value: 138
+    source: [healthdb]
+    relevance: critical
+    content: "Herzfrequenz-Peak dann Abbruch der Messung (Sensorkontakt verloren)."
+
+  - t: "2026-01-25T07:52:00+01:00"
+    actor: anna
+    type: device_state
+    stream: Device.BootSession
+    source: [biome]
+    relevance: critical
+    content: "Letzte Geraeteaktivitaet Annas iPhone; danach Stille."
+
+  - t: "2026-01-25T08:02:00+01:00"
+    actor: daniel
+    type: location
+    place: waldweg
+    source: [android_location]
+    relevance: critical
+    content: "Daniel-Telefon Standortpunkt nahe Waldweg (schwache Genauigkeit) -> Kernindiz."
+
+  - t: "2026-01-25T08:07:00+01:00"
+    actor: witness
+    type: observation
+    place: waldweg
+    relevance: critical
+    content: "Harald K.: Frau + dunkles Fahrzeug 'kurz nach acht'."
+
+  - t: "2026-01-25T08:25:00+01:00"
+    actor: daniel
+    type: call
+    channel: cellular
+    with: tobias
+    duration_s: 41
+    relevance: critical
+    content: "Kurzer Anruf Daniel->Tobias direkt nach Tatzeitfenster."
+
+  - t: "2026-01-25T09:10:00+01:00"
+    actor: jonas
+    type: chat
+    channel: imessage
+    with: anna
+    relevance: context
+    content: "Jonas an Anna: 'Wo bleibst du? Hier ist niemand.' (unbeantwortet) -> Jonas am Treffpunkt, Anna nie angekommen."
+
+  - t: "2026-01-25T12:18:00+01:00"
+    actor: daniel
+    type: call
+    channel: cellular
+    with: police
+    relevance: critical
+    content: "Daniel meldet Anna vermisst."
+
+# ---------------------------------------------------------------------
+# CHAT-THREADS  — semantisch echte Verlaeufe (Auszug der Leitlinien).
+# Vollausformulierung erfolgt im Builder; hier Tonalitaet + Eckpunkte.
+# Jeder Thread mischt fallrelevante Nachrichten in Alltags-Noise.
+# ---------------------------------------------------------------------
+chat_threads:
+  - id: anna_jonas
+    channel: imessage
+    participants: [anna, jonas]
+    register: "vertraut, emotional, zunehmend draengend"
+    arc:
+      - "Nov-Dez: lockerer Beginn, Treffen tagsueber, Vorsicht ('loesch das besser')"
+      - "Jan: ernster, Anna spricht von Trennung von Daniel"
+      - "24.01 Nacht: Entscheidung + Treffen am Morgen vereinbart"
+      - "25.01 09:10: Jonas wartet vergeblich"
+    deleted_messages:
+      - "Anna an Jonas 24.01 22:11: 'Wenn er das mitkriegt, dreht er durch.' (geloescht -> nur Fragment/Recovery)"
+
+  - id: anna_daniel
+    channel: imessage_and_whatsapp
+    participants: [anna, daniel]
+    register: "ehelich, oberflaechlich-funktional, untergruendig gespannt"
+    arc:
+      - "Alltag: Ben-Logistik, Einkauf, Termine (Noise)"
+      - "Jan: kuehler, kuerzere Antworten"
+      - "25.01 07:25: Daniel fragt nach Annas fruehem Aufbruch"
+
+  - id: daniel_tobias
+    channel: whatsapp
+    participants: [daniel, tobias]
+    register: "geschaeftlich, zunehmend bedrohlich (Schulden)"
+    arc:
+      - "Dez: Reparatur/Rechnung, lockere Stundung"
+      - "Jan: Mahnungen, Tonfall haerter"
+      - "24.01 20:05: Ultimatum bis Montag"
+
+  - id: anna_lena
+    channel: imessage
+    participants: [anna, lena]
+    register: "freundschaftlich, vertraulich"
+    arc:
+      - "Andeutungen Eheprobleme, emotionale Stuetze, keine Details zu Jonas (Anna haelt es geheim)"
+
+  - id: gym_crew
+    channel: whatsapp_group
+    participants: [anna, "+weitere"]
+    register: "locker, Smalltalk"
+    relevance: noise
+    arc: ["Trainingszeiten, Memes, Terminfindung -> reiner Noise"]
+
+  - id: werkstatt_team
+    channel: whatsapp_group
+    participants: [tobias, "+weitere"]
+    register: "Arbeitsalltag Werkstatt"
+    relevance: noise
+    arc: ["Kundentermine, Ersatzteile -> Noise; ein Hinweis auf Daniels Wagen"]
+
+# ---------------------------------------------------------------------
+# BROWSER-NUTZUNG  — semantisch realistisch (Safari iOS / Chrome Android)
+# ---------------------------------------------------------------------
+browsing:
+  anna_safari:
+    relevant:
+      - {t: "2026-01-25T07:05:00+01:00", url: "google.com/search?q=anwalt+trennung+sorgerecht", title: "anwalt trennung sorgerecht - Google Suche"}
+      - {t: "2026-01-25T07:09:00+01:00", url: "bahn.de/verbindungen", title: "Reiseauskunft - Deutsche Bahn"}
+      - {t: "2026-01-22T22:40:00+01:00", url: "google.com/search?q=wohnung+mieten+2+zimmer", title: "wohnung mieten - Suche"}
+    noise:
+      - "Wetter, Online-Shopping, Rezepte, Nachrichtenportale, Studio-Kursplan"
+  daniel_chrome:
+    relevant:
+      - {t: "2026-01-23T23:50:00+01:00", url: "google.com/search?q=handy+orten+partner", title: "handy orten partner - Suche"}
+      - {t: "2026-01-24T22:15:00+01:00", url: "google.com/search?q=schulden+privatkredit+schnell", title: "schulden privatkredit - Suche"}
+    noise:
+      - "Sportergebnisse, Navi/Maps-Routen, Werkzeug-Shop, Tankstellen"
+
+# ---------------------------------------------------------------------
+# NOISE-PROFILE  — plausibler Alltag pro Geraet (Generator-Parameter)
+# ---------------------------------------------------------------------
+noise_profiles:
+  iphone_anna:
+    daily_routine: [home, work_anna, gym, supermarket, home]
+    app_usage_top: ["Messages", "Safari", "Mail", "Instagram", "Kalender", "Health", "Maps"]
+    wifi_bt_encounters: ["Home-WLAN", "Buero-WLAN", "Gym-WLAN", "CarPlay Daniel", "AirPods Anna"]
+    photo_bursts: ["Ben Training", "Mittagessen", "Screenshots Kursplan"]
+  samsung_daniel:
+    daily_routine: [home, "Kundentermine (variabel)", workshop, home]
+    app_usage_top: ["WhatsApp", "Chrome", "Maps", "Telefon", "Banking", "Sport-App"]
+
+# ---------------------------------------------------------------------
+# GEWOLLTE WIDERSPRUECHE (V2.5-Hardening, Multi-Device)
+# Dokumentiert fuer den Loesungsschluessel des Dozenten.
+# ---------------------------------------------------------------------
+planted_inconsistencies:
+  - id: 1
+    title: "Daniel: Home laut WiFi, aber unterwegs laut Cell"
+    detail: "07:38 WiFi-Assoziation Home (alt/zwischengespeichert) vs. 08:02 Cell-Standort Waldweg. Lernende muessen Quellqualitaet werten."
+    status: materialized   # in location_cache.db (wifi_assoc vs. network_location_cache)
+  - id: 2
+    title: "Zeit-Drift Zeuge vs. Geraet"
+    detail: "Harald K. 'kurz nach acht' (unsicher) vs. praezise Geraete-Timestamps. Aussage nicht ueberbewerten."
+  - id: 3
+    title: "Health-Peak mehrdeutig"
+    detail: "HR-Peak 07:50 koennte Sport ODER Stress/Gewalt sein. Nur mit Location+BIOME aufloesbar."
+  - id: 4
+    title: "Geloeschte iMessage nur als Fragment"
+    detail: "Annas Nachricht 24.01 22:11 geloescht; nur in WAL/Recovery teils rekonstruierbar."
+  - id: 5
+    title: "Cloud-Timeline unvollstaendig"
+    detail: "Google/iCloud-Export hat Luecke im kritischen Fenster (Sync-Verzoegerung) -> nicht als Beweis 'war nicht dort'."
+    status: materialized   # 04_cloud_exports (Google-Luecke 07:15-09:05, iCloud nach 07:09)
+
+# ---------------------------------------------------------------------
+# LOESUNGSSCHLUESSEL (Kurzfassung — nur fuer Dozent)
+# ---------------------------------------------------------------------
+solution_key:
+  primary_hypothesis: "Daniel Reuter. Motiv: drohende Trennung (Anna->Jonas) + finanzieller Druck (Tobias). Gelegenheit: Alibi-Luecke 07:30-08:30, Standort Waldweg."
+  red_herrings:
+    - "Jonas (Affaere) wirkt verdaechtig, war aber am Treffpunkt und wartete vergeblich (09:10 Chat)."
+    - "Tobias (Schulden/dunkler Kombi) liefert das Fahrzeug-Motiv, war aber in der Werkstatt (Werkstatt-Chat/Calllog)."
+  decisive_correlations:
+    - "Daniel Cell-Standort Waldweg 08:02 + Anruf Tobias 08:25 + Chrome-Suche 'handy orten partner'."
+    - "Annas BIOME Device.BootSession endet 07:52 (Tatzeit) konsistent mit Obduktion 07:45-08:15."
+
+# ---------------------------------------------------------------------
+# BUILD-STATUS  — tatsaechlich generierte & validierte Artefakte
+# (Stand 29.05.2026; Gesamtlauf: run_all.py -> ALLE GATES BESTANDEN)
+# ---------------------------------------------------------------------
+build_status:
+  generated_at: "2026-05-29"
+  master_timeline_events: 108
+  gates: "5/5 Format-Gates (+Cloud), 12/12 Loesbarkeit (run_all.py)"
+  artifacts:
+    iphone_anna:
+      - "sms.db (+WAL: geloeschtes Fragment, PI#4)"
+      - "Photos.sqlite (12 Assets, 10 mit GPS/EXIF)"
+      - "healthdb_secure.sqlite (HR-Peak 138 @07:50, Schlaf)"
+      - "cache_encryptedB.db (Cell/Wifi, Home->Waldweg)"
+      - "ChatStorage.sqlite (WhatsApp iOS, gym_crew-Gruppe)"
+      - "BIOME: Safari, App.InFocus, BootSession, ScreenLocked"
+    samsung_daniel:
+      - "mmssms.db, calllog.db, contacts2.db"
+      - "msgstore.db (1:1 + 2 Gruppen, 17 Nachrichten)"
+      - "Chrome History (8 URLs)"
+      - "location_cache.db (PI#1: WiFi Home vs. Cell Waldweg)"
+    windows_daniel:
+      - "Edge History (SQLite)"
+      - "NTUSER.DAT (handgebauter regf-Hive, regipy-validiert)"
+    cloud:
+      - "google/location-history.json (Takeout, Daniel; PI#5-Luecke)"
+      - "icloud/icloud_sync.csv (Anna; PI#5-Luecke)"
+  documents_noise:
+    count: 17
+    note: "Alltagsdokumente (docx/xlsx/csv/txt/pdf) in Downloads/Dokumente je Geraet; 9 noise, 8 dezent context (Kredit/Werkstattrechnung, Anwalt/Wohnung, RisikoLV). Manifest: 06_master/Dokumente_Manifest.csv"
+  deferred:
+    - "SRUDB.dat (ESE) — Spezialwerkzeug noetig, dokumentierte Folgearbeit"
+  media_fs_mapping: "06_master/Medien_FS_Mapping.csv (12 Medien in Geraete-FS/Polizeiakte eingebettet)"
+  validation_tools: ["biome_core.py (mb4n6)", "regipy", "iLEAPP/ALEAPP-aequivalente Query-Gates"]
+
+# ---------------------------------------------------------------------
+# ERGAENZUNGSMODULE  (an Fall angepasst, didaktische Erweiterungen)
+# ---------------------------------------------------------------------
+supplementary_modules:
+  multimedia:   # 07_multimedia
+    audio: ["voicemail Stadtwerke->Anna (context)", "Lena Sprachnachricht (context)", "forest_ambient Waldweg (critical, stuetzt Zeugen-Kfz)"]
+    images: ["forest_path_01/02 (Fundort; 02 mit Silhouette=critical)", "forest_path_02_manipulated (Bildforensik)", "maps_route_screenshot (Route Waldweg)"]
+    video: ["critical_walkthrough Waldweg + frames", "home_clip_noise + frames"]
+    note: "Personen auf Fallbezug angepasst (miriam->Lena). Relevanzstufen in den *_metadata.csv."
+    media_embedded_fs: true   # Mediendateien in FS eingebettet (Option B), 07_multimedia = Index/Referenz
+  multilingual: # 08_multilingual
+    threads: ["EN James Carter/Projekt (noise)", "TR Mehmet Y. (noise, Verwechslungsfalle mit Jonas-Treffen)", "RU Olga (schwacher context)"]
+    note: "Alle fremdsprachigen Kontakte = Annas Alltagskontakte; Relevanz muss begruendet werden."
+    audio_embedded_fs: "01_ios .../WhatsApp/Message/Media/ (voice_projektpartner_en, voice_bekannter_tr)"
+
+backup:
+  path: "_backup_legacy/"
+  reason: "Veraltete V2.2-Artefakte & Widersprueche zum aktuellen Fall (knowledgeC.db, Intelligence-Layer mit falscher Erzaehlung, Android-Dubletten/Pixel-build.prop, alte DCIM, .DS_Store, alte koordinaten-inkonsistente Cloud-Exporte)."
+
+# ---------------------------------------------------------------------
+# APP-SANDBOXES  — zusaetzliche installierte Apps (Skelett + teils Inhalt)
+# Erzeugt via gen_app_skeletons.py; Manifest 06_master/App_Skeletons_Manifest.csv
+# ---------------------------------------------------------------------
+app_sandboxes:
+  iphone_anna: ["Signal/Threema (verschluesselt, verdeckt)", "Telegram", "Instagram", "Spotify",
+                "Netflix", "DB Navigator (Reisesuche Nachbarstadt)", "ImmobilienScout24 (2-Zimmer-Suche)",
+                "Komoot", "Gmail", "Notizen (Belastungsnotiz)"]
+  samsung_daniel: ["Signal/Threema (verschluesselt, verdeckt)", "Telegram", "Sparkasse (Konto im Minus, Klenk-Zahlung)",
+                   "Finanzguru (Budget Schulden)", "Kleinanzeigen (Auto schnell verkaufen)", "PayPal",
+                   "Outlook", "Gmail", "Komoot", "Discord"]
+  note: "iOS: Containers/Data/Application/<GUID> mit metadata.plist (Bundle-ID), Preferences, SQLite-Basisschema. Android: data/data/<pkg> mit shared_prefs + databases. Messenger-DBs (Signal/Threema) bewusst verschluesselt -> Skelett ohne Klartext."
+
+# ---------------------------------------------------------------------
+# iOS-EXTRA  — vertiefte iPhone-Artefakte (gen_ios_extra.py + BIOME/Health)
+# ---------------------------------------------------------------------
+ios_extra:
+  safari: "History.db (Anwalt/Bahn/Wohnung, deckt BIOME-Safari) + Bookmarks.db + RecentlyClosedTabs.plist (mobilesafari-Container)"
+  voicemail: "voicemail.db -> voicemail_anna_office_de.wav (Buero sucht Anna)"
+  callhistory: "CallHistory.storedata ZCALLRECORD: 24.01 Lena/Jonas, 25.01 07:18 ->Jonas (38s), 07:26 verpasst von Daniel"
+  app_snapshots: "Library/Caches/Snapshots/<bundle> fuer Safari/Signal/Instagram (letzter App-Zustand)"
+  biome_extra: ["App.Install", "_DKEvent.App.Activity.Battery", "_DKEvent.Media.NowPlaying", "Device.BluetoothConnection"]
+  health_deep: "Schritt-Samples + Workout (Lauf 07:33-07:50) + GPS-Route Home->Waldweg (4 Punkte, deckt locationd/Cell)"
+
+# ---------------------------------------------------------------------
+# ANDROID-EXTRA  — vertiefte Samsung-Artefakte (gen_android_extra.py)
+# ---------------------------------------------------------------------
+android_extra:
+  usagestats: "data/system/usagestats/0/{daily,weekly,monthly} — App-Nutzung (WhatsApp/Signal/Sparkasse abends, Maps 08:02, Dialer 08:25)"
+  samsung_health: "SecureHealthData.db — 25.01 nur 2110 Schritte; Exercise 08:00-08:30 (Bewegung Tatmorgen)"
+  google_maps: "gmm_myplaces.db/gmm_storage.db — Ziel/Suche 'Waldweg Parkplatz' 25.01 07:31 (Kernindiz) + Werkstatt Klenk"
+  accounts: "data/system/sync/accounts.xml + accounts_ce.db (Google/Outlook/WhatsApp -> Geraetebindung Daniel)"
+  whatsapp_wa_db: "wa.db Kontakte (Tobias Klenk/Anna/Lena) + Media-Thumbnails (Images/Voice Notes)"
+  system_stats: "batterystats + netstats (Telemetrie)"

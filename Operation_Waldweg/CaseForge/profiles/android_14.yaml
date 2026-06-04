@@ -1,0 +1,12 @@
+# OS-Profil: Android 14 (One UI 6.1)  (CaseForge)
+platform: android
+os_version: "14"
+device_examples: ["Samsung Galaxy S23", "Pixel 8"]
+fs_root: "data/data"
+timestamp_formats: ["unix_millis", "webkit_micros"]
+key_facts:
+  - "Telephony/Calllog/WhatsApp in Unix-ms; Chrome in WebKit-us"
+  - "Multi-User-Pfade user/150, user_de/0 moeglich"
+  - "usagestats XML pro Bucket; Samsung Health SecureHealthData.db"
+generators: [android.core, android.location, android.extra, android.apps]
+notes: "Samsung-spezifisch: com.sec.* Provider; Pixel-Profil ggf. abweichend."

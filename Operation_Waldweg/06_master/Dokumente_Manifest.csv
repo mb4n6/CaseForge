@@ -1,0 +1,18 @@
+geraet,pfad,relevanz,beschreibung
+Notebook,03_windows_triage/C/Users/Daniel/Documents/Haushaltsbudget_2026.xlsx,context,Haushaltsbudget -> finanzielle Anspannung erkennbar (Noise/Context)
+Notebook,03_windows_triage/C/Users/Daniel/Documents/Versicherungen_Uebersicht.docx,context,Versicherungsuebersicht -> Risikolebensversicherung (passt zu Edge-Suche 'auszahlung todesfall')
+Notebook,03_windows_triage/C/Users/Daniel/Documents/todo.txt,context,ToDo-Liste -> beilaeufige Notiz 'Klenk anrufen' (Glaeubiger)
+Notebook,03_windows_triage/C/Users/Daniel/Downloads/Bedienungsanleitung_Router.pdf,noise,Router-Anleitung
+Notebook,03_windows_triage/C/Users/Daniel/Downloads/kontoauszug_export.csv,context,Kontoauszug -> Teilzahlung an T. Klenk 300 EUR (Schuldenkontext)
+Samsung,02_android_full_fs/storage/emulated/0/Documents/Aussendienst_Spesen_Jan2026.xlsx,noise,Spesenabrechnung Aussendienst
+Samsung,02_android_full_fs/storage/emulated/0/Documents/Privatkredit_Vergleich.docx,context,Kreditvergleich-Notiz -> finanzieller Druck (passt zu Chrome/Edge-Suche)
+Samsung,02_android_full_fs/storage/emulated/0/Documents/sportapp_export.csv,noise,Schritt-/Sport-Export
+Samsung,02_android_full_fs/storage/emulated/0/Download/Rechnung_Werkstatt_Klenk_7711.pdf,context,Werkstattrechnung Klenk offen -> stuetzt Schulden/Glaeubiger-Motiv (passt zu WhatsApp-Ultimatum)
+Samsung,02_android_full_fs/storage/emulated/0/Download/Tankquittung_2026-01-20.pdf,noise,Tankquittung
+Samsung,02_android_full_fs/storage/emulated/0/Download/navi_route_notiz.txt,noise,Routennotiz
+iPhone,01_ios_full_fs/private/var/mobile/Library/Mobile Documents/com~apple~CloudDocs/Dokumente/Wohnung_Expose_2Zimmer.docx,context,Wohnungsexpose -> konkrete Auszugsplanung (passt zu Suche 'wohnung mieten')
+iPhone,01_ios_full_fs/private/var/mobile/Library/Mobile Documents/com~apple~CloudDocs/Dokumente/einkaufsliste.csv,noise,Einkaufsliste
+iPhone,01_ios_full_fs/private/var/mobile/Library/Mobile Documents/com~apple~CloudDocs/Dokumente/packliste_ausflug.txt,noise,Packliste
+iPhone,01_ios_full_fs/private/var/mobile/Library/Mobile Documents/com~apple~CloudDocs/Downloads/Infoblatt_Familienrecht_Trennung.pdf,context,Anwalts-/Familienrecht-Infoblatt -> stuetzt Trennungsabsicht (passt zu Safari-Suche 07:05)
+iPhone,01_ios_full_fs/private/var/mobile/Library/Mobile Documents/com~apple~CloudDocs/Downloads/Kursplan_Studio_Januar.pdf,noise,Fitnessstudio-Kursplan (Download)
+iPhone,01_ios_full_fs/private/var/mobile/Library/Mobile Documents/com~apple~CloudDocs/Downloads/Rezept_Ofengemuese.pdf,noise,Rezept-PDF

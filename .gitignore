@@ -1,0 +1,35 @@
+# ===== Operation Waldweg / CaseForge — .gitignore =====
+
+# macOS
+.DS_Store
+**/.DS_Store
+
+# Python
+__pycache__/
+**/__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# Große TTS-Modelle (lokal nachladbar, siehe README -> Piper)
+Operation_Waldweg/09_build/piper_voices/*.onnx
+Operation_Waldweg/09_build/piper_voices/*.onnx.json
+
+# Generierte Fälle / Scratch-Ausgaben (reproduzierbar via forge.py)
+Operation_Waldweg/CaseForge/cases/
+Operation_Waldweg/CaseForge/out/
+
+# SQLite-Build-/Verifikations-Artefakte
+*.snapshot
+*.snapshot-wal
+*.snapshot-shm
+*.verify
+*.verify-wal
+*.verify-shm
+*-journal
+
+# Editor/OS
+*.swp
+*~
+Thumbs.db

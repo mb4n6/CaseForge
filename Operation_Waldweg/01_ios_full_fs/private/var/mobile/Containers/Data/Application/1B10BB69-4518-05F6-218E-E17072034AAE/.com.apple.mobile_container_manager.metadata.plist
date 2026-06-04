@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>MCMMetadataIdentifier</key>
+	<string>com.netflix.Netflix</string>
+	<key>MCMMetadataSchemaVersion</key>
+	<integer>2</integer>
+	<key>MCMMetadataUUID</key>
+	<string>1B10BB69-4518-05F6-218E-E17072034AAE</string>
+</dict>
+</plist>

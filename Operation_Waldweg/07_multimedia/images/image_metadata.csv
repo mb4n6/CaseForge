@@ -1,0 +1,5 @@
+file,typ,kontext,relevanz,notiz
+original/forest_path_01.jpg,foto,Waldweg / Fundortumgebung,context,unauffaelliges Wegfoto zur Ortsdokumentation
+original/forest_path_02.jpg,foto,Waldweg / Fundortumgebung,critical,entfernte personenaehnliche Silhouette -> Bildauswertung erforderlich
+manipulated/forest_path_02_manipulated.jpg,manipuliert,Bildforensik-Uebung,context,synthetisch veraenderte Variante von forest_path_02 zum Vergleich (ELA/Metadaten)
+screenshots/maps_route_screenshot.png,screenshot,Routen-/Navigationsbeleg,context,Kartenausschnitt Richtung Waldweg-Parkplatz; kann Zeitleiste stuetzen ODER blosser Navi-Noise sein (Relevanz begruenden)

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>MCMMetadataIdentifier</key>
+	<string>de.bahn.dbnavigator</string>
+	<key>MCMMetadataSchemaVersion</key>
+	<integer>2</integer>
+	<key>MCMMetadataUUID</key>
+	<string>08B6841D-EE08-189D-80DB-2ABB9716E109</string>
+</dict>
+</plist>

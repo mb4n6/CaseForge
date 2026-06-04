@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>ClosedTabOrWindowPersistentStates</key>
+	<array>
+		<dict>
+			<key>DateClosed</key>
+			<date>2026-01-25T07:08:00Z</date>
+			<key>Title</key>
+			<string>anwalt trennung sorgerecht - Google Suche</string>
+			<key>URL</key>
+			<string>https://www.google.com/search?q=anwalt+trennung+sorgerecht</string>
+		</dict>
+		<dict>
+			<key>DateClosed</key>
+			<date>2026-01-25T07:11:00Z</date>
+			<key>Title</key>
+			<string>Reiseauskunft - Deutsche Bahn</string>
+			<key>URL</key>
+			<string>https://www.bahn.de/verbindungen</string>
+		</dict>
+	</array>
+</dict>
+</plist>

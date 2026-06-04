@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<usagestats version="5" endTime="1769382000000">
+<packages>
+  <package token="1" package="com.whatsapp" lastTimeActive="1769281560000" timeActive="5400" lastEvent="1" />
+  <package token="2" package="com.android.chrome" lastTimeActive="1769289300000" timeActive="9300" lastEvent="1" />
+  <package token="3" package="org.thoughtcrime.securesms" lastTimeActive="1769289600000" timeActive="2600" lastEvent="1" />
+  <package token="4" package="com.starfinanz.smob.android.sfinanzstatus" lastTimeActive="1769290500000" timeActive="800" lastEvent="1" />
+  <package token="5" package="com.google.android.apps.maps" lastTimeActive="1769324520000" timeActive="1500" lastEvent="1" />
+  <package token="6" package="com.android.dialer" lastTimeActive="1769325900000" timeActive="60" lastEvent="1" />
+</packages>
+</usagestats>

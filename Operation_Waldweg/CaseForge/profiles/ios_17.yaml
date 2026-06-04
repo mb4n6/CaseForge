@@ -1,0 +1,12 @@
+# OS-Profil: iOS 17.x  (CaseForge)
+platform: ios
+os_version: "17.5.1"
+device_examples: ["iPhone 14", "iPhone 15"]
+fs_root: "private/var/mobile"
+timestamp_formats: ["apple_cfabsolute_seconds", "apple_nanoseconds", "unix"]
+key_facts:
+  - "knowledgeC.db ENTFAELLT -> Aktivitaet/Safari/MicroLocation via BIOME (SEGB v2)"
+  - "WhatsApp im Core-Data-Schema (ChatStorage.sqlite), nicht msgstore"
+  - "App-Container unter Containers/Data/Application/<GUID> + metadata.plist"
+generators: [ios.sms, ios.photos_health, ios.location, ios.whatsapp, ios.biome, ios.extra, ios.apps]
+notes: "Fuer iOS 16 BIOME optional + knowledgeC.db moeglich; eigenes Profil ios_16.yaml anlegen."

@@ -1,0 +1,12 @@
+# OS-Profil: Windows 11 23H2  (CaseForge)
+platform: windows
+os_version: "11-23H2"
+device_examples: ["Notebook (privat)"]
+fs_root: "C"
+timestamp_formats: ["filetime", "webkit_micros", "iso8601"]
+key_facts:
+  - "Registry-Hives SAM/SYSTEM/SOFTWARE/NTUSER/Amcache/UsrClass (regf)"
+  - "EVTX template-basiertes BinXML; Edge=Chromium"
+  - "Offen/Folgearbeit: SRUDB.dat (ESE), valides Prefetch-SCCA, $MFT/$UsnJrnl"
+generators: [win.hives, win.files, win.browser, win.extra, win.lnk, win.evtx]
+notes: "Win10-Profil: ShimCache-Format abweichend; eigenes Profil anlegen."

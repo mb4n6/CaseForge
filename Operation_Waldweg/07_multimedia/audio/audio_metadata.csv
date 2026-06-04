@@ -1,0 +1,4 @@
+file,sprecher,sprache,kontext,relevanz,notiz
+voicemail/voicemail_anna_office_de.wav,Stadtwerke Buero,de,Mailbox-Nachricht an abwesende Anna am Morgen 25.01,context,Buero vermisst Anna -> Beleg dass sie nie zur Arbeit kam
+whatsapp_voice/voice_lena_de.wav,Lena Vogt,de,WhatsApp-Sprachnachricht der besten Freundin,context,Lena besorgt ('klangst gestresst') -> stuetzt Belastungssituation Annas
+ambient/forest_ambient_01.wav,-,-,Umgebungston am Waldweg (Fundortnaehe),critical,Wind + Schritte + entferntes Fahrzeug-/Motorgeraeusch -> stuetzt Zeugenhinweis 'dunkles Fahrzeug'

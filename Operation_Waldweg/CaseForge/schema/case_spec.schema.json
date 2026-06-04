@@ -1,0 +1,109 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CaseForge Case-Spec",
+  "description": "Eingabe-/Vorschlagsschema fuer einen synthetischen Forensik-Fall. Wird vom LLM vorgeschlagen, vom Nutzer verifiziert/angepasst und deterministisch zu Artefakten projiziert.",
+  "type": "object",
+  "required": ["meta", "deliktart", "persons", "devices", "timeline"],
+  "properties": {
+    "meta": {
+      "type": "object",
+      "required": ["case_name", "generator_seed", "timezone", "focus_window"],
+      "properties": {
+        "case_name": {"type": "string"},
+        "version": {"type": "string"},
+        "generator_seed": {"type": "integer", "description": "Reproduzierbarkeit"},
+        "timezone": {"type": "string"},
+        "language_primary": {"type": "string", "default": "de-DE"},
+        "focus_window": {"type": "object", "properties": {"start": {"type": "string"}, "end": {"type": "string"}}},
+        "data_period": {"type": "object", "properties": {"start": {"type": "string"}, "end": {"type": "string"}}},
+        "disclaimer": {"type": "string", "const": "synthetic_training_data_only"},
+        "real_basis": {"type": "string", "description": "lose Anlehnung (Phaenomen/Deliktstyp), KEINE realen Personendaten"}
+      }
+    },
+    "deliktart": {"type": "string", "description": "z.B. Toetungsdelikt, BtM-Handel, Betrug, CSAM-Triage(ohne Inhalte), Stalking, Einbruch"},
+    "lernziel": {"type": "string", "description": "didaktischer Fokus, z.B. 'Cross-Device-Timeline', 'verschluesselte Messenger', 'USB-Exfiltration'"},
+    "persons": {
+      "type": "array",
+      "items": {"type": "object", "required": ["id", "name", "role"], "properties": {
+        "id": {"type": "string"}, "name": {"type": "string"},
+        "role": {"enum": ["victim", "poi", "witness", "contact", "family"]},
+        "phone": {"type": "string", "description": "synthetische Rufnummer; erzeugt Messaging-Handles"},
+        "devices": {"type": "array", "items": {"type": "string"}},
+        "notes": {"type": "string"}}}
+    },
+    "devices": {
+      "type": "array",
+      "items": {"type": "object", "required": ["id", "owner", "platform", "os_profile"], "properties": {
+        "id": {"type": "string"}, "owner": {"type": "string"},
+        "platform": {"enum": ["ios", "android", "windows"]},
+        "model": {"type": "string"},
+        "os_profile": {"type": "string", "description": "verweist auf profiles/<name>.yaml, z.B. ios_17"},
+        "extraction": {"type": "string", "enum": ["Full File System", "Logische Extraktion", "File System (AFU/BFU)"]},
+        "artifact_classes": {"type": "array", "items": {"type": "string"},
+          "description": "gewuenschte Klassen; Auswahl aus registry.artifact_classes()"}}}
+    },
+    "timeline": {
+      "type": "array",
+      "items": {"type": "object", "required": ["t", "actor", "type", "relevance"], "properties": {
+        "t": {"type": "string"}, "actor": {"type": "string"},
+        "type": {"type": "string"}, "channel": {"type": "string"}, "with": {"type": "string"},
+        "relevance": {"enum": ["critical", "context", "noise"]}, "content": {"type": "string"}}}
+    },
+    "chat_threads": {
+      "type": "array",
+      "description": "Konversations-Threads; optional mit strukturierten 'messages' (sonst nutzen Generatoren Referenz-Fallback).",
+      "items": {"type": "object", "required": ["id", "channel", "participants"], "properties": {
+        "id": {"type": "string"},
+        "channel": {"type": "string", "description": "imessage | whatsapp | sms | imessage_and_whatsapp | *_group"},
+        "participants": {"type": "array", "items": {"type": "string"}},
+        "messages": {"type": "array", "items": {"type": "object", "required": ["t", "from"], "properties": {
+          "t": {"type": "string"}, "from": {"type": "string", "description": "person-id"},
+          "text": {"type": "string"}, "deleted": {"type": "boolean", "default": false,
+            "description": "nur als WAL-Fragment (didaktisch: geloeschte Nachricht)"}}}}}}
+    },
+    "location_tracks": {
+      "type": "object",
+      "description": "Zeitgestempelte Standortspur je person-/device-id; treibt Standort-DBs (sonst Fallback).",
+      "additionalProperties": {"type": "array", "items": {"type": "object", "required": ["t", "lat", "lon"], "properties": {
+        "t": {"type": "string"}, "lat": {"type": "number"}, "lon": {"type": "number"},
+        "kind": {"enum": ["cell", "wifi"], "default": "cell"},
+        "bssid": {"type": "string"}, "mcc": {"type": "integer"}, "mnc": {"type": "integer"},
+        "lac": {"type": "integer"}, "ci": {"type": "integer"}}}}
+    },
+    "browser_history": {
+      "type": "object",
+      "description": "Browser-Verlauf je person-/device-id (Chrome/Edge/Safari); sonst Fallback.",
+      "additionalProperties": {"type": "array", "items": {"type": "object", "required": ["t", "url"], "properties": {
+        "t": {"type": "string"}, "url": {"type": "string"}, "title": {"type": "string"}}}}
+    },
+    "documents": {
+      "type": "array",
+      "description": "Alltagsdokumente je Gerät; sonst Referenz-Fallback.",
+      "items": {"type": "object", "required": ["device", "name", "kind"], "properties": {
+        "device": {"enum": ["ios", "android", "windows"]},
+        "area": {"enum": ["downloads", "documents"], "default": "downloads"},
+        "name": {"type": "string"}, "kind": {"enum": ["txt", "csv", "docx", "xlsx", "pdf"]},
+        "relevance": {"enum": ["noise", "context", "critical"], "default": "noise"},
+        "desc": {"type": "string"}, "title": {"type": "string"},
+        "lines": {"type": "array", "items": {"type": "string"}}, "text": {"type": "string"},
+        "sheet": {"type": "string"}, "header": {"type": "array"}, "rows": {"type": "array"}}}
+    },
+    "app_packages": {
+      "type": "object",
+      "description": "Welche App-Sandboxen je Plattform angelegt werden; sonst Referenz-Set.",
+      "properties": {
+        "ios": {"type": "array", "items": {"type": "string"}},
+        "android": {"type": "array", "items": {"type": "string"}}}
+    },
+    "planted_inconsistencies": {"type": "array", "items": {"type": "object"}},
+    "solution_key": {"type": "object"},
+    "validation": {
+      "type": "object",
+      "properties": {
+        "tools": {"type": "array", "items": {"type": "string"},
+          "description": "Forensik-Tools zur Gegenpruefung, automatisch aus Registry abgeleitet"},
+        "gates": {"type": "array", "items": {"type": "string"}}
+      }
+    }
+  }
+}

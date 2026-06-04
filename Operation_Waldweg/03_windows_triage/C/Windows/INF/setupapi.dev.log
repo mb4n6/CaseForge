@@ -1,0 +1,8 @@
+>>>  [Device Install (Hardware initiated) - USBSTOR\Disk&Ven_SanDisk&Prod_Cruzer_Blade&Rev_1.00\4C530001260102117384&0]
+>>>  Section start 2026/01/24 23:50:11.482
+     dvi: {Build Driver List} 23:50:11.490
+     dvi: Searching for hardware ID(s): usbstor\disksandisk_cruzer_blade____1.00
+     sto: {Setup Import Driver Package - disk.inf}
+     dvi: Device install status=0x00000000 (SanDisk Cruzer Blade USB Device)
+<<<  Section end 2026/01/24 23:50:13.114
+<<<  [Exit status: SUCCESS]

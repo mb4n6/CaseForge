@@ -1,0 +1,6 @@
+timestamp,artifact,status
+2026-01-24T22:11:54+01:00,notes,synced
+2026-01-24T22:14:02+01:00,photos_metadata,synced
+2026-01-25T06:55:00+01:00,health,synced
+2026-01-25T07:09:18+01:00,calendar,synced
+2026-01-25T13:40:00+01:00,photos_metadata,partial/delayed

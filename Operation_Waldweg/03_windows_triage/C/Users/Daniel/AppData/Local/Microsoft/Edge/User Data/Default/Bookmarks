@@ -1,0 +1,39 @@
+{
+   "roots": {
+      "bookmark_bar": {
+         "type": "folder",
+         "name": "Lesezeichenleiste",
+         "children": [
+            {
+               "type": "url",
+               "name": "Sparkasse Banking",
+               "url": "https://www.sparkasse.de/",
+               "date_added": "13403782800000000"
+            },
+            {
+               "type": "url",
+               "name": "CHECK24 Kredit",
+               "url": "https://www.check24.de/kredit/",
+               "date_added": "13413763860000000"
+            },
+            {
+               "type": "url",
+               "name": "Lebensversicherung kuendigen/auszahlen",
+               "url": "https://www.google.com/search?q=lebensversicherung+auszahlung+todesfall",
+               "date_added": "13413763260000000"
+            }
+         ]
+      },
+      "other": {
+         "type": "folder",
+         "name": "Weitere",
+         "children": []
+      },
+      "synced": {
+         "type": "folder",
+         "name": "Mobil",
+         "children": []
+      }
+   },
+   "version": 1
+}

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<accounts version="2" >
+  <account name="daniel.reuter@gmail.com" type="com.google" />
+  <account name="d.reuter@example.de" type="com.microsoft.office.outlook" />
+  <account name="+4915223456788" type="com.whatsapp" />
+</accounts>

@@ -1,34 +1,26 @@
 "Zeit (lokal, CET)",Geraet,Quelle,Akteur,Beschreibung
 2025-12-19 17:20:00,Samsung (Daniel),WhatsApp,4915443456786,„Die Bremsen sind fertig. Rechnung kommt per Post.“
 2025-12-19 17:25:00,Samsung (Daniel),WhatsApp,Daniel,„Danke. Kann ich das in zwei Raten zahlen?“
-2026-01-08 18:30:00,iPhone (Anna),WhatsApp/gym_crew,Trainer Mike,"„Morgen 18 Uhr Kurs faellt aus, dafuer Donnerstag extra Session 💪“"
-2026-01-08 18:34:00,iPhone (Anna),WhatsApp/gym_crew,Anna,„Schade! Donnerstag passt aber.“
-2026-01-09 07:12:00,iPhone (Anna),WhatsApp/gym_crew,Sandra,„Wer kommt heute zum Lauftreff?“
-2026-01-09 07:20:00,iPhone (Anna),WhatsApp/gym_crew,Anna,"„Ich bin dabei, bis gleich 🏃‍♀️“"
 2026-01-12 19:02:00,Samsung (Daniel),WhatsApp,496170001111-1610000000,„Hat jemand Streusalz übrig? Gehweg ist spiegelglatt.“
 2026-01-12 19:10:00,Samsung (Daniel),WhatsApp,Daniel,„Kann dir morgen einen Sack vorbeibringen.“
 2026-01-14 07:30:00,Samsung (Daniel),WhatsApp,496170002222-1605000000,„Wochenziele im CRM bitte bis Freitag eintragen.“
 2026-01-14 07:45:00,Samsung (Daniel),WhatsApp,Daniel,„Mach ich. Bin heute Raum Stuttgart unterwegs.“
 2026-01-15 19:02:00,Samsung (Daniel),WhatsApp,4915443456786,"„Daniel, die erste Rate ist ueberfaellig.“"
 2026-01-15 19:40:00,Samsung (Daniel),WhatsApp,Daniel,"„Naechste Woche, versprochen.“"
-2026-01-16 20:05:00,iPhone (Anna),WhatsApp/gym_crew,Tom,„Gruppenfoto vom letzten Mal 📸“
 2026-01-19 08:40:00,Samsung (Daniel),WhatsApp,496170001111-1610000000,„Mülltonnen werden Mittwoch geleert.“
-2026-01-20 11:19:00,Samsung (Daniel),Chrome,Daniel,Web: https://www.google.com/maps/dir/
-2026-01-20 12:40:00,iPhone (Anna),WhatsApp/gym_crew,Sandra,"„Neuer Kursplan haengt aus, hab ihn fotografiert.“"
-2026-01-20 13:05:00,Samsung (Daniel),Chrome,Daniel,Web: https://www.google.com/search?q=stau+a8+heute
-2026-01-20 14:13:00,Samsung (Daniel),Chrome,Daniel,Web: https://www.apotheken-umschau.de/
-2026-01-20 15:40:00,Samsung (Daniel),Chrome,Daniel,Web: https://www.tripadvisor.de/
-2026-01-20 15:40:00,Samsung (Daniel),Chrome,Daniel,Web: https://www.mediamarkt.de/de/category/notebooks
+2026-01-20 11:19:00,Samsung (Daniel),Chrome,Daniel,Web: https://www.spiegel.de/
+2026-01-20 12:46:00,Samsung (Daniel),Chrome,Daniel,Web: https://www.google.com/search?q=stau+a8+heute
+2026-01-20 13:24:00,Samsung (Daniel),Chrome,Daniel,Web: https://www.kleinanzeigen.de/s-fahrrad/
+2026-01-20 14:28:00,Samsung (Daniel),Chrome,Daniel,Web: https://www.netflix.com/browse
+2026-01-20 15:48:00,Samsung (Daniel),Chrome,Daniel,Web: https://www.google.com/maps/dir/
 2026-01-20 16:22:00,Samsung (Daniel),WhatsApp,496170002222-1605000000,„Muster für die Klinik kommen erst nächste Woche.“
-2026-01-20 16:35:00,Samsung (Daniel),Chrome,Daniel,Web: https://www.otto.de/sale/
-2026-01-20 17:11:00,Samsung (Daniel),Chrome,Daniel,Web: https://www.wikipedia.org/wiki/Schwarzwald
-2026-01-20 18:51:00,Samsung (Daniel),Chrome,Daniel,Web: https://www.spiegel.de/
+2026-01-20 17:34:00,Samsung (Daniel),Chrome,Daniel,Web: https://www.idealo.de/preisvergleich/
+2026-01-20 18:35:00,Samsung (Daniel),Chrome,Daniel,Web: https://www.google.com/search?q=kino+programm+heute
+2026-01-20 18:47:00,Samsung (Daniel),Chrome,Daniel,Web: https://www.apotheken-umschau.de/
 2026-01-22 20:15:00,Samsung (Daniel),WhatsApp,496170001111-1610000000,„Faschingsumzug-Planung am Freitag im Bürgerhaus.“
-2026-01-22 22:40:00,iPhone (Anna),BIOME/Safari,Anna,Web: google.com/search?q=wohnung+mieten+2+zimmer
 2026-01-23 18:30:00,Samsung (Daniel),calllog.db,Daniel,Anruf ausgehend Anna (65s)
 2026-01-23 18:31:00,Samsung (Daniel),WhatsApp,Daniel,„Holst du Ben heute? Ich schaff's nicht.“
 2026-01-23 18:35:00,Samsung (Daniel),WhatsApp,4915123456789,„Ok mach ich.“
-2026-01-23 21:15:00,iPhone (Anna),WhatsApp/gym_crew,Anna,"„Top, danke! Bis morgen früh.“"
 2026-01-24 16:10:00,Samsung (Daniel),WiFi-Assoc,Daniel,"WLAN 'Werkstatt' @ 48.7510,9.2100 (gecacht)"
 2026-01-24 18:10:00,Samsung (Daniel),WhatsApp,Daniel,"„Ok, danke für die Info.“"
 2026-01-24 18:30:00,Cloud (Google/Daniel),Takeout/Location,Daniel,"Aufenthalt Zuhause (48.7758,9.1829)"
@@ -36,24 +28,12 @@
 2026-01-24 20:05:00,Samsung (Daniel),WhatsApp,4915443456786,"„Ich brauch das Geld bis Montag, Daniel. Kein Spiel mehr.“"
 2026-01-24 22:11:54,Cloud (iCloud/Anna),iCloud-Sync,Anna,Sync notes [synced]
 2026-01-24 22:14:02,Cloud (iCloud/Anna),iCloud-Sync,Anna,Sync photos_metadata [synced]
-2026-01-24 23:10:00,iPhone (Anna),locationd/Cell,Anna,"Standort 48.7758,9.1829"
-2026-01-25 06:50:00,iPhone (Anna),healthdb/HR,Anna,Herzfrequenz 58 bpm
 2026-01-25 06:50:00,Cloud (Google/Daniel),Takeout/Location,Daniel,"Aufenthalt Zuhause (48.7758,9.1829)"
 2026-01-25 06:55:00,Cloud (iCloud/Anna),iCloud-Sync,Anna,Sync health [synced]
-2026-01-25 07:05:00,iPhone (Anna),healthdb/HR,Anna,Herzfrequenz 64 bpm
-2026-01-25 07:05:00,iPhone (Anna),BIOME/Safari,Anna,Web: google.com/search?q=anwalt+trennung+sorgerecht
-2026-01-25 07:09:00,iPhone (Anna),BIOME/Safari,Anna,Web: bahn.de/verbindungen
 2026-01-25 07:09:18,Cloud (iCloud/Anna),iCloud-Sync,Anna,Sync calendar [synced]
 2026-01-25 07:15:00,Samsung (Daniel),Loc/wifi,Daniel,"Standort 48.7758,9.1829 (±40m)"
-2026-01-25 07:20:00,iPhone (Anna),healthdb/HR,Anna,Herzfrequenz 72 bpm
 2026-01-25 07:25:00,Samsung (Daniel),WhatsApp,Daniel,„Wo willst du so frueh hin?“
-2026-01-25 07:33:00,iPhone (Anna),healthdb/HR,Anna,Herzfrequenz 95 bpm
-2026-01-25 07:33:00,iPhone (Anna),locationd/Cell,Anna,"Standort 48.7740,9.1900"
 2026-01-25 07:38:00,Samsung (Daniel),WiFi-Assoc,Daniel,"WLAN 'Home-WLAN' @ 48.7758,9.1829 (gecacht)"
-2026-01-25 07:45:00,iPhone (Anna),healthdb/HR,Anna,Herzfrequenz 121 bpm
-2026-01-25 07:45:00,iPhone (Anna),locationd/Cell,Anna,"Standort 48.7520,9.2300"
-2026-01-25 07:50:00,iPhone (Anna),healthdb/HR,Anna,Herzfrequenz 138 bpm
-2026-01-25 07:52:00,iPhone (Anna),locationd/Cell,Anna,"Standort 48.7320,9.2470"
 2026-01-25 08:02:00,Samsung (Daniel),Loc/cell,Daniel,"Standort 48.7330,9.2460 (±1400m)"
 2026-01-25 08:25:00,Samsung (Daniel),calllog.db,Daniel,Anruf ausgehend Tobias Klenk (41s)
 2026-01-25 08:26:00,Samsung (Daniel),WhatsApp,Daniel,„Hab kurz versucht dich zu erreichen. Melde mich spaeter.“
@@ -63,5 +43,3 @@
 2026-01-25 10:10:00,Cloud (Google/Daniel),Takeout/Location,Daniel,"Aufenthalt Zuhause (48.7758,9.1829)"
 2026-01-25 12:18:00,Samsung (Daniel),calllog.db,Daniel,Anruf ausgehend 110 (213s)
 2026-01-25 13:40:00,Cloud (iCloud/Anna),iCloud-Sync,Anna,Sync photos_metadata [partial/delayed]
-2026-03-01 09:00:00,iPhone (Anna),sms.db/iMessage,+4915120000000,„Treffen wir uns?“
-2026-03-01 09:05:00,iPhone (Anna),sms.db/iMessage,Anna,"„Ja, um 18 Uhr.“"

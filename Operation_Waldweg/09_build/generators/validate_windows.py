@@ -177,6 +177,44 @@ def gate_extended():
         print("PCA (Windows 11):")
         lines = [l for l in open(pca, encoding="utf-8").read().splitlines() if "|" in l]
         ok("PcaAppLaunchDic.txt parsebar", len(lines) >= 1, f"{len(lines)} Eintraege")
+    # $MFT — existenz-gesteuert: FILE-Records mit Fixups + $FILE_NAME parsen
+    mft = os.path.join(WFS, "C/$MFT")
+    if os.path.exists(mft):
+        import struct as _st
+        print("$MFT (NTFS):")
+        raw = open(mft, "rb").read()
+        recs = len(raw) // 1024
+        names, fixok = [], True
+        for i in range(recs):
+            r = bytearray(raw[i * 1024:(i + 1) * 1024])
+            if r[0:4] != b"FILE":
+                fixok = False; break
+            uoff = _st.unpack_from("<H", r, 4)[0]; ucnt = _st.unpack_from("<H", r, 6)[0]
+            usn = r[uoff:uoff + 2]
+            for s in range(ucnt - 1):
+                se = (s + 1) * 512 - 2
+                if r[se:se + 2] != usn:
+                    fixok = False
+                r[se:se + 2] = r[uoff + 2 + s * 2:uoff + 4 + s * 2]
+            off = _st.unpack_from("<H", r, 0x14)[0]
+            while off < 1020:
+                at = _st.unpack_from("<I", r, off)[0]
+                if at == 0xFFFFFFFF:
+                    break
+                al = _st.unpack_from("<I", r, off + 4)[0]
+                if at == 0x30:
+                    co = _st.unpack_from("<H", r, off + 0x14)[0]
+                    nl = r[off + co + 0x40]
+                    names.append(r[off + co + 0x42:off + co + 0x42 + nl * 2].decode("utf-16-le"))
+                off += al if al else 8
+        ok("$MFT FILE-Records + Fixups valide", recs >= 1 and fixok, f"{recs} Records")
+        ok("$MFT $FILE_NAME lesbar", len(names) >= 1, f"{len(names)} Namen")
+    # SRUM SRUDB.dat (ESE-Header-Stub) — existenz-gesteuert
+    sru = os.path.join(WFS, "C/Windows/System32/sru/SRUDB.dat")
+    if os.path.exists(sru):
+        import struct as _st2
+        sig = _st2.unpack_from("<I", open(sru, "rb").read(8), 4)[0]
+        ok("SRUDB.dat ESE-Signatur", sig == 0x89ABCDEF, hex(sig))
     # Office File MRU + ComDlg32 (NTUSER)
     try:
         from regipy.registry import RegistryHive as _RH

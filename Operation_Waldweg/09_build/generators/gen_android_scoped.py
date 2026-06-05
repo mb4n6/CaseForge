@@ -63,20 +63,22 @@ def privacy_dashboard():
     if not cmio.device_profile_flag("android", "privacy_dashboard", False):
         return
     from datetime import datetime as _dt
+    import abx_writer as abx
     d = os.path.join(AND, "data/system/appops/discrete")
     os.makedirs(d, exist_ok=True)
-    xml = ['<?xml version="1.0" encoding="utf-8"?>', "<discrete-log>"]
+    # Voll-faithful ABX (AOSP BinaryXmlSerializer): <dl><pkg><op><a .../></op></pkg></dl>
+    w = abx.AbxSerializer().start_document().start_tag("dl")
     for pkg, op, iso in PRIVACY_ACCESS:
         ts = int(_dt.fromisoformat(iso).timestamp() * 1000)
-        xml.append(f'  <package name="{pkg}"><op name="{op}">'
-                   f'<access time="{ts}" duration="2000" /></op></package>')
-    xml.append("</discrete-log>")
-    body = ("\n".join(xml)).encode("utf-8")
-    # ABX-Magic-Header + lesbare Repraesentation
+        w.start_tag("pkg").attr("n", pkg)
+        w.start_tag("op").attr("n", op)
+        w.start_tag("a").attr("t", ts).attr("d", 2000).end_tag("a")
+        w.end_tag("op").end_tag("pkg")
+    w.end_tag("dl").end_document()
     with open(os.path.join(d, "1.xml"), "wb") as f:
-        f.write(b"ABX\x00" + body)
+        f.write(w.getvalue())
     print(f"Privacy Dashboard: data/system/appops/discrete/1.xml "
-          f"({len(PRIVACY_ACCESS)} Zugriffe, ABX-Magic + XML)")
+          f"({len(PRIVACY_ACCESS)} Zugriffe, voll-faithful ABX)")
 
 
 def main():

@@ -108,6 +108,12 @@ REGISTRY: List[Generator] = [
     Generator("win.evtx", "windows", "win>=10", "gen_win_evtx.py", ["eventlog"],
               ["C/Windows/System32/winevt/Logs/{Security,System}.evtx"], "evtx",
               "EvtxECmd / python-evtx", "validate_windows.py", notes="template-basiertes BinXML"),
+    Generator("win.mft", "windows", "win>=10", "gen_win_mft.py", ["filesystem"],
+              ["C/$MFT"], "ntfs-mft", "MFTECmd / analyzeMFT", "validate_windows.py",
+              notes="FILE-Records mit Fixups + $SI/$FN (Profil-Flag mft); inkl. geloeschter Datei"),
+    Generator("win.srum", "windows", "win>=10", "gen_win_srum.py", ["telemetry"],
+              ["C/Windows/System32/sru/SRUDB.dat"], "ese-stub", "SrumECmd / esedbexport",
+              "validate_windows.py", notes="ESE-Header-Stub (Profil-Flag srum); kein voll-faithful ESE"),
 
     # ---- Cloud / Cross-device ----
     Generator("cloud.exports", "cloud", "*", "gen_cloud.py", ["cloud_location", "cloud_sync"],

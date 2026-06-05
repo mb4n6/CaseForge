@@ -113,12 +113,19 @@ def gate_extended():
             rows = c.execute("SELECT _data, owner_package_name FROM files").fetchall(); c.close()
             ok("external.db files-Tabelle", len(rows) >= 1, f"{len(rows)} Dateieintraege")
             break
-    # Privacy Dashboard /system/appops/discrete (existenz-gesteuert, ABX-Magic)
+    # Privacy Dashboard /system/appops/discrete (existenz-gesteuert, voll-faithful ABX)
     pdd = os.path.join(fs, "data/system/appops/discrete/1.xml")
     if os.path.exists(pdd):
-        head = open(pdd, "rb").read(4)
-        print("Privacy Dashboard (appops/discrete):")
-        ok("appops discrete ABX-Magic", head == b"ABX\x00", repr(head))
+        print("Privacy Dashboard (appops/discrete, ABX):")
+        data = open(pdd, "rb").read()
+        ok("appops discrete ABX-Magic", data[:4] == b"ABX\x00", repr(data[:4]))
+        try:
+            import abx_writer as abx
+            ev = abx.decode(data)
+            ops = [e[2] for e in ev if e[0] == "attr" and e[1] == "n" and isinstance(e[2], str) and e[2].startswith("android:")]
+            ok("ABX dekodierbar (Round-Trip) + op-Eintraege", len(ops) >= 1, f"{len(ops)} ops")
+        except Exception as e:
+            ok("ABX dekodierbar (Round-Trip)", False, str(e)[:40])
     # usagestats
     us = os.path.join(fs, "data/system/usagestats/0/daily")
     if os.path.isdir(us):

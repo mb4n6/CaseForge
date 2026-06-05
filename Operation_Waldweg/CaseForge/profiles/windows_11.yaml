@@ -11,5 +11,7 @@ key_facts:
 generators: [win.hives, win.files, win.browser, win.extra, win.lnk, win.evtx]
 notes: "Win10-Profil: ShimCache-Format abweichend; eigenes Profil anlegen."
 artifact_overrides:
+  mft: true                  # $MFT (FILE-Records) erzeugen
+  srum: true                 # SRUDB.dat (ESE-Header-Stub) erzeugen
   pca: true                  # PCA-Ausfuehrungsspuren ab Windows 11 22H2
   recall: false

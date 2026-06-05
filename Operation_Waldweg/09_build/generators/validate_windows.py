@@ -18,9 +18,10 @@ P_SAM = os.path.join(WFS, 'C/Windows/System32/config/SAM')
 P_SYSTEM = os.path.join(WFS, 'C/Windows/System32/config/SYSTEM')
 P_SOFTWARE = os.path.join(WFS, 'C/Windows/System32/config/SOFTWARE')
 P_AMCACHE = os.path.join(WFS, 'C/Windows/AppCompat/Programs/Amcache.hve')
-SID = "S-1-5-21-1004336348-1177238915-682003330-1000"
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from gate_common import Gate, ok_exit
+import caseforge_rng as cfr
+SID = cfr.win_sid()                    # seed-gesteuert, synchron zu den Generatoren
 
 G = Gate()
 ok = G.ok
@@ -74,7 +75,7 @@ def gate_system_hives():
         cn = h.get_key(r"\ControlSet001\Control\ComputerName\ComputerName")
         name = [v.value for v in cn.iter_values() if v.name == "ComputerName"][0]
         ok("ComputerName lesbar", bool(name), repr(name))
-        ok("ComputerName == DESKTOP-REUTER", name == "DESKTOP-REUTER", repr(name), ref=True)
+        ok("ComputerName == DESKTOP-REUTER", name == cfr.win_computer_name(), repr(name), ref=True)
         tz = h.get_key(r"\ControlSet001\Control\TimeZoneInformation")
         tzk = [v.value for v in tz.iter_values() if v.name == "TimeZoneKeyName"][0]
         ok("TimeZoneKeyName lesbar", "Europe" in tzk, repr(tzk))

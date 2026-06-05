@@ -184,6 +184,23 @@ Restrict `artifact_classes` per device in the spec (e.g. only `registry`, only `
 only `browser`) — registry selection and gates then produce a slim mini-case for a targeted
 learning objective.
 
+### 5.7 Individuality & case size (seed + scope)
+
+Every case carries a `meta.generator_seed`. The seed drives **randomised, solution-neutral
+identifiers and noise** so that two cases never share the same skeleton: app-container UUIDs,
+Windows SID, computer name, IMEI/serial/BSSID, and the selection/order/amount of everyday
+noise all vary per seed. Same seed ⇒ byte-stable reproduction; if the spec omits a seed,
+CaseForge assigns a random one and stores it. The reference case keeps its fixed seed
+`20260125` and therefore its exact known values.
+
+Case size is controlled by `meta.scope: S | M | L | XL` (scales noise volume), with optional
+per-class overrides `meta.volume: {documents: 25, browser_noise: 40}` and a global
+`meta.noise_density`. CLI shortcuts:
+
+```bash
+python3 forge.py build --case MyCase --spec spec.json --seed 4242 --scope XL
+```
+
 ---
 
 ## 6. Language selection (multilingual)

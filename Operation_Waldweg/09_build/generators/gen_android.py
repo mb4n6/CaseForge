@@ -16,13 +16,15 @@
 import os
 import sys
 import sqlite3
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 BUILD = os.path.dirname(HERE)
 ROOT = os.path.dirname(BUILD)
 sys.path.insert(0, HERE)
 import case_master_io as cmio
+import caseforge_rng as cfr
+import noise_pools as npool
 AFS = os.environ.get('WALDWEG_AND_FS', os.path.join(ROOT, '02_android_full_fs'))
 
 P_MMSSMS = os.path.join(AFS, 'data/data/com.android.providers.telephony/databases/mmssms.db')
@@ -337,8 +339,22 @@ FALLBACK_CHROME_URLS = [
 
 def build_chrome():
     mt = cmio.browser_history("android")
-    CHROME_URLS = mt if mt else FALLBACK_CHROME_URLS
-    print(f"  Chrome-Inhaltsquelle: {'Master' if mt else 'Referenz-Fallback'} ({len(CHROME_URLS)} URLs)")
+    if mt:
+        CHROME_URLS = mt; src = "Master"
+    elif cfr.is_reference():
+        CHROME_URLS = FALLBACK_CHROME_URLS; src = "Referenz-Fallback"
+    else:
+        # seed-gezogener, scope-skalierter Noise aus dem lokalisierten Pool
+        lang = cmio.language_short()
+        n = cmio.noise_count(8, key="browser_noise")
+        picked = cfr.sample(npool.web(lang), n, salt="chrome_noise")
+        base_iso = "2026-01-20T12:00:00+01:00"
+        CHROME_URLS = []
+        for i, (url, title) in enumerate(picked):
+            dt = datetime.fromisoformat(base_iso) + timedelta(hours=i, minutes=cfr.jitter_seconds(50, f"chrome{i}"))
+            CHROME_URLS.append((dt.isoformat(), url, title))
+        src = f"Pool/seed (scope, {len(CHROME_URLS)})"
+    print(f"  Chrome-Inhaltsquelle: {src} ({len(CHROME_URLS)} URLs)")
     reset(P_CHROME)
     con = sqlite3.connect(P_CHROME)
     con.executescript("""

@@ -20,9 +20,13 @@ from datetime import datetime, timezone
 HERE = os.path.dirname(os.path.abspath(__file__))
 BUILD = os.path.dirname(HERE)
 ROOT = os.path.dirname(BUILD)
+import sys
+sys.path.insert(0, HERE)
+import caseforge_rng as cfr
 WIN = os.environ.get("WALDWEG_WIN_FS", os.path.join(ROOT, "03_windows_triage"))
 C = os.path.join(WIN, "C")
-SID = "S-1-5-21-1004336348-1177238915-682003330-1000"
+SID = cfr.win_sid()
+COMPUTER = cfr.win_computer_name()
 manifest = []
 
 
@@ -100,7 +104,7 @@ def scheduled_tasks():
                                 cmd=r"C:\Program Files (x86)\Microsoft\EdgeUpdate\MicrosoftEdgeUpdate.exe"))
     reg(os.path.join(base, "Microsoft/EdgeUpdate/MicrosoftEdgeUpdateTaskMachineCore"), "noise", "Edge-Update-Task")
     with open(os.path.join(base, "BackupFinanzen"), "w", encoding="utf-16") as f:
-        f.write(TASK_XML.format(created="2026-01-20T21:00:00", author="DESKTOP-REUTER\\Daniel",
+        f.write(TASK_XML.format(created="2026-01-20T21:00:00", author=f"{COMPUTER}\\Daniel",
                                 desc="Tägliche Sicherung Finanzordner auf USB.", start="2026-01-20T22:00:00",
                                 cmd=r"C:\Windows\System32\robocopy.exe C:\Users\Daniel\Documents\Finanzen E:\Backup /MIR"))
     reg(os.path.join(base, "BackupFinanzen"), "context",

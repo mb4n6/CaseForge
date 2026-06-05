@@ -47,7 +47,20 @@ def _env(root, case_master=None):
     e["WALDWEG_OW"] = root  # verify_solution.py zielt auf den aktiven Root
     if case_master and os.path.exists(case_master):
         e["WALDWEG_CASE_MASTER"] = case_master
+        seed = _master_value(case_master, "generator_seed")
+        if seed is not None:
+            e["WALDWEG_GENERATOR_SEED"] = str(seed)
     return e
+
+
+def _master_value(master, key):
+    """Liest meta.<key> aus einem case_master.yaml (oder None)."""
+    try:
+        import yaml
+        cm = yaml.safe_load(open(master, encoding="utf-8")) if os.path.exists(master) else {}
+        return (cm.get("meta", {}) or {}).get(key)
+    except Exception:
+        return None
 
 
 def _run(module, env):
@@ -111,6 +124,22 @@ def _modules_for(spec, platforms):
     return out
 
 
+def _patch_master_meta(master, seed=None, scope=None):
+    """Schreibt --seed/--scope in meta des Fall-Masters (idempotent)."""
+    try:
+        import yaml
+        cm = yaml.safe_load(open(master, encoding="utf-8")) or {}
+        meta = cm.setdefault("meta", {})
+        if seed is not None:
+            meta["generator_seed"] = seed
+        if scope is not None:
+            meta["scope"] = scope
+        with open(master, "w", encoding="utf-8") as f:
+            yaml.safe_dump(cm, f, allow_unicode=True, sort_keys=False, width=100)
+    except Exception as e:
+        print(f"[WARN] meta-Patch fehlgeschlagen: {e}")
+
+
 def cmd_build(args):
     root = case_dir(args)
     spec = json.load(open(args.spec, encoding="utf-8")) if args.spec else None
@@ -123,6 +152,9 @@ def cmd_build(args):
         if rc != 0:
             print("FEHLER: spec_to_master fehlgeschlagen"); sys.exit(1)
     master = master if os.path.exists(master) else REF_MASTER
+    # CLI-Overrides (--seed/--scope) in den Fall-Master schreiben (nur Fall-Master, nicht REF)
+    if (getattr(args, "seed", None) or getattr(args, "scope", None)) and master != REF_MASTER:
+        _patch_master_meta(master, seed=getattr(args, "seed", None), scope=getattr(args, "scope", None))
     mods = _modules_for(spec, args.platform)
     env = _env(root, master)
     print(f"Build -> {root}\ncase_master: {master}\nGeneratoren ({len(mods)}): {', '.join(m[:-3] for m in mods)}")
@@ -211,6 +243,8 @@ def main():
         q.add_argument("--case"); q.add_argument("--root", default=ROOT)
         if name == "build":
             q.add_argument("--spec"); q.add_argument("--platform", nargs="*")
+            q.add_argument("--seed", type=int, help="generator_seed erzwingen (Reproduzierbarkeit/Variation)")
+            q.add_argument("--scope", choices=["S", "M", "L", "XL"], help="Fallumfang (Noise-Menge)")
         if name == "validate":
             q.add_argument("--mode", choices=["all", "format", "reference"],
                            help="Gate-Modus erzwingen (Default: auto)")

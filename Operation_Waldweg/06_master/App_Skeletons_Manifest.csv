@@ -1,23 +1,23 @@
 geraet,sandbox_pfad,bundle/paket,relevanz,beschreibung
-Samsung,../../../../../tmp/cf_ref3/02_android_full_fs/data/data/ch.threema.app,ch.threema.app,context,Threema (verschluesselt)
-Samsung,../../../../../tmp/cf_ref3/02_android_full_fs/data/data/com.discord,com.discord,noise,Discord
-Samsung,../../../../../tmp/cf_ref3/02_android_full_fs/data/data/com.ebay.kleinanzeigen,com.ebay.kleinanzeigen,context,Kleinanzeigen – Suche 'Auto schnell verkaufen' (Geldnot)
-Samsung,../../../../../tmp/cf_ref3/02_android_full_fs/data/data/com.google.android.gm,com.google.android.gm,noise,Gmail
-Samsung,../../../../../tmp/cf_ref3/02_android_full_fs/data/data/com.microsoft.office.outlook,com.microsoft.office.outlook,noise,Outlook – Mail-Skelett
-Samsung,../../../../../tmp/cf_ref3/02_android_full_fs/data/data/com.paypal.android.p2pmobile,com.paypal.android.p2pmobile,noise,PayPal
-Samsung,../../../../../tmp/cf_ref3/02_android_full_fs/data/data/com.starfinanz.smob.android.sfinanzstatus,com.starfinanz.smob.android.sfinanzstatus,context,"Sparkasse-App – Konto im Minus, Teilzahlung an Klenk (Schuldenmotiv)"
-Samsung,../../../../../tmp/cf_ref3/02_android_full_fs/data/data/de.foduufinanz.finanzguru,de.foduufinanz.finanzguru,context,Finanzguru – Budget 'Schulden/Kredite' (Geldnot)
-Samsung,../../../../../tmp/cf_ref3/02_android_full_fs/data/data/de.komoot.android,de.komoot.android,noise,Komoot
-Samsung,../../../../../tmp/cf_ref3/02_android_full_fs/data/data/org.telegram.messenger,org.telegram.messenger,noise,Telegram – cache4-Skelett
-Samsung,../../../../../tmp/cf_ref3/02_android_full_fs/data/data/org.thoughtcrime.securesms,org.thoughtcrime.securesms,context,Signal (verschluesselt) – verdeckte Kommunikation Daniel
-iPhone,../../../../../tmp/cf_ref3/01_ios_full_fs/private/var/mobile/Containers/Data/Application/08B6841D-EE08-189D-80DB-2ABB9716E109,de.bahn.dbnavigator,context,DB Navigator – Reisesuche Stuttgart->Nachbarstadt 25.01 07:09 (passt zu Safari/BIOME)
-iPhone,../../../../../tmp/cf_ref3/01_ios_full_fs/private/var/mobile/Containers/Data/Application/1B10BB69-4518-05F6-218E-E17072034AAE,com.netflix.Netflix,noise,Netflix
-iPhone,../../../../../tmp/cf_ref3/01_ios_full_fs/private/var/mobile/Containers/Data/Application/22401080-6397-A452-E7BE-BEE985413123,de.is24.iphone,context,ImmobilienScout24 – gespeicherte 2-Zimmer-Suche (passt zu Trennungsabsicht)
-iPhone,../../../../../tmp/cf_ref3/01_ios_full_fs/private/var/mobile/Containers/Data/Application/4335B283-E3F4-C601-4E3D-2D9AA3D89232,com.google.Gmail,noise,Gmail
-iPhone,../../../../../tmp/cf_ref3/01_ios_full_fs/private/var/mobile/Containers/Data/Application/50A4796D-E7EB-2E4E-196D-F1C83E7C0C83,com.spotify.client,noise,Spotify
-iPhone,../../../../../tmp/cf_ref3/01_ios_full_fs/private/var/mobile/Containers/Data/Application/7DB56A15-DFB8-66B4-6B2E-CAC57E1EB6BF,com.apple.mobilenotes,context,Notizen – persoenliche Notiz (Belastungskontext)
-iPhone,../../../../../tmp/cf_ref3/01_ios_full_fs/private/var/mobile/Containers/Data/Application/85EDAA5F-F690-FC2B-ED9B-BAF7BAAC2C08,com.burbn.instagram,noise,Instagram – Direct-Skelett
-iPhone,../../../../../tmp/cf_ref3/01_ios_full_fs/private/var/mobile/Containers/Data/Application/86C9827A-BAD4-FCB2-2A9B-01845F4F44CB,org.whispersystems.signal,context,"Signal (verschluesselt) – verdeckte Kommunikation, Inhalt nicht im Klartext"
-iPhone,../../../../../tmp/cf_ref3/01_ios_full_fs/private/var/mobile/Containers/Data/Application/A64071B0-98D0-80DB-6637-1B4EA603A114,de.komoot.iphone,noise,Komoot
-iPhone,../../../../../tmp/cf_ref3/01_ios_full_fs/private/var/mobile/Containers/Data/Application/C06EA0EA-6094-E082-F0D9-11DDEAAFE83A,ch.threema.iapp.ThreemaApp,context,Threema (verschluesselt) – verdeckte Kommunikation
-iPhone,../../../../../tmp/cf_ref3/01_ios_full_fs/private/var/mobile/Containers/Data/Application/E14986B0-51EC-4681-9ACF-19031A3B6F58,ph.telegra.Telegraph,noise,Telegram – Postbox-Skelett
+Samsung,CaseForge/cases/VarTest/02_android_full_fs/data/data/ch.threema.app,ch.threema.app,context,Threema (verschluesselt)
+Samsung,CaseForge/cases/VarTest/02_android_full_fs/data/data/com.discord,com.discord,noise,Discord
+Samsung,CaseForge/cases/VarTest/02_android_full_fs/data/data/com.ebay.kleinanzeigen,com.ebay.kleinanzeigen,context,Kleinanzeigen – Suche 'Auto schnell verkaufen' (Geldnot)
+Samsung,CaseForge/cases/VarTest/02_android_full_fs/data/data/com.google.android.gm,com.google.android.gm,noise,Gmail
+Samsung,CaseForge/cases/VarTest/02_android_full_fs/data/data/com.microsoft.office.outlook,com.microsoft.office.outlook,noise,Outlook – Mail-Skelett
+Samsung,CaseForge/cases/VarTest/02_android_full_fs/data/data/com.paypal.android.p2pmobile,com.paypal.android.p2pmobile,noise,PayPal
+Samsung,CaseForge/cases/VarTest/02_android_full_fs/data/data/com.starfinanz.smob.android.sfinanzstatus,com.starfinanz.smob.android.sfinanzstatus,context,"Sparkasse-App – Konto im Minus, Teilzahlung an Klenk (Schuldenmotiv)"
+Samsung,CaseForge/cases/VarTest/02_android_full_fs/data/data/de.foduufinanz.finanzguru,de.foduufinanz.finanzguru,context,Finanzguru – Budget 'Schulden/Kredite' (Geldnot)
+Samsung,CaseForge/cases/VarTest/02_android_full_fs/data/data/de.komoot.android,de.komoot.android,noise,Komoot
+Samsung,CaseForge/cases/VarTest/02_android_full_fs/data/data/org.telegram.messenger,org.telegram.messenger,noise,Telegram – cache4-Skelett
+Samsung,CaseForge/cases/VarTest/02_android_full_fs/data/data/org.thoughtcrime.securesms,org.thoughtcrime.securesms,context,Signal (verschluesselt) – verdeckte Kommunikation Daniel
+iPhone,CaseForge/cases/VarTest/01_ios_full_fs/private/var/mobile/Containers/Data/Application/2931F2FC-82A5-1603-A019-2BB5178FC397,com.google.Gmail,noise,Gmail
+iPhone,CaseForge/cases/VarTest/01_ios_full_fs/private/var/mobile/Containers/Data/Application/2D39EF22-CB9C-D543-B7D4-8308245297C7,com.spotify.client,noise,Spotify
+iPhone,CaseForge/cases/VarTest/01_ios_full_fs/private/var/mobile/Containers/Data/Application/406F7C69-00B6-DB4E-0733-D757FE8413E2,com.apple.mobilenotes,context,Notizen – persoenliche Notiz (Belastungskontext)
+iPhone,CaseForge/cases/VarTest/01_ios_full_fs/private/var/mobile/Containers/Data/Application/450738DA-2654-3823-3145-B1358670B190,ch.threema.iapp.ThreemaApp,context,Threema (verschluesselt) – verdeckte Kommunikation
+iPhone,CaseForge/cases/VarTest/01_ios_full_fs/private/var/mobile/Containers/Data/Application/602FDC42-9A1A-F9FC-5C1A-EB291AB67599,com.netflix.Netflix,noise,Netflix
+iPhone,CaseForge/cases/VarTest/01_ios_full_fs/private/var/mobile/Containers/Data/Application/83773580-1AC6-2246-3D0F-6FE0DEBCD061,de.komoot.iphone,noise,Komoot
+iPhone,CaseForge/cases/VarTest/01_ios_full_fs/private/var/mobile/Containers/Data/Application/86A69A42-440D-1E68-3329-63F706ACEE5C,ph.telegra.Telegraph,noise,Telegram – Postbox-Skelett
+iPhone,CaseForge/cases/VarTest/01_ios_full_fs/private/var/mobile/Containers/Data/Application/8BF13D4C-2BD5-F12B-F053-35F2CBD04AD3,de.bahn.dbnavigator,context,DB Navigator – Reisesuche Stuttgart->Nachbarstadt 25.01 07:09 (passt zu Safari/BIOME)
+iPhone,CaseForge/cases/VarTest/01_ios_full_fs/private/var/mobile/Containers/Data/Application/B6FB2101-8489-960D-B91C-B04AFA34D06A,org.whispersystems.signal,context,"Signal (verschluesselt) – verdeckte Kommunikation, Inhalt nicht im Klartext"
+iPhone,CaseForge/cases/VarTest/01_ios_full_fs/private/var/mobile/Containers/Data/Application/D10D548A-1B33-7567-2F8A-A690DD177B12,com.burbn.instagram,noise,Instagram – Direct-Skelett
+iPhone,CaseForge/cases/VarTest/01_ios_full_fs/private/var/mobile/Containers/Data/Application/F936CF18-E294-CC26-118A-CFF54DD8EC5F,de.is24.iphone,context,ImmobilienScout24 – gespeicherte 2-Zimmer-Suche (passt zu Trennungsabsicht)

@@ -1,12 +1,12 @@
 pfad,relevanz,beschreibung
-../../../../../tmp/cf_ref3/03_windows_triage/C/$Recycle.Bin/S-1-5-21-1004336348-1177238915-682003330-1000/$IA1B2C3.xlsx,context,Papierkorb: geloeschte 'Schuldenaufstellung_Jan.xlsx' (Loeschzeit 25.01 09:10 CET)
-../../../../../tmp/cf_ref3/03_windows_triage/C/$Recycle.Bin/S-1-5-21-1004336348-1177238915-682003330-1000/$RA1B2C3.xlsx,context,Papierkorb: Inhalt der geloeschten Datei
-../../../../../tmp/cf_ref3/03_windows_triage/C/Users/Daniel/Downloads/Bedienungsanleitung_Router.pdf.Zone.Identifier,context,Zone.Identifier (ZoneId=3=Internet) -> Herkunftsnachweis Download
-../../../../../tmp/cf_ref3/03_windows_triage/C/Users/Daniel/Downloads/kontoauszug_export.csv.Zone.Identifier,context,Zone.Identifier (ZoneId=3=Internet) -> Herkunftsnachweis Download
-../../../../../tmp/cf_ref3/03_windows_triage/C/Windows/INF/setupapi.dev.log,context,USB-Erstinstallation SanDisk Cruzer 24.01 23:50 (deckt sich mit USBSTOR/MountedDevices)
-../../../../../tmp/cf_ref3/03_windows_triage/C/Windows/Prefetch/EXCEL.EXE-A1B2C3D4.pf,noise,Prefetch-Platzhalter (Dateiname=Ausfuehrungshinweis; kein valides SCCA)
-../../../../../tmp/cf_ref3/03_windows_triage/C/Windows/Prefetch/MSEDGE.EXE-1B2D3C4E.pf,noise,Prefetch-Platzhalter (Dateiname=Ausfuehrungshinweis; kein valides SCCA)
-../../../../../tmp/cf_ref3/03_windows_triage/C/Windows/Prefetch/ROBOCOPY.EXE-5A6B7C8D.pf,noise,Prefetch-Platzhalter (Dateiname=Ausfuehrungshinweis; kein valides SCCA)
-../../../../../tmp/cf_ref3/03_windows_triage/C/Windows/Prefetch/RUFUS.EXE-9F8E7D6C.pf,noise,Prefetch-Platzhalter (Dateiname=Ausfuehrungshinweis; kein valides SCCA)
-../../../../../tmp/cf_ref3/03_windows_triage/C/Windows/System32/Tasks/BackupFinanzen,context,Geplanter Task 'BackupFinanzen' -> Sicherung Finanzordner auf USB (E:) — passt zu USB-Nutzung
-../../../../../tmp/cf_ref3/03_windows_triage/C/Windows/System32/Tasks/Microsoft/EdgeUpdate/MicrosoftEdgeUpdateTaskMachineCore,noise,Edge-Update-Task
+CaseForge/cases/VarTest/03_windows_triage/C/$Recycle.Bin/S-1-5-21-2401079982-2258695597-3257838945-1001/$IA1B2C3.xlsx,context,Papierkorb: geloeschte 'Schuldenaufstellung_Jan.xlsx' (Loeschzeit 25.01 09:10 CET)
+CaseForge/cases/VarTest/03_windows_triage/C/$Recycle.Bin/S-1-5-21-2401079982-2258695597-3257838945-1001/$RA1B2C3.xlsx,context,Papierkorb: Inhalt der geloeschten Datei
+CaseForge/cases/VarTest/03_windows_triage/C/Users/Daniel/Downloads/Bedienungsanleitung_Router.pdf.Zone.Identifier,context,Zone.Identifier (ZoneId=3=Internet) -> Herkunftsnachweis Download
+CaseForge/cases/VarTest/03_windows_triage/C/Users/Daniel/Downloads/kontoauszug_export.csv.Zone.Identifier,context,Zone.Identifier (ZoneId=3=Internet) -> Herkunftsnachweis Download
+CaseForge/cases/VarTest/03_windows_triage/C/Windows/INF/setupapi.dev.log,context,USB-Erstinstallation SanDisk Cruzer 24.01 23:50 (deckt sich mit USBSTOR/MountedDevices)
+CaseForge/cases/VarTest/03_windows_triage/C/Windows/Prefetch/EXCEL.EXE-A1B2C3D4.pf,noise,Prefetch-Platzhalter (Dateiname=Ausfuehrungshinweis; kein valides SCCA)
+CaseForge/cases/VarTest/03_windows_triage/C/Windows/Prefetch/MSEDGE.EXE-1B2D3C4E.pf,noise,Prefetch-Platzhalter (Dateiname=Ausfuehrungshinweis; kein valides SCCA)
+CaseForge/cases/VarTest/03_windows_triage/C/Windows/Prefetch/ROBOCOPY.EXE-5A6B7C8D.pf,noise,Prefetch-Platzhalter (Dateiname=Ausfuehrungshinweis; kein valides SCCA)
+CaseForge/cases/VarTest/03_windows_triage/C/Windows/Prefetch/RUFUS.EXE-9F8E7D6C.pf,noise,Prefetch-Platzhalter (Dateiname=Ausfuehrungshinweis; kein valides SCCA)
+CaseForge/cases/VarTest/03_windows_triage/C/Windows/System32/Tasks/BackupFinanzen,context,Geplanter Task 'BackupFinanzen' -> Sicherung Finanzordner auf USB (E:) — passt zu USB-Nutzung
+CaseForge/cases/VarTest/03_windows_triage/C/Windows/System32/Tasks/Microsoft/EdgeUpdate/MicrosoftEdgeUpdateTaskMachineCore,noise,Edge-Update-Task

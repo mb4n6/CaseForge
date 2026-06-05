@@ -125,9 +125,9 @@ def gate_whatsapp():
 
 def gate_extra():
     import hashlib, plistlib
+    import caseforge_rng as cfr
     def gid(b):
-        h = hashlib.md5((b + "20260125").encode()).hexdigest().upper()
-        return f"{h[0:8]}-{h[8:12]}-{h[12:16]}-{h[16:20]}-{h[20:32]}"
+        return cfr.app_guid(b)
     # Safari History.db
     sh = os.path.join(IOS_FS, "private/var/mobile/Containers/Data/Application",
                       gid("com.apple.mobilesafari"), "Library/Safari/History.db")

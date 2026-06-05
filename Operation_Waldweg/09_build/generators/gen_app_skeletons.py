@@ -32,13 +32,14 @@ import case_master_io as cmio
 IOS = os.environ.get("WALDWEG_IOS_FS", os.path.join(ROOT, "01_ios_full_fs"))
 AND = os.environ.get("WALDWEG_AND_FS", os.path.join(ROOT, "02_android_full_fs"))
 TMP = "/tmp/app_db_build"
+import caseforge_rng as cfr
 SEED = "20260125"
 manifest = []
 
 
 def guid(bundle):
-    h = hashlib.md5((bundle + SEED).encode()).hexdigest().upper()
-    return f"{h[0:8]}-{h[8:12]}-{h[12:16]}-{h[16:20]}-{h[20:32]}"
+    # seed-gesteuert: Referenz-Seed -> identisch zu frueher, sonst variiert
+    return cfr.app_guid(bundle)
 
 
 def ensure(d):

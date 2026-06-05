@@ -10,12 +10,13 @@ import os
 import sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import evtx_writer as ew
+import caseforge_rng as cfr
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(os.path.dirname(HERE))
 WIN = os.environ.get("WALDWEG_WIN_FS", os.path.join(ROOT, "03_windows_triage"))
 LOGS = os.path.join(WIN, "C/Windows/System32/winevt/Logs")
-COMP = "DESKTOP-REUTER"
+COMP = cfr.win_computer_name()
 
 
 def build_security():

@@ -24,6 +24,8 @@ ROOT = os.path.dirname(BUILD)
 import sys
 sys.path.insert(0, HERE)
 import case_master_io as cmio
+import caseforge_rng as cfr
+import noise_pools as npool
 
 # Fall-Root aus Env ableiten (CaseForge), sonst Referenzfall
 IOS = os.environ.get('WALDWEG_IOS_FS', os.path.join(ROOT, '01_ios_full_fs'))
@@ -237,9 +239,26 @@ def main():
     if docs:
         print(f"Dokumente-Inhaltsquelle: Master ({len(docs)} Dokumente)")
         build_from_master(docs)
-    else:
+    elif cfr.is_reference():
         print("Dokumente-Inhaltsquelle: Referenz-Fallback")
         build_ios(); build_android(); build_windows()
+    else:
+        # seed-gezogene, scope-skalierte Noise-Dokumente aus dem Pool
+        lang = cmio.language_short()
+        n = cmio.noise_count(10, key="documents")
+        pool = npool.docs(lang)
+        picked = cfr.sample(pool, n, salt="docnoise")
+        devs = ["ios", "android", "windows"]
+        gen = []
+        for i, (name, kind, desc) in enumerate(picked):
+            dev = devs[i % len(devs)]
+            gen.append({"device": dev, "area": "downloads" if i % 2 else "documents",
+                        "name": f"{i:02d}_{name}", "kind": kind,
+                        "relevance": "noise", "desc": desc,
+                        "lines": [desc], "text": desc,
+                        "header": ["pos", "wert"], "rows": [["a", "1"], ["b", "2"]]})
+        print(f"Dokumente-Inhaltsquelle: Pool/seed (scope, {len(gen)} Dokumente)")
+        build_from_master(gen)
     out = write_manifest()
     n = len(manifest)
     rel = sum(1 for m in manifest if m[2] == "context")

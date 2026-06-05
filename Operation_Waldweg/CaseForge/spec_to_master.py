@@ -95,9 +95,20 @@ def build_master(spec, base):
         meta["deliktart"] = spec["deliktart"]
     if spec.get("lernziel"):
         meta["lernziel"] = spec["lernziel"]
+    # Seed: Spec-Wert hat Vorrang; sonst NEUEN Zufalls-Seed vergeben (nicht den
+    # Referenz-Seed erben!), damit jeder Fall eigene Identifikatoren/Mengen erhaelt.
+    # Reproduzierbar, da der Seed im Master gespeichert wird.
+    if "generator_seed" not in sm:
+        import random as _r
+        meta["generator_seed"] = _r.randint(10_000_000, 99_999_999)
     meta["disclaimer"] = "synthetic_training_data_only"  # Leitplanke: immer erzwingen
     meta["derived_from"] = "CaseForge spec_to_master.py"
     cm["meta"] = meta
+
+    # Umfang/Noise-Steuerung durchreichen (Schritt 2)
+    for k in ("scope", "volume", "noise_density"):
+        if k in sm:
+            meta[k] = sm[k]
 
     # ---- devices (gemappt) ----
     if spec.get("devices"):

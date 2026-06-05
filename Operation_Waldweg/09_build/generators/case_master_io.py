@@ -51,6 +51,45 @@ def load_master():
 
 
 # ---------------------------------------------------------------------
+# Umfang / Noise-Steuerung (Schritt 2)
+# ---------------------------------------------------------------------
+SCOPE_FACTOR = {"s": 0.4, "m": 1.0, "l": 2.0, "xl": 4.0}
+
+
+def language_short(cm=None):
+    cm = cm or load_master()
+    loc = str((cm.get("meta", {}) or {}).get("language_primary", "de-DE"))
+    return loc[:2].lower()
+
+
+def scope(cm=None):
+    cm = cm or load_master()
+    return str((cm.get("meta", {}) or {}).get("scope", "M")).lower()
+
+
+def noise_density(cm=None):
+    cm = cm or load_master()
+    try:
+        return float((cm.get("meta", {}) or {}).get("noise_density", 1.0))
+    except Exception:
+        return 1.0
+
+
+def noise_count(base, key=None, cm=None):
+    """Skaliert eine Basis-Noise-Menge mit scope-Faktor * noise_density;
+    optionaler harter Override via meta.volume[key]. Mind. 0."""
+    cm = cm or load_master()
+    vol = (cm.get("meta", {}) or {}).get("volume", {}) or {}
+    if key and key in vol:
+        try:
+            return max(0, int(vol[key]))
+        except Exception:
+            pass
+    factor = SCOPE_FACTOR.get(scope(cm), 1.0) * noise_density(cm)
+    return max(0, int(round(base * factor)))
+
+
+# ---------------------------------------------------------------------
 # Personen / Geraete
 # ---------------------------------------------------------------------
 def persons_by_id(cm=None):

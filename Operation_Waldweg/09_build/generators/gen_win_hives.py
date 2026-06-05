@@ -25,12 +25,14 @@ BUILD = os.path.dirname(HERE)
 ROOT = os.path.dirname(BUILD)
 sys.path.insert(0, HERE)
 import reg_hive
+import caseforge_rng as cfr
 
 WIN = os.environ.get("WALDWEG_WIN_FS", os.path.join(ROOT, "03_windows_triage"))
 CONFIG = os.path.join(WIN, "C/Windows/System32/config")
 AMCACHE = os.path.join(WIN, "C/Windows/AppCompat/Programs/Amcache.hve")
 NTUSER = os.path.join(WIN, "C/Users/Daniel/NTUSER.DAT")
-SID = "S-1-5-21-1004336348-1177238915-682003330-1000"
+SID = cfr.win_sid()                 # seed-gesteuert (Referenz-Seed -> Originalwert)
+COMPUTER = cfr.win_computer_name()
 
 
 def filetime(iso):
@@ -169,7 +171,7 @@ def system_tree():
         "DhcpServer": ("sz", "192.168.178.1"),
         "DhcpDefaultGateway": ("multi_sz", ["192.168.178.1"])}}}
     control = {
-        "ComputerName": {"subkeys": {"ComputerName": {"values": {"ComputerName": ("sz", "DESKTOP-REUTER")}}}},
+        "ComputerName": {"subkeys": {"ComputerName": {"values": {"ComputerName": ("sz", COMPUTER)}}}},
         "TimeZoneInformation": {"values": {
             "Bias": ("dword", (-60) & 0xFFFFFFFF), "ActiveTimeBias": ("dword", (-60) & 0xFFFFFFFF),
             "DaylightBias": ("dword", (-60) & 0xFFFFFFFF), "StandardBias": ("dword", 0),

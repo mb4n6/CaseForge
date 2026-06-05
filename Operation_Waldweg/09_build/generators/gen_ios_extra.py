@@ -39,9 +39,9 @@ def ux(iso):
     return int(datetime.fromisoformat(iso).timestamp())
 
 
+import caseforge_rng as cfr
 def guid(bundle):
-    h = hashlib.md5((bundle + "20260125").encode()).hexdigest().upper()
-    return f"{h[0:8]}-{h[8:12]}-{h[12:16]}-{h[16:20]}-{h[20:32]}"
+    return cfr.app_guid(bundle)
 
 
 def ensure(d):

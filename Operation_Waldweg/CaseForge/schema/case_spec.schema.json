@@ -11,9 +11,12 @@
       "properties": {
         "case_name": {"type": "string"},
         "version": {"type": "string"},
-        "generator_seed": {"type": "integer", "description": "Reproduzierbarkeit"},
+        "generator_seed": {"type": "integer", "description": "Reproduzierbarkeit; steuert randomisierte Identifikatoren/Mengen. Fehlt er, vergibt CaseForge automatisch einen Zufalls-Seed."},
         "timezone": {"type": "string"},
         "language_primary": {"type": "string", "default": "de-DE"},
+        "scope": {"enum": ["S", "M", "L", "XL"], "default": "M", "description": "Fallumfang: skaliert die Noise-Mengen (S klein .. XL sehr gross)."},
+        "volume": {"type": "object", "description": "Harte Mengen-Overrides je Noise-Klasse, z.B. {\"documents\": 25, \"browser_noise\": 40}.", "additionalProperties": {"type": "integer"}},
+        "noise_density": {"type": "number", "default": 1.0, "description": "Globaler Noise-Regler (0.0 wenig .. >1 viel)."},
         "focus_window": {"type": "object", "properties": {"start": {"type": "string"}, "end": {"type": "string"}}},
         "data_period": {"type": "object", "properties": {"start": {"type": "string"}, "end": {"type": "string"}}},
         "disclaimer": {"type": "string", "const": "synthetic_training_data_only"},

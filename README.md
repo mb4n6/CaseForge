@@ -1,263 +1,122 @@
-# Operation Waldweg — Synthetic Forensic Training Case & CaseForge Framework
+# CaseForge — Agent-Assisted, Tool-Validated Synthetic Forensic Cases
 
-**A fully synthetic, tool-validated multi-device case scenario for digital-forensics education**
-Baden-Württemberg State Police University (HfPolBW) · Author: Marc Brandt (Lecturer, Digital Forensics)
+**A deterministic framework that generates complete, schema-faithful digital-forensics training
+cases (iOS, Android, Windows, cloud, multimedia) and validates them against real open-source
+forensic tools.**
+Author: Marc Brandt — Baden-Württemberg State Police University (HfPolBW)
 
-> **FICTIONAL DATA ONLY.** All persons, addresses, phone numbers, accounts,
-> communication contents, media and events are entirely invented and exist solely for
-> training and research. Loosely *inspired* by real phenomena, with no connection to any
-> real person or case. Every generated case carries the marker `synthetic_training_data_only`.
+> 🇩🇪 Deutsche Fassung: [README.de.md](README.de.md) · 📄 Paper: [paper/](paper/)
 >
-> Deutsche Fassung: [README.de.md](README.de.md)
+> ⚠️ **Synthetic data only.** Everything CaseForge produces is fictional and carries the marker
+> `synthetic_training_data_only`. No real persons, addresses, numbers or accounts.
 
 ---
 
-## 1. What this is
+## Why CaseForge
 
-"Operation Waldweg" is a synthetic homicide case (ref. AZ 2026-KK-00892) whose digital
-exhibits — iPhone (iOS 17), Samsung (Android 14), Windows 11 triage, cloud, wearable and
-multimedia — are produced at **forensically correct paths** and in **schema-faithful native
-formats** (SQLite, plist, registry hives/regf, EVTX, BIOME/SEGB v2, LNK, $I, JSON/XML). The
-artifacts are cross-checked against **real open-source forensic tools** (iLEAPP, ALEAPP,
-regipy/RegRipper, python-evtx, LnkParse3, BIOME parser).
+Real seized exhibits cannot enter the classroom; public practice corpora are scarce, age fast,
+and rarely form a coherent cross-device crime scene. CaseForge solves this by treating a case
+as a **reproducible projection of a single source of truth**: from a short brief (offence,
+exhibits, OS versions, learning objective) an LLM **proposes** a case spec, a human **verifies**
+it, and deterministic generators **project** it into device artifacts in their **native formats**
+(SQLite, plist, registry hives/regf, EVTX, BIOME/SEGB, LNK, $I, **$MFT**, ABX …) at forensically
+correct paths — then **real tools** (iLEAPP, ALEAPP, regipy, python-evtx, LnkParse3, MFTECmd-style
+parsing) cross-check them as an acceptance gate.
 
-The project is also a **framework** — **CaseForge** — that, from a short brief (offence type,
-exhibits, OS versions, learning objective), proposes **new** synthetic cases with an LLM,
-generates them deterministically after human verification, and validates them against
-forensic tools.
+**Guiding principle:** *one truth, many projections* — one `case_master.yaml`, all device
+artifacts deterministically derived from it (guaranteed cross-device consistency).
 
-**Guiding principle:** *One truth, many projections* — a single `case_master.yaml` is the
-sole source of truth; all device artifacts are deterministically projected from it,
-guaranteeing cross-device consistency.
-
-**Multilingual:** the case language is selectable up front. The LLM writes the case content
-in the chosen language and the deterministic generators emit it verbatim (see §6).
+The repository ships **CaseForge** (the framework) plus **Operation Waldweg** as its first fully
+worked **example case** (a fictional homicide across three devices, with planted inconsistencies).
 
 ---
 
-## 2. Project layout
+## Repository layout
 
 ```
-Operation_Waldweg/
-├── 01_ios_full_fs/      iOS file-system tree (private/var/mobile/…)
-├── 02_android_full_fs/  Android file-system tree (data/data/…, data/system/…)
-├── 03_windows_triage/   Windows triage (registry hives, EVTX, $Recycle.Bin, LNK …)
-├── 04_cloud_exports/    Google Location History (JSON), iCloud sync (CSV)
-├── 05_police_records/   missing-person report, interview, autopsy, scene A/V
-├── 06_master/           case file, master timeline, solution key, catalogues, docs
-├── 07_multimedia/       image/audio/video (incl. a manipulated comparison variant)
-├── 08_multilingual/     foreign-language communication content (everyday contacts)
-├── 09_build/            generators + validation gates + case_master.yaml
-│   ├── generators/      ~33 deterministic artifact generators + gates
-│   └── case_master.yaml single source of truth (reference case)
-└── CaseForge/           framework layer (registry, profiles, schema, LLM, CLI)
+caseforge/                  the framework
+├── forge.py                CLI: propose · build · validate · run · report · catalog
+├── registry.py             metadata catalogue of all generators (+ cross-check tool)
+├── spec_to_master.py       adapter: case-spec → case_master.yaml
+├── llm.py · i18n.py        LLM proposal layer + language selection
+├── catalog.py · gate_common.py
+├── profiles/               OS profiles (ios_16/17/18/26, android_13/14/15, windows_10/11)
+├── prompts/ · schema/      LLM system prompt (ethics) + case-spec JSON schema
+└── generators/             ~45 deterministic generators, validators & format writers
+                            (regf, EVTX, BIOME, ABX, $MFT, …) + case_master_io / rng / pools
+
+paper/                      academic paper (EN + DE)
+docs/                       architecture, toolchain, variability analysis
+examples/
+└── operation_waldweg/      the example case
+    ├── case_master.yaml    single source of truth
+    ├── 01_ios_full_fs … 08_multilingual    built artifacts
+    └── 06_master/          case file, solution key, catalogue, report, manifests
 ```
 
 ---
 
-## 3. Requirements
-
-- Python 3.10+
-- `pip install pyyaml` (minimum); for the real tool gates additionally
-  `pip install regipy python-evtx LnkParse3` plus a local iLEAPP/ALEAPP.
-- Optional (speech synthesis for audio artifacts): [Piper](https://github.com/rhasspy/piper)
-  + voice models into `Operation_Waldweg/09_build/piper_voices/` (excluded from the repo due to size).
-
----
-
-## 4. Quick start — build & validate the reference case
+## Quick start
 
 ```bash
-cd Operation_Waldweg/CaseForge
+cd caseforge
+pip install pyyaml                       # minimum; for real gates: regipy python-evtx LnkParse3
 
-# Build the reference case (Operation Waldweg)
-python3 forge.py build  --root /path/to/build_out
-
-# Run the forensic gates (auto mode: reference -> full solution self-test)
-python3 forge.py validate --root /path/to/build_out
+# Build & validate the example case "Operation Waldweg"
+python3 forge.py build    --root ../examples/operation_waldweg
+python3 forge.py validate --root ../examples/operation_waldweg   # -> 12/12, scenario solvable
 ```
 
-Expected: all format gates green, `verify_solution` 12/12 (scenario solvable and consistent).
+## Create a new case (PROPOSE → REVIEW → BUILD → VALIDATE)
 
----
+```bash
+cd caseforge
+# 1) Let an LLM propose a spec (Claude Cowork or local ollama), in any supported language
+python3 forge.py propose --backend cowork --lang en --input brief.json
+#    -> review/adjust out/case_spec.json (human in the loop)
 
-## 5. Creating new cases (CaseForge workflow)
+# 2) Build deterministically + 3) cross-check with forensic tools
+python3 forge.py build    --case MyCase --spec out/case_spec.json --scope L --seed 4242
+python3 forge.py validate --case MyCase
+python3 forge.py report   --case MyCase    # per-case Markdown report (also auto-run in build)
+```
 
-The full arc is four stages: **PROPOSE → REVIEW → BUILD → VALIDATE**.
-
-### 5.1 Write the brief
-
-`brief.json` (example):
+`brief.json` example:
 
 ```json
-{
-  "deliktart": "Stalking/Harassment",
-  "lernziel": "encrypted messengers + location history",
-  "language": "en",
-  "devices": [
-    {"platform": "ios",     "os_profile": "ios_17",     "owner": "Victim"},
-    {"platform": "android", "os_profile": "android_14", "owner": "Suspect"}
-  ],
-  "assets_count": 2
-}
-```
-
-### 5.2 PROPOSE — let the LLM propose a case
-
-```bash
-# A) Claude Cowork (recommended): writes a prompt bundle
-python3 forge.py propose --backend cowork --lang en --input brief.json
-#    -> put out/proposal_prompt.md to Claude Cowork,
-#       save the answer as out/case_spec.json.
-
-# B) Local/offline via ollama (data never leaves the building)
-python3 forge.py propose --backend ollama --lang en --model qwen2.5:32b-instruct --input brief.json
-```
-
-The LLM produces **only the case proposal** (spec + narrative). Artifacts are then created
-**deterministically** — data quality does not depend on the model.
-
-> **ollama notes.** The call is **streamed** (no blocking single read). Use a valid, installed
-> tag — check with `ollama list` (e.g. `qwen2.5:7b`, `qwen2.5:14b-instruct`, `llama3.1:8b`;
-> `qwen3.5:9b` is **not** a real tag). On a cold start the model is loaded first, which can take
-> minutes; tune with `--timeout <seconds>` and point at a remote server with `--url`. If the
-> server is unreachable or the model is missing, `forge.py` now reports it immediately instead of
-> hanging.
-
-### 5.3 REVIEW — verify/adjust the spec (human in the loop)
-
-Open `out/case_spec.json` and verify/adjust persons, devices, timeline, messages, location
-tracks, planted inconsistencies and the solution key. The spec includes an **artifact overview
-per device/platform/OS** (see `forge.py catalog`).
-
-### 5.4 BUILD — generate the case deterministically
-
-```bash
-python3 forge.py build --root /path/to/NewCase --spec out/case_spec.json
-```
-
-`build --spec` automatically invokes the adapter `spec_to_master.py` (spec →
-`case_master.yaml`), selects the matching generators per platform and `artifact_classes` via
-the registry, and writes a per-case catalogue.
-
-**Content from the spec:** messaging (iMessage, Android WhatsApp 1:1 and groups), location
-tracks, browser history (Chrome/Edge/Safari), documents and app sandboxes are read from the
-master; where a structure is absent, a documented reference fallback applies. Optional spec
-conventions:
-
-```yaml
-persons:
-  - {id: victim, name: Emma C., phone: "+447700900111"}   # phone -> messaging handle
-chat_threads:
-  - id: victim_suspect
-    channel: imessage            # imessage | whatsapp | sms | *_group
-    participants: [victim, suspect]
-    messages:
-      - {t: "2026-03-01T09:00:00+00:00", from: suspect, text: "..."}
-      - {t: "2026-03-01T20:00:00+00:00", from: victim,  text: "...", deleted: true}  # WAL fragment only
-location_tracks:
-  suspect:
-    - {t: "2026-03-01T08:00:00+00:00", lat: 51.50, lon: -0.12, kind: cell, lac: 10, ci: 20}
-browser_history:
-  ip: [{t: "2026-03-01T07:00:00+00:00", url: "https://...", title: "..."}]
-documents:
-  - {device: ios, area: downloads, name: Contract.pdf, kind: pdf, lines: ["Investment agreement"]}
-app_packages:
-  ios:     ["com.coinbase.app"]
-  android: ["com.binance.dev"]
-```
-
-### 5.5 VALIDATE — cross-check with forensic tools
-
-```bash
-python3 forge.py validate --root /path/to/NewCase
-```
-
-The gates separate **format checks** (schema/join/parseability/timestamp — apply to every
-case) from **reference-solution checks** (Waldweg-specific content). The mode is chosen
-automatically (spec-derived case → `format`, reference → `all`) and can be forced with
-`--mode all|format|reference`. A freely specified case therefore validates green on its own.
-
-### 5.6 Focused sub-cases (drill a single problem)
-
-Restrict `artifact_classes` per device in the spec (e.g. only `registry`, only `eventlog`,
-only `browser`) — registry selection and gates then produce a slim mini-case for a targeted
-learning objective.
-
-### 5.7 Individuality & case size (seed + scope)
-
-Every case carries a `meta.generator_seed`. The seed drives **randomised, solution-neutral
-identifiers and noise** so that two cases never share the same skeleton: app-container UUIDs,
-Windows SID, computer name, IMEI/serial/BSSID, and the selection/order/amount of everyday
-noise all vary per seed. Same seed ⇒ byte-stable reproduction; if the spec omits a seed,
-CaseForge assigns a random one and stores it. The reference case keeps its fixed seed
-`20260125` and therefore its exact known values.
-
-Case size is controlled by `meta.scope: S | M | L | XL` (scales noise volume), with optional
-per-class overrides `meta.volume: {documents: 25, browser_noise: 40}` and a global
-`meta.noise_density`. CLI shortcuts:
-
-```bash
-python3 forge.py build --case MyCase --spec spec.json --seed 4242 --scope XL
+{ "deliktart": "Stalking/Harassment", "lernziel": "encrypted messengers + location",
+  "language": "en", "assets_count": 2,
+  "devices": [ {"platform":"ios","os_profile":"ios_17","owner":"Victim"},
+               {"platform":"android","os_profile":"android_14","owner":"Suspect"} ] }
 ```
 
 ---
 
-## 6. Language selection (multilingual)
+## Key capabilities
 
-Choose the language up front via `forge.py propose --lang <code>` (or the `language` field in
-the brief). Supported out of the box: `de`, `en`, `fr`, `es`, `tr` (BCP-47 locales such as
-`en-US` are also accepted). The selection drives:
+- **Deterministic & reproducible** — one `generator_seed` drives everything; same seed ⇒
+  bit-stable output. Spec-derived cases get a random seed so every case is individual
+  (app-container UUIDs, Windows SID, computer name, IMEI, **user name**, noise selection all vary).
+- **Case size & noise** — `scope: S|M|L|XL`, per-class `volume`, `noise_density`; localized noise
+  pools (de/en/fr/es/tr).
+- **Multilingual** — pick the language up front; the LLM writes content in it, generators emit it
+  verbatim.
+- **OS-version contrast profiles** — profiles *steer* generators via `artifact_overrides`:
+  Windows 10 vs 11 (**PCA**, **$MFT** incl. non-resident runs & system records, **SRUM** stub),
+  iOS 16 (**knowledgeC.db**) vs 17/18 (BIOME) vs 26 (**chat_properties**, **shutdown.log**),
+  Android 13/14/15 (**Scoped-Storage `external.db`**, **Privacy Dashboard** as full-faithful ABX).
+- **Two-tier validation** — format checks (apply to every case) vs reference-solution checks
+  (Waldweg only); auto-selected, forceable with `--mode`.
+- **Ethics guardrails** — hard-wired in the LLM system prompt; every case marked
+  `synthetic_training_data_only`.
 
-- the **output language of the LLM proposal** (a hard instruction is injected into the prompt),
-- `meta.language_primary` in the generated `case_master.yaml`,
-- framework strings (catalogue/console) via `CaseForge/i18n.py`.
-
-Because artifact content is projected verbatim from the spec, the generated case is in the
-chosen language. Parts not provided by the spec fall back to the reference content (German).
-Add new languages by extending `CaseForge/i18n.py`.
-
----
-
-## 7. New OS versions / extension
-
-New iOS/Android/Windows version → add a profile under `CaseForge/profiles/<name>.yaml`
-(document changed paths/formats/timestamps) and parametrise the affected generators or
-register a version-specific variant in `CaseForge/registry.py`. Spec, build, catalogue and
-gates stay unchanged.
-
-**Profiles now steer generators** via `artifact_overrides` (flags propagated to the device,
-read by the generators). Shipped profiles and their version-distinguishing artifacts:
-
-| Platform | Profiles | Contrast artifact (steered by flag) |
-|---|---|---|
-| Windows | `windows_10`, `windows_11` | **PCA** (`appcompat\pca\…`) — Win11 22H2+ only (`pca`); **`$MFT`** (parseable FILE records w/ fixups, $SI/$FN, incl. a deleted file; `mft`); **SRUM `SRUDB.dat`** (ESE-header stub; `srum`) |
-| iOS | `ios_16`, `ios_17`, `ios_18`, `ios_26` | **`knowledgeC.db`** (3-table ZOBJECT/ZSOURCE/ZSTRUCTUREDMETADATA) on ≤ iOS 16; **BIOME/SEGB** on ≥ 17 (`knowledgec`); `chat_properties`/`shutdown_log` on iOS 26 |
-| Android | `android_13`, `android_14`, `android_15` | **Scoped-Storage `external.db`** (media provider) — `module` vs `legacy` package path (`scoped_storage`, `media_provider`); **Privacy Dashboard** `/system/appops/discrete` — **full-faithful ABX** (AOSP `BinaryXmlSerializer`, round-trip verified) on `android_15` (`privacy_dashboard`) |
-
-The reference case carries no overrides, so these version artifacts stay off there (12/12
-unchanged); a spec that selects e.g. `os_profile: ios_16` gets `knowledgeC.db` automatically.
-
-Full architecture, model and validation documentation:
-[`Operation_Waldweg/CaseForge/README.md`](Operation_Waldweg/CaseForge/README.md).
+Full framework documentation: [caseforge/README.md](caseforge/README.md).
+Methodology paper: [paper/Paper_Agent_Assisted_Case_Generation_EN.md](paper/Paper_Agent_Assisted_Case_Generation_EN.md).
 
 ---
 
-## 8. Ethics & guardrails
-
-Synthetic data only; no real personal data; no reproducible offence/procurement instructions;
-for sensitive offences **never** incriminating media content, only artifact structures/metadata
-and neutral placeholders. These rules are hard-wired into the LLM system prompt
-(`CaseForge/prompts/case_proposal_system.md`).
-
----
-
-## 9. License & citation
+## License & citation
 
 Free for educational use with attribution.
 
 > Marc Brandt · Institute for Continuing Education · Baden-Württemberg State Police University · 2026
-
-Accompanying academic paper on the methodology (agent-assisted case generation):
-[`Operation_Waldweg/06_master/Paper_Agent_Assisted_Case_Generation_EN.md`](Operation_Waldweg/06_master/Paper_Agent_Assisted_Case_Generation_EN.md)
-· German: [`…/Paper_Agentengestuetzte_Fallgenerierung.md`](Operation_Waldweg/06_master/Paper_Agentengestuetzte_Fallgenerierung.md)

@@ -1,0 +1,45 @@
+"Zeit (lokal, CET)",Geraet,Quelle,Akteur,Beschreibung
+2025-12-19 17:20:00,Samsung (Daniel),WhatsApp,4915443456786,„Die Bremsen sind fertig. Rechnung kommt per Post.“
+2025-12-19 17:25:00,Samsung (Daniel),WhatsApp,Daniel,„Danke. Kann ich das in zwei Raten zahlen?“
+2026-01-12 19:02:00,Samsung (Daniel),WhatsApp,496170001111-1610000000,„Hat jemand Streusalz übrig? Gehweg ist spiegelglatt.“
+2026-01-12 19:10:00,Samsung (Daniel),WhatsApp,Daniel,„Kann dir morgen einen Sack vorbeibringen.“
+2026-01-14 07:30:00,Samsung (Daniel),WhatsApp,496170002222-1605000000,„Wochenziele im CRM bitte bis Freitag eintragen.“
+2026-01-14 07:45:00,Samsung (Daniel),WhatsApp,Daniel,„Mach ich. Bin heute Raum Stuttgart unterwegs.“
+2026-01-15 19:02:00,Samsung (Daniel),WhatsApp,4915443456786,"„Daniel, die erste Rate ist ueberfaellig.“"
+2026-01-15 19:40:00,Samsung (Daniel),WhatsApp,Daniel,"„Naechste Woche, versprochen.“"
+2026-01-19 08:40:00,Samsung (Daniel),WhatsApp,496170001111-1610000000,„Mülltonnen werden Mittwoch geleert.“
+2026-01-20 12:47:00,Samsung (Daniel),Chrome,Daniel,Web: https://www.thalia.de/buecher/
+2026-01-20 13:10:00,Samsung (Daniel),Chrome,Daniel,Web: https://www.dhl.de/de/privatkunden/sendungsverfolgung.html
+2026-01-20 14:23:00,Samsung (Daniel),Chrome,Daniel,Web: https://www.kicker.de/bundesliga/spieltag
+2026-01-20 14:48:00,Samsung (Daniel),Chrome,Daniel,Web: https://www.tagesschau.de/
+2026-01-20 16:14:00,Samsung (Daniel),Chrome,Daniel,Web: https://www.check24.de/strom/
+2026-01-20 16:22:00,Samsung (Daniel),WhatsApp,496170002222-1605000000,„Muster für die Klinik kommen erst nächste Woche.“
+2026-01-20 16:41:00,Samsung (Daniel),Chrome,Daniel,Web: https://www.google.com/search?q=oeffnungszeiten+baumarkt
+2026-01-20 18:02:00,Samsung (Daniel),Chrome,Daniel,Web: https://www.amazon.de/gp/bestsellers
+2026-01-20 19:11:00,Samsung (Daniel),Chrome,Daniel,Web: https://www.lieferando.de/
+2026-01-22 20:15:00,Samsung (Daniel),WhatsApp,496170001111-1610000000,„Faschingsumzug-Planung am Freitag im Bürgerhaus.“
+2026-01-23 18:30:00,Samsung (Daniel),calllog.db,Daniel,Anruf ausgehend Anna (65s)
+2026-01-23 18:31:00,Samsung (Daniel),WhatsApp,Daniel,„Holst du Ben heute? Ich schaff's nicht.“
+2026-01-23 18:35:00,Samsung (Daniel),WhatsApp,4915123456789,„Ok mach ich.“
+2026-01-24 16:10:00,Samsung (Daniel),WiFi-Assoc,Daniel,"WLAN 'Werkstatt' @ 48.7510,9.2100 (gecacht)"
+2026-01-24 18:10:00,Samsung (Daniel),WhatsApp,Daniel,"„Ok, danke für die Info.“"
+2026-01-24 18:30:00,Cloud (Google/Daniel),Takeout/Location,Daniel,"Aufenthalt Zuhause (48.7758,9.1829)"
+2026-01-24 20:04:00,Samsung (Daniel),calllog.db,Daniel,Anruf eingehend Tobias Klenk (92s)
+2026-01-24 20:05:00,Samsung (Daniel),WhatsApp,4915443456786,"„Ich brauch das Geld bis Montag, Daniel. Kein Spiel mehr.“"
+2026-01-24 22:11:54,Cloud (iCloud/Anna),iCloud-Sync,Anna,Sync notes [synced]
+2026-01-24 22:14:02,Cloud (iCloud/Anna),iCloud-Sync,Anna,Sync photos_metadata [synced]
+2026-01-25 06:50:00,Cloud (Google/Daniel),Takeout/Location,Daniel,"Aufenthalt Zuhause (48.7758,9.1829)"
+2026-01-25 06:55:00,Cloud (iCloud/Anna),iCloud-Sync,Anna,Sync health [synced]
+2026-01-25 07:09:18,Cloud (iCloud/Anna),iCloud-Sync,Anna,Sync calendar [synced]
+2026-01-25 07:15:00,Samsung (Daniel),Loc/wifi,Daniel,"Standort 48.7758,9.1829 (±40m)"
+2026-01-25 07:25:00,Samsung (Daniel),WhatsApp,Daniel,„Wo willst du so frueh hin?“
+2026-01-25 07:38:00,Samsung (Daniel),WiFi-Assoc,Daniel,"WLAN 'Home-WLAN' @ 48.7758,9.1829 (gecacht)"
+2026-01-25 08:02:00,Samsung (Daniel),Loc/cell,Daniel,"Standort 48.7330,9.2460 (±1400m)"
+2026-01-25 08:25:00,Samsung (Daniel),calllog.db,Daniel,Anruf ausgehend Tobias Klenk (41s)
+2026-01-25 08:26:00,Samsung (Daniel),WhatsApp,Daniel,„Hab kurz versucht dich zu erreichen. Melde mich spaeter.“
+2026-01-25 08:31:00,Samsung (Daniel),Loc/cell,Daniel,"Standort 48.7505,9.2090 (±900m)"
+2026-01-25 09:05:00,Cloud (Google/Daniel),Takeout/Location,Daniel,"Aufenthalt Gewerbegebiet (48.7510,9.2100)"
+2026-01-25 09:40:00,Cloud (Google/Daniel),Takeout/Activity,Daniel,Bewegung (IN_VEHICLE)
+2026-01-25 10:10:00,Cloud (Google/Daniel),Takeout/Location,Daniel,"Aufenthalt Zuhause (48.7758,9.1829)"
+2026-01-25 12:18:00,Samsung (Daniel),calllog.db,Daniel,Anruf ausgehend 110 (213s)
+2026-01-25 13:40:00,Cloud (iCloud/Anna),iCloud-Sync,Anna,Sync photos_metadata [partial/delayed]

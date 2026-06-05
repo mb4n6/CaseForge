@@ -113,6 +113,12 @@ def gate_extended():
             rows = c.execute("SELECT _data, owner_package_name FROM files").fetchall(); c.close()
             ok("external.db files-Tabelle", len(rows) >= 1, f"{len(rows)} Dateieintraege")
             break
+    # Privacy Dashboard /system/appops/discrete (existenz-gesteuert, ABX-Magic)
+    pdd = os.path.join(fs, "data/system/appops/discrete/1.xml")
+    if os.path.exists(pdd):
+        head = open(pdd, "rb").read(4)
+        print("Privacy Dashboard (appops/discrete):")
+        ok("appops discrete ABX-Magic", head == b"ABX\x00", repr(head))
     # usagestats
     us = os.path.join(fs, "data/system/usagestats/0/daily")
     if os.path.isdir(us):

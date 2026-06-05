@@ -150,8 +150,8 @@ def create_schema(con):
         room_name TEXT,
         display_name TEXT,
         is_archived INTEGER DEFAULT 0,
-        last_read_message_timestamp INTEGER DEFAULT 0
-    );
+        last_read_message_timestamp INTEGER DEFAULT 0%s
+    );""" % (",\n        chat_properties BLOB" if cmio.device_profile_flag("ios", "chat_properties", False) else "") + """
     CREATE TABLE message (
         ROWID INTEGER PRIMARY KEY AUTOINCREMENT,
         guid TEXT NOT NULL UNIQUE,
@@ -201,6 +201,15 @@ def populate(con, threads, account_number):
                        VALUES (?,?,?,?,?,?,?)""",
                     (guid, 45, 3, account, number, "iMessage", ""))
         chat_ids[number] = cur.lastrowid
+        # iOS 26: chat.chat_properties-PLIST (z.B. Chat-Hintergrund) — nur mit Profil-Flag
+        if cmio.device_profile_flag("ios", "chat_properties", False):
+            import plistlib
+            blob = plistlib.dumps({
+                "CHAT_PROPERTIES_VERSION": 1,
+                "backgroundIdentifier": "com.apple.messages.background.gradient.sunset",
+                "isPinned": False,
+            }, fmt=plistlib.FMT_BINARY)
+            cur.execute("UPDATE chat SET chat_properties=? WHERE ROWID=?", (blob, chat_ids[number]))
         cur.execute("INSERT INTO chat_handle_join (chat_id, handle_id) VALUES (?,?)",
                     (chat_ids[number], handle_ids[number]))
 

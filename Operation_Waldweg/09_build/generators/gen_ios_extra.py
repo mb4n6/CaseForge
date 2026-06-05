@@ -257,9 +257,31 @@ def build_snapshots():
                      "Signal-Chat mit Jonas (Treffen Parkplatz), Instagram"))
 
 
+def build_shutdownlog():
+    """shutdown.log (Sysdiag) — iOS 26 (Profil-Flag shutdown_log). Forensisch
+    relevant fuer Reboot-/Spyware-Analyse (verbleibende Power-Assertion-PIDs)."""
+    if not cmio.device_profile_flag("ios", "shutdown_log", False):
+        return
+    p = os.path.join(IOS, "private/var/db/com.apple.shutdown.log")
+    ensure(os.path.dirname(p))
+    lines = [
+        "2026-01-24 22:59:41.001 +0000: After 30 seconds shutdown is not complete.",
+        "2026-01-24 22:59:41.002 +0000:   remaining client pid: 184 (com.apple.mobilesafari)",
+        "2026-01-24 22:59:41.003 +0000:   remaining client pid: 233 (net.whatsapp.WhatsApp)",
+        "2026-01-24 22:59:44.110 +0000: SIGKILL sent to remaining clients.",
+        "2026-01-25 06:48:12.500 +0000: After 30 seconds shutdown is not complete.",
+        "2026-01-25 06:48:12.501 +0000:   remaining client pid: 91 (com.apple.locationd)",
+        "2026-01-25 06:48:15.900 +0000: shutdown complete.",
+    ]
+    with open(p, "w", encoding="utf-8") as f:
+        f.write("\n".join(lines) + "\n")
+    manifest.append(("iPhone", os.path.relpath(p, ROOT), "context",
+                     "shutdown.log (iOS 26) — verbleibende PIDs bei Reboot (Spyware-/Reboot-Forensik)"))
+
+
 def main():
     ensure(TMP)
-    build_safari(); build_voicemail(); build_callhistory(); build_snapshots()
+    build_safari(); build_voicemail(); build_callhistory(); build_snapshots(); build_shutdownlog()
     print(f"iOS-Extra erzeugt: {len(manifest)} Artefakte")
     for g, p, r, d in manifest:
         print(f"  [{r:8s}] {p}")

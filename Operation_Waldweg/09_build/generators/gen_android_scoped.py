@@ -48,9 +48,41 @@ FILES = [
 ]
 
 
+# Privacy Dashboard (ab Android 12): permission-Nutzung je App in /system/appops/discrete
+# Reales Format ist ABX (Android Binary XML, Magic 'ABX\0'). Hier: ABX-Magic +
+# lesbare XML-Repraesentation (vereinfacht; voll-faithful ABX-Codec = Folgearbeit).
+PRIVACY_ACCESS = [
+    ("com.android.chrome", "android:fine_location", "2026-01-25T07:18:00+01:00"),
+    ("com.whatsapp", "android:record_audio", "2026-01-24T20:05:00+01:00"),
+    ("com.sec.android.app.camera", "android:camera", "2026-01-24T20:03:00+01:00"),
+    ("com.google.android.apps.maps", "android:fine_location", "2026-01-25T08:02:00+01:00"),
+]
+
+
+def privacy_dashboard():
+    if not cmio.device_profile_flag("android", "privacy_dashboard", False):
+        return
+    from datetime import datetime as _dt
+    d = os.path.join(AND, "data/system/appops/discrete")
+    os.makedirs(d, exist_ok=True)
+    xml = ['<?xml version="1.0" encoding="utf-8"?>', "<discrete-log>"]
+    for pkg, op, iso in PRIVACY_ACCESS:
+        ts = int(_dt.fromisoformat(iso).timestamp() * 1000)
+        xml.append(f'  <package name="{pkg}"><op name="{op}">'
+                   f'<access time="{ts}" duration="2000" /></op></package>')
+    xml.append("</discrete-log>")
+    body = ("\n".join(xml)).encode("utf-8")
+    # ABX-Magic-Header + lesbare Repraesentation
+    with open(os.path.join(d, "1.xml"), "wb") as f:
+        f.write(b"ABX\x00" + body)
+    print(f"Privacy Dashboard: data/system/appops/discrete/1.xml "
+          f"({len(PRIVACY_ACCESS)} Zugriffe, ABX-Magic + XML)")
+
+
 def main():
     if not cmio.device_profile_flag("android", "scoped_storage", False):
         print("Scoped Storage: [SKIP] Android-Profil ohne Flag 'scoped_storage'.")
+        privacy_dashboard()
         return
     prov = cmio.device_profile_flag("android", "media_provider", "module")
     pkg = PROVIDER.get(str(prov), PROVIDER["module"])
@@ -90,6 +122,7 @@ def main():
     con.close()
     print(f"external.db erzeugt (Scoped Storage, Provider={prov}): "
           f"data/data/{pkg}/databases/external.db  ({n} Dateieintraege)")
+    privacy_dashboard()
 
 
 if __name__ == "__main__":

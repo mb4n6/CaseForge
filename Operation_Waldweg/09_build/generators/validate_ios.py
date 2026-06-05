@@ -175,6 +175,20 @@ def gate_extra():
                               WHERE o.ZSTREAMNAME LIKE '/app/%'""").fetchall()
         con.close()
         ok("knowledgeC ZOBJECT/ZSOURCE-Join", len(rows) >= 1, f"{len(rows)} /app/*-Events")
+    # iOS 26: chat.chat_properties (existenz-gesteuert)
+    con = sqlite3.connect(f"file:{SMS}?mode=ro&immutable=1", uri=True)
+    cols = [r[1] for r in con.execute("PRAGMA table_info(chat)").fetchall()]
+    if "chat_properties" in cols:
+        n = con.execute("SELECT COUNT(*) FROM chat WHERE chat_properties IS NOT NULL").fetchone()[0]
+        ok("iMessage chat.chat_properties (iOS 26)", n >= 1, f"{n} Chats mit PLIST")
+    con.close()
+    # iOS 26: shutdown.log (existenz-gesteuert)
+    sl = os.path.join(IOS_FS, "private/var/mobile/private/var/db/com.apple.shutdown.log")
+    sl2 = os.path.join(IOS_FS, "private/var/db/com.apple.shutdown.log")
+    slp = sl if os.path.exists(sl) else sl2
+    if os.path.exists(slp):
+        txt = open(slp, encoding="utf-8").read()
+        ok("shutdown.log (iOS 26)", "remaining client pid" in txt)
 
 
 def main():

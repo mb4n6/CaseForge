@@ -233,7 +233,7 @@ read by the generators). Shipped profiles and their version-distinguishing artif
 |---|---|---|
 | Windows | `windows_10`, `windows_11` | **PCA** (`appcompat\pca\PcaAppLaunchDic.txt`) — present on Win11 22H2+, **absent on Win10** (`pca`) |
 | iOS | `ios_16`, `ios_17`, `ios_18`, `ios_26` | **`knowledgeC.db`** (3-table ZOBJECT/ZSOURCE/ZSTRUCTUREDMETADATA) on ≤ iOS 16; **BIOME/SEGB** on ≥ 17 (`knowledgec`); `chat_properties`/`shutdown_log` on iOS 26 |
-| Android | `android_13`, `android_14`, `android_15` | **Scoped-Storage `external.db`** (media provider) — `module` vs `legacy` package path (`scoped_storage`, `media_provider`) |
+| Android | `android_13`, `android_14`, `android_15` | **Scoped-Storage `external.db`** (media provider) — `module` vs `legacy` package path (`scoped_storage`, `media_provider`); **Privacy Dashboard** `/system/appops/discrete` (ABX) on `android_15` (`privacy_dashboard`) |
 
 The reference case carries no overrides, so these version artifacts stay off there (12/12
 unchanged); a spec that selects e.g. `os_profile: ios_16` gets `knowledgeC.db` automatically.

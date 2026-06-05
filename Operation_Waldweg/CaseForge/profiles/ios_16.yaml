@@ -1,0 +1,16 @@
+# OS-Profil: iOS 16.x  (CaseForge) — Kontrast zu iOS 17 (BIOME)
+platform: ios
+os_version: "16.7.1"
+device_examples: ["iPhone 12", "iPhone 13"]
+fs_root: "private/var/mobile"
+timestamp_formats: ["apple_cfabsolute_seconds", "apple_nanoseconds", "unix"]
+key_facts:
+  - "knowledgeC.db VORHANDEN (3-Tabellen-Modell ZOBJECT/ZSTRUCTUREDMETADATA/ZSOURCE)"
+  - "BIOME erst im Aufbau -> Aktivitaet primaer in knowledgeC"
+  - "WhatsApp Core-Data (ChatStorage.sqlite); App-Container <GUID>"
+artifact_overrides:
+  knowledgec: true           # klassische Aktivitaets-DB vorhanden
+  biome: reduced             # BIOME nur teilweise
+  chat_properties: false
+generators: [ios.sms, ios.photos_health, ios.location, ios.whatsapp, ios.knowledgec, ios.extra, ios.apps]
+notes: "Hauptkontrast zu ios_17: knowledgeC.db statt/zusaetzlich zu BIOME."

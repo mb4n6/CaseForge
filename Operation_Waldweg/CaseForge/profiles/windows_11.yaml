@@ -10,3 +10,6 @@ key_facts:
   - "Offen/Folgearbeit: SRUDB.dat (ESE), valides Prefetch-SCCA, $MFT/$UsnJrnl"
 generators: [win.hives, win.files, win.browser, win.extra, win.lnk, win.evtx]
 notes: "Win10-Profil: ShimCache-Format abweichend; eigenes Profil anlegen."
+artifact_overrides:
+  pca: true                  # PCA-Ausfuehrungsspuren ab Windows 11 22H2
+  recall: false

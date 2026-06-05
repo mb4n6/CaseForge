@@ -165,6 +165,16 @@ def gate_extra():
     extra = ["App.Install", "_DKEvent.App.Activity.Battery", "_DKEvent.Media.NowPlaying", "Device.BluetoothConnection"]
     have = sum(1 for s in extra if os.path.isdir(os.path.join(breg, s, "local")))
     ok("BIOME Zusatz-Streams", have >= 3, f"{have}/{len(extra)}")
+    # knowledgeC.db (nur Profil ios_16) — existenz-gesteuert (Referenz hat keine)
+    kc = os.path.join(IOS_FS, "private/var/mobile/Library/CoreDuet/Knowledge/knowledgeC.db")
+    if os.path.exists(kc):
+        print("knowledgeC.db (iOS <= 16):")
+        con = sqlite3.connect(f"file:{kc}?mode=ro&immutable=1", uri=True)
+        rows = con.execute("""SELECT o.ZSTREAMNAME, o.ZVALUESTRING FROM ZOBJECT o
+                              LEFT JOIN ZSOURCE s ON o.ZSOURCE=s.Z_PK
+                              WHERE o.ZSTREAMNAME LIKE '/app/%'""").fetchall()
+        con.close()
+        ok("knowledgeC ZOBJECT/ZSOURCE-Join", len(rows) >= 1, f"{len(rows)} /app/*-Events")
 
 
 def main():

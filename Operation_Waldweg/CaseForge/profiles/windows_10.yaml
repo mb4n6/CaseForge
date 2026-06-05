@@ -1,0 +1,15 @@
+# OS-Profil: Windows 10 22H2  (CaseForge) — Kontrast zu Windows 11
+platform: windows
+os_version: "10-22H2"
+device_examples: ["Notebook (privat, Win10)"]
+fs_root: "C"
+timestamp_formats: ["filetime", "webkit_micros", "iso8601"]
+key_facts:
+  - "KEIN appcompat\\pca\\ (PCA-Ausfuehrungsspuren erst ab Windows 11 22H2)"
+  - "ShimCache/AppCompatCache-Format weicht von Win11 ab"
+  - "Kein Recall (Copilot+); Edge=Chromium wie Win11"
+artifact_overrides:
+  pca: false                 # Program Compatibility Assistant fehlt unter Win10
+  recall: false
+generators: [win.hives, win.files, win.browser, win.extra, win.lnk, win.evtx]
+notes: "Hauptkontrast zu windows_11: keine PCA-Textdateien."

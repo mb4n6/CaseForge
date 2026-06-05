@@ -126,6 +126,18 @@ def _clean_username(name):
     return first or "User"
 
 
+def device_profile_flag(platform, key, default=None, cm=None):
+    """Profil-gesteuertes Artefakt-Flag des Geraets einer Plattform.
+    Liest devices[].overrides[key] (von spec_to_master aus dem OS-Profil gesetzt).
+    Default greift fuer den Referenzfall (keine overrides) -> Artefakt aus."""
+    cm = cm or load_master()
+    for d in cm.get("devices", []):
+        if d.get("type") == platform or d.get("platform") == platform:
+            ov = d.get("overrides", {}) or {}
+            return ov.get(key, default)
+    return default
+
+
 def windows_username(cm=None):
     """Windows-Profilordnername aus dem Windows-Geraete-Besitzer (fall-adaptiv).
     Referenzfall -> 'Daniel'. Fallback 'Daniel', wenn nicht ableitbar."""

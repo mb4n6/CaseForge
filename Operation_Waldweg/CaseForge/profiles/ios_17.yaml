@@ -10,3 +10,7 @@ key_facts:
   - "App-Container unter Containers/Data/Application/<GUID> + metadata.plist"
 generators: [ios.sms, ios.photos_health, ios.location, ios.whatsapp, ios.biome, ios.extra, ios.apps]
 notes: "Fuer iOS 16 BIOME optional + knowledgeC.db moeglich; eigenes Profil ios_16.yaml anlegen."
+artifact_overrides:
+  knowledgec: false
+  biome: true
+  chat_properties: false

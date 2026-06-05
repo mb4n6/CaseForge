@@ -171,6 +171,12 @@ def gate_extended():
         ok("LNK valides Shell-Link", d[0:4] == b"\x4C\x00\x00\x00")
         ok("LNK Ziel 'Schuldenaufstellung'",
            b"Schuldenaufstellung" in d.replace(b"\x00", b""), ref=True)
+    # PCA (nur Windows 11 22H2+) — existenz-gesteuert (Win10/Referenz hat es nicht)
+    pca = os.path.join(WFS, "C/Windows/appcompat/pca/PcaAppLaunchDic.txt")
+    if os.path.exists(pca):
+        print("PCA (Windows 11):")
+        lines = [l for l in open(pca, encoding="utf-8").read().splitlines() if "|" in l]
+        ok("PcaAppLaunchDic.txt parsebar", len(lines) >= 1, f"{len(lines)} Eintraege")
     # Office File MRU + ComDlg32 (NTUSER)
     try:
         from regipy.registry import RegistryHive as _RH

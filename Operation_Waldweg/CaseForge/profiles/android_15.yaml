@@ -1,0 +1,15 @@
+# OS-Profil: Android 15 (One UI 7)  (CaseForge)
+platform: android
+os_version: "15"
+device_examples: ["Samsung Galaxy S24", "Pixel 9"]
+fs_root: "data/data"
+timestamp_formats: ["unix_millis", "webkit_micros"]
+key_facts:
+  - "Scoped Storage konsequent; Media-Provider external.db (module-Pfad)"
+  - "Erweiterte Permission-/Privacy-Telemetrie (Privacy Dashboard)"
+artifact_overrides:
+  scoped_storage: true
+  media_provider: module
+  privacy_dashboard: true
+generators: [android.core, android.location, android.extra, android.scoped, android.apps]
+notes: "Wie android_14, mit Privacy-Dashboard-Hinweis."

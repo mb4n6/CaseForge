@@ -128,6 +128,41 @@ def zone_identifier():
         reg(sidecar, "context", "Zone.Identifier (ZoneId=3=Internet) -> Herkunftsnachweis Download")
 
 
+# ---------------- PCA (Program Compatibility Assistant, NUR Windows 11 22H2+) ----------------
+def pca():
+    """Textbasierte Ausfuehrungsspuren unter C:\\Windows\\appcompat\\pca\\.
+    Versionsmerkmal: existiert erst ab Windows 11 22H2 (Profil-Flag 'pca').
+    Unter Windows 10 wird dieser Ordner bewusst NICHT erzeugt."""
+    if not cmio.device_profile_flag("windows", "pca", False):
+        return
+    d = os.path.join(C, "Windows/appcompat/pca")
+    ensure(d)
+    # PcaAppLaunchDic.txt: <vollpfad>|<letzter Start ISO>
+    launches = [
+        (rf"C:\Users\{WUSER}\Downloads\rufus-4.4p.exe", "2026-01-24 22:48:11.402"),
+        (r"C:\Program Files\7-Zip\7zFM.exe", "2026-01-23 19:05:02.110"),
+        (r"C:\Windows\System32\robocopy.exe", "2026-01-25 08:11:33.900"),
+        (rf"C:\Users\{WUSER}\AppData\Local\Microsoft\Edge\Application\msedge.exe", "2026-01-24 22:20:44.001"),
+    ]
+    with open(os.path.join(d, "PcaAppLaunchDic.txt"), "w", encoding="utf-8") as f:
+        for path, ts in launches:
+            f.write(f"{path}|{ts}\n")
+    # PcaGeneralDb0.txt: tabgetrennte Telemetrie (vereinfachte, plausible Felder)
+    rows = [
+        ("2026-01-24 22:48:11.402", "1", rf"C:\Users\{WUSER}\Downloads\rufus-4.4p.exe",
+         "Rufus", "Akeo Consulting", "4.4.2103"),
+        ("2026-01-25 08:11:33.900", "1", r"C:\Windows\System32\robocopy.exe",
+         "Robust File Copy", "Microsoft Corporation", "10.0.22621.1"),
+    ]
+    with open(os.path.join(d, "PcaGeneralDb0.txt"), "w", encoding="utf-16") as f:
+        f.write("﻿")
+        for r in rows:
+            f.write("\t".join(r) + "\r\n")
+    reg(os.path.join(d, "PcaAppLaunchDic.txt"), "context",
+        "PCA-Ausfuehrungsspur (NUR Windows 11 22H2+; auf Win10 nicht vorhanden)")
+    reg(os.path.join(d, "PcaGeneralDb0.txt"), "context", "PCA-Telemetrie (Win11)")
+
+
 # ---------------- Prefetch (Platzhalter) ----------------
 def prefetch():
     d = os.path.join(C, "Windows/Prefetch")
@@ -149,7 +184,7 @@ def write_manifest():
 
 
 def main():
-    recycle_bin(); setupapi(); scheduled_tasks(); zone_identifier(); prefetch()
+    recycle_bin(); setupapi(); scheduled_tasks(); zone_identifier(); prefetch(); pca()
     out = write_manifest()
     print(f"Windows-Datei-Artefakte erzeugt: {len(manifest)} Eintraege")
     for p, r, b in sorted(manifest):

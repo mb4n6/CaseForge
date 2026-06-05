@@ -1,0 +1,15 @@
+# OS-Profil: Android 13 (One UI 5)  (CaseForge)
+platform: android
+os_version: "13"
+device_examples: ["Samsung Galaxy S22", "Pixel 7"]
+fs_root: "data/data"
+timestamp_formats: ["unix_millis", "webkit_micros"]
+key_facts:
+  - "Scoped Storage: Media-Provider external.db (com.google.android.providers.media.module)"
+  - "Privacy Dashboard (ABX) ab Android 12 etabliert"
+artifact_overrides:
+  scoped_storage: true
+  media_provider: module      # ab Android 11: ...providers.media.module
+  privacy_dashboard: false
+generators: [android.core, android.location, android.extra, android.scoped, android.apps]
+notes: "Kontrast: external.db unter dem module-Pfad."

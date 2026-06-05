@@ -104,6 +104,15 @@ def gate_extended():
     base = os.path.dirname(os.path.dirname(P_CHROME).rsplit("/data/data", 1)[0])  # FS-Root
     fs = P_CHROME.split("/data/data")[0]
     print("Android-Extra:")
+    # Scoped-Storage external.db (Profil android_13/14/15) — existenz-gesteuert
+    for prov in ("com.google.android.providers.media.module", "com.android.providers.media"):
+        ext = os.path.join(fs, "data/data", prov, "databases/external.db")
+        if os.path.exists(ext):
+            print(f"Scoped Storage ({prov}):")
+            c = ro(ext)
+            rows = c.execute("SELECT _data, owner_package_name FROM files").fetchall(); c.close()
+            ok("external.db files-Tabelle", len(rows) >= 1, f"{len(rows)} Dateieintraege")
+            break
     # usagestats
     us = os.path.join(fs, "data/system/usagestats/0/daily")
     if os.path.isdir(us):

@@ -77,6 +77,12 @@ def map_device(d):
         out["artifact_classes"] = d["artifact_classes"]
     if plat == "ios":
         out["biome_streams_built"] = prof.get("biome_streams", DEFAULT_BIOME)
+    # Profil-gesteuerte Artefakt-Flags (versionstypische Spuren) ans Geraet haengen.
+    # Spec-Device kann sie ueber 'overrides' gezielt ueberschreiben.
+    ov = dict(prof.get("artifact_overrides", {}) or {})
+    ov.update(d.get("overrides", {}) or {})
+    if ov:
+        out["overrides"] = ov
     return out
 
 

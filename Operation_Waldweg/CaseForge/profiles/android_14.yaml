@@ -10,3 +10,7 @@ key_facts:
   - "usagestats XML pro Bucket; Samsung Health SecureHealthData.db"
 generators: [android.core, android.location, android.extra, android.apps]
 notes: "Samsung-spezifisch: com.sec.* Provider; Pixel-Profil ggf. abweichend."
+artifact_overrides:
+  scoped_storage: true
+  media_provider: module
+  privacy_dashboard: false

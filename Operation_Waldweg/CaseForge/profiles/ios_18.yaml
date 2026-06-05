@@ -1,0 +1,15 @@
+# OS-Profil: iOS 18.x  (CaseForge)
+platform: ios
+os_version: "18.2"
+device_examples: ["iPhone 15", "iPhone 16"]
+fs_root: "private/var/mobile"
+timestamp_formats: ["apple_cfabsolute_seconds", "apple_nanoseconds", "unix"]
+key_facts:
+  - "BIOME/SEGB ausgeweitet; knowledgeC.db entfaellt (wie iOS 17)"
+  - "Reorganisierte Log-/Sysdiag-Pfade; Apple-Intelligence geraeteabhaengig"
+artifact_overrides:
+  knowledgec: false
+  biome: true
+  chat_properties: false
+generators: [ios.sms, ios.photos_health, ios.location, ios.whatsapp, ios.biome, ios.extra, ios.apps]
+notes: "Wie ios_17, BIOME-zentriert."

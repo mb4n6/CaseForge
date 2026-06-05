@@ -1,0 +1,17 @@
+# OS-Profil: iOS 26.x  (CaseForge) — Jahreszahl-Schema ab 2025
+platform: ios
+os_version: "26.1"
+device_examples: ["iPhone 16", "iPhone 17"]
+fs_root: "private/var/mobile"
+timestamp_formats: ["apple_cfabsolute_seconds", "apple_nanoseconds", "unix"]
+key_facts:
+  - "iMessage chat.chat_properties-PLIST (Chat-Hintergruende) NEU in iOS 26"
+  - "shutdown.log-Verhalten in 26.0 veraendert, in 26.2 restauriert"
+  - "BIOME/SEGB wie iOS 17/18; mehr 'shared data' bei logischer Extraktion"
+artifact_overrides:
+  knowledgec: false
+  biome: true
+  chat_properties: true      # neue PLIST-Spalte in sms.db chat-Tabelle
+  shutdown_log: true
+generators: [ios.sms, ios.photos_health, ios.location, ios.whatsapp, ios.biome, ios.extra, ios.apps]
+notes: "Kontrast zu ios_17: chat_properties + shutdown.log."

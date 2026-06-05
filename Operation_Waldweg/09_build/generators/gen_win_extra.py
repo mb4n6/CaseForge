@@ -7,6 +7,8 @@
 # Beides fallbezogen (Loeschung Finanzunterlagen; Banking/Messenger-Toasts).
 # =====================================================================
 import os
+import sys; sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import case_master_io as cmio
 import shutil
 import sqlite3
 import struct
@@ -16,9 +18,10 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 BUILD = os.path.dirname(HERE)
 ROOT = os.path.dirname(BUILD)
 WIN = os.environ.get("WALDWEG_WIN_FS", os.path.join(ROOT, "03_windows_triage"))
+WUSER = cmio.windows_username()   # Windows-Profilordner aus Fall-Besitzer
 
-PS_HIST = os.path.join(WIN, "C/Users/Daniel/AppData/Roaming/Microsoft/Windows/PowerShell/PSReadline/ConsoleHost_history.txt")
-WPN_DIR = os.path.join(WIN, "C/Users/Daniel/AppData/Local/Microsoft/Windows/Notifications")
+PS_HIST = os.path.join(WIN, f"C/Users/{WUSER}/AppData/Roaming/Microsoft/Windows/PowerShell/PSReadline/ConsoleHost_history.txt")
+WPN_DIR = os.path.join(WIN, f"C/Users/{WUSER}/AppData/Local/Microsoft/Windows/Notifications")
 WPN = os.path.join(WPN_DIR, "wpndatabase.db")
 TMP = "/tmp/wpn_build.db"
 
@@ -37,7 +40,7 @@ def powershell_history():
         "robocopy . E:\\Backup /MIR",
         "Remove-Item .\\Schuldenaufstellung_Jan.xlsx",
         "Clear-RecycleBin -Force -ErrorAction SilentlyContinue",
-        "cipher /w:C:\\Users\\Daniel\\Documents\\Finanzen",
+        f"cipher /w:C:\\Users\\{WUSER}\\Documents\\Finanzen",
         "Get-History | Clear-History",
     ]
     with open(PS_HIST, "w", encoding="utf-8") as f:

@@ -31,6 +31,7 @@ import noise_pools as npool
 IOS = os.environ.get('WALDWEG_IOS_FS', os.path.join(ROOT, '01_ios_full_fs'))
 AND = os.environ.get('WALDWEG_AND_FS', os.path.join(ROOT, '02_android_full_fs'))
 WIN = os.environ.get('WALDWEG_WIN_FS', os.path.join(ROOT, '03_windows_triage'))
+WUSER = cmio.windows_username()   # Windows-Profilordner aus Fall-Besitzer
 CASE_ROOT = os.path.dirname(IOS) if os.environ.get('WALDWEG_IOS_FS') else ROOT
 
 # Typische Zielverzeichnisse je Geraet
@@ -38,8 +39,8 @@ IOS_DL = os.path.join(IOS, 'private/var/mobile/Library/Mobile Documents/com~appl
 IOS_DOC = os.path.join(IOS, 'private/var/mobile/Library/Mobile Documents/com~apple~CloudDocs/Dokumente')
 AND_DL = os.path.join(AND, 'storage/emulated/0/Download')
 AND_DOC = os.path.join(AND, 'storage/emulated/0/Documents')
-WIN_DL = os.path.join(WIN, 'C/Users/Daniel/Downloads')
-WIN_DOC = os.path.join(WIN, 'C/Users/Daniel/Documents')
+WIN_DL = os.path.join(WIN, f'C/Users/{WUSER}/Downloads')
+WIN_DOC = os.path.join(WIN, f'C/Users/{WUSER}/Documents')
 
 manifest = []  # (geraet, pfad_rel, relevanz, beschreibung)
 

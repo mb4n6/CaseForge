@@ -26,11 +26,13 @@ ROOT = os.path.dirname(BUILD)
 sys.path.insert(0, HERE)
 import reg_hive
 import caseforge_rng as cfr
+import case_master_io as cmio
 
 WIN = os.environ.get("WALDWEG_WIN_FS", os.path.join(ROOT, "03_windows_triage"))
+WUSER = cmio.windows_username()   # Windows-Profilordner aus Fall-Besitzer
 CONFIG = os.path.join(WIN, "C/Windows/System32/config")
 AMCACHE = os.path.join(WIN, "C/Windows/AppCompat/Programs/Amcache.hve")
-NTUSER = os.path.join(WIN, "C/Users/Daniel/NTUSER.DAT")
+NTUSER = os.path.join(WIN, f"C/Users/{WUSER}/NTUSER.DAT")
 SID = cfr.win_sid()                 # seed-gesteuert (Referenz-Seed -> Originalwert)
 COMPUTER = cfr.win_computer_name()
 
@@ -149,7 +151,7 @@ def sam_tree():
             "F": ("binary", build_F(1000, 0x0210, 27, "2026-01-25T06:40:00+00:00", "2025-12-15T19:30:00+00:00")),
             "V": ("binary", build_V("Daniel", "Daniel Reuter", "Privatkonto"))}},
         "Names": {"subkeys": {"Administrator": {"values": {"": ("sz", "")}},
-                              "Daniel": {"values": {"": ("sz", "")}}}},
+                              WUSER: {"values": {"": ("sz", "")}}}},
     }
     return {"ROOT": {"subkeys": {"SAM": {"subkeys": {"Domains": {"subkeys": {
         "Account": {"subkeys": {"Users": {"subkeys": users}}}}}}}}}}
@@ -260,9 +262,9 @@ def software_tree():
 def ntuser_tree():
     explorer = {
         "TypedPaths": {"values": {
-            "url1": ("sz", r"C:\Users\Daniel\Documents\Finanzen"),
+            "url1": ("sz", rf"C:\Users\{WUSER}\Documents\Finanzen"),
             "url2": ("sz", r"E:\\"),
-            "url3": ("sz", r"C:\Users\Daniel\Downloads")}},
+            "url3": ("sz", rf"C:\Users\{WUSER}\Downloads")}},
         "RunMRU": {"values": {"a": ("sz", "cmd\\1"), "b": ("sz", "regedit\\1"),
                               "c": ("sz", "\\\\E:\\\\1"), "MRUList": ("sz", "cba")}},
         "RecentDocs": {"subkeys": {
@@ -287,30 +289,30 @@ def ntuser_tree():
             "OpenSavePidlMRU": {"subkeys": {
                 "xlsx": {"values": {
                     "0": ("binary", pidl([shellitem_root(), shellitem_drive("C"),
-                                          shellitem_dir("Users"), shellitem_dir("Daniel"),
+                                          shellitem_dir("Users"), shellitem_dir(WUSER),
                                           shellitem_dir("Documents"), shellitem_dir("Finanzen"),
                                           shellitem_dir("Schuldenaufstellung_Jan.xlsx")])),
                     "MRUListEx": ("binary", mrulistex([0]))}},
                 "pdf": {"values": {
                     "0": ("binary", pidl([shellitem_root(), shellitem_drive("C"),
-                                          shellitem_dir("Users"), shellitem_dir("Daniel"),
+                                          shellitem_dir("Users"), shellitem_dir(WUSER),
                                           shellitem_dir("Downloads"),
                                           shellitem_dir("Kreditantrag_Sofort.pdf")])),
                     "MRUListEx": ("binary", mrulistex([0]))}}}},
             "LastVisitedPidlMRU": {"values": {
                 "0": ("binary", "EXCEL.EXE".encode("utf-16-le") + b"\x00\x00" +
                       pidl([shellitem_root(), shellitem_drive("C"), shellitem_dir("Users"),
-                            shellitem_dir("Daniel"), shellitem_dir("Documents"), shellitem_dir("Finanzen")])),
+                            shellitem_dir(WUSER), shellitem_dir("Documents"), shellitem_dir("Finanzen")])),
                 "MRUListEx": ("binary", mrulistex([0]))}}}},
     }
     office = {"16.0": {"subkeys": {
         "Excel": {"subkeys": {"File MRU": {"values": {
-            "Item 1": ("sz", office_mru_val(r"C:\Users\Daniel\Documents\Finanzen\Schuldenaufstellung_Jan.xlsx", "2026-01-24T22:15:00+00:00")),
-            "Item 2": ("sz", office_mru_val(r"C:\Users\Daniel\Documents\Haushaltsbudget_2026.xlsx", "2026-01-20T20:05:00+00:00")),
+            "Item 1": ("sz", office_mru_val(rf"C:\Users\{WUSER}\Documents\Finanzen\Schuldenaufstellung_Jan.xlsx", "2026-01-24T22:15:00+00:00")),
+            "Item 2": ("sz", office_mru_val(rf"C:\Users\{WUSER}\Documents\Haushaltsbudget_2026.xlsx", "2026-01-20T20:05:00+00:00")),
             "Item 3": ("sz", office_mru_val(r"E:\Backup\Schuldenaufstellung_Jan.xlsx", "2026-01-24T22:52:00+00:00"))}}}},
         "Word": {"subkeys": {"File MRU": {"values": {
-            "Item 1": ("sz", office_mru_val(r"C:\Users\Daniel\Documents\Privatkredit_Vergleich.docx", "2026-01-24T22:42:00+00:00")),
-            "Item 2": ("sz", office_mru_val(r"C:\Users\Daniel\Documents\Versicherungen_Uebersicht.docx", "2026-01-21T19:30:00+00:00"))}}}},
+            "Item 1": ("sz", office_mru_val(rf"C:\Users\{WUSER}\Documents\Privatkredit_Vergleich.docx", "2026-01-24T22:42:00+00:00")),
+            "Item 2": ("sz", office_mru_val(rf"C:\Users\{WUSER}\Documents\Versicherungen_Uebersicht.docx", "2026-01-21T19:30:00+00:00"))}}}},
     }}}
     return {"ROOT": {"subkeys": {"Software": {"subkeys": {"Microsoft": {"subkeys": {
         "Windows": {"subkeys": {"CurrentVersion": {"subkeys": {"Explorer": {"subkeys": explorer}}}}},
@@ -355,7 +357,7 @@ def build_shellbags():
     finanzen = node([])                                   # Blatt
     documents = node([(shellitem_dir("Finanzen"), finanzen)])
     daniel = node([(shellitem_dir("Documents"), documents)])
-    users = node([(shellitem_dir("Daniel"), daniel)])
+    users = node([(shellitem_dir(WUSER), daniel)])
     cdrive = node([(shellitem_dir("Users"), users)])
     backup = node([])                                     # Blatt (E:\Backup)
     edrive = node([(shellitem_dir("Backup"), backup)])
@@ -378,7 +380,7 @@ def main():
         ("SOFTWARE", os.path.join(CONFIG, "SOFTWARE"), software_tree()),
         ("NTUSER.DAT", NTUSER, ntuser_tree()),
         ("Amcache.hve", AMCACHE, amcache_tree()),
-        ("UsrClass.dat", os.path.join(WIN, "C/Users/Daniel/AppData/Local/Microsoft/Windows/UsrClass.dat"), usrclass_tree()),
+        ("UsrClass.dat", os.path.join(WIN, f"C/Users/{WUSER}/AppData/Local/Microsoft/Windows/UsrClass.dat"), usrclass_tree()),
     ]
     for name, path, tree in jobs:
         reg_hive.write(tree, path)
@@ -426,7 +428,7 @@ def main():
     apps = [s.name for s in h.get_key(r"\Root\InventoryApplicationFile").iter_subkeys()]
     check("Amcache-Eintraege", len(apps) >= 2, str(apps))
 
-    uc = os.path.join(WIN, "C/Users/Daniel/AppData/Local/Microsoft/Windows/UsrClass.dat")
+    uc = os.path.join(WIN, f"C/Users/{WUSER}/AppData/Local/Microsoft/Windows/UsrClass.dat")
     h = RegistryHive(uc)
     base = r"\Local Settings\Software\Microsoft\Windows\Shell\BagMRU"
     bag = h.get_key(base)

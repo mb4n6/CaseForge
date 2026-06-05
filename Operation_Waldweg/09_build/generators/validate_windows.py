@@ -11,16 +11,19 @@ import sqlite3
 import sys
 from datetime import datetime, timezone, timedelta
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from gate_common import Gate, ok_exit
+import caseforge_rng as cfr
+import case_master_io as cmio
+
 WFS = os.environ.get('WALDWEG_WIN_FS', '/tmp/win_build')
-P_EDGE = os.path.join(WFS, 'C/Users/Daniel/AppData/Local/Microsoft/Edge/User Data/Default/History')
-P_NTUSER = os.path.join(WFS, 'C/Users/Daniel/NTUSER.DAT')
+WUSER = cmio.windows_username()   # Windows-Profilordner aus Fall-Besitzer
+P_EDGE = os.path.join(WFS, f'C/Users/{WUSER}/AppData/Local/Microsoft/Edge/User Data/Default/History')
+P_NTUSER = os.path.join(WFS, f'C/Users/{WUSER}/NTUSER.DAT')
 P_SAM = os.path.join(WFS, 'C/Windows/System32/config/SAM')
 P_SYSTEM = os.path.join(WFS, 'C/Windows/System32/config/SYSTEM')
 P_SOFTWARE = os.path.join(WFS, 'C/Windows/System32/config/SOFTWARE')
 P_AMCACHE = os.path.join(WFS, 'C/Windows/AppCompat/Programs/Amcache.hve')
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from gate_common import Gate, ok_exit
-import caseforge_rng as cfr
 SID = cfr.win_sid()                    # seed-gesteuert, synchron zu den Generatoren
 
 G = Gate()
@@ -54,7 +57,7 @@ def gate_hive():
     found = [v.value for v in tp.iter_values() if v.name == "url1"]
     found = found[0] if found else None
     ok("TypedPaths\\url1 dekodierbar", found is not None, repr(found))
-    ok("TypedPaths\\url1 == Finanzen", found == r"C:\Users\Daniel\Documents\Finanzen",
+    ok("TypedPaths\\url1 == Finanzen", found == rf"C:\Users\{WUSER}\Documents\Finanzen",
        repr(found), ref=True)
 
 
@@ -141,7 +144,7 @@ def gate_extended():
         h = RegistryHive(P_NTUSER)
         wwq = h.get_key(r"\Software\Microsoft\Windows\CurrentVersion\Explorer\WordWheelQuery")
         ok("WordWheelQuery", len(list(wwq.iter_values())) >= 3)
-        uc = os.path.join(WFS, "C/Users/Daniel/AppData/Local/Microsoft/Windows/UsrClass.dat")
+        uc = os.path.join(WFS, f"C/Users/{WUSER}/AppData/Local/Microsoft/Windows/UsrClass.dat")
         if os.path.exists(uc):
             hu = RegistryHive(uc)
             hu.get_key(r"\Local Settings\Software\Microsoft\Windows\Shell\BagMRU\0\0\0\0\0")
@@ -149,19 +152,19 @@ def gate_extended():
     except Exception as e:
         ok("WordWheelQuery/ShellBags", False, str(e)[:40])
     # PowerShell-History
-    ps = os.path.join(WFS, "C/Users/Daniel/AppData/Roaming/Microsoft/Windows/PowerShell/PSReadline/ConsoleHost_history.txt")
+    ps = os.path.join(WFS, f"C/Users/{WUSER}/AppData/Roaming/Microsoft/Windows/PowerShell/PSReadline/ConsoleHost_history.txt")
     if os.path.exists(ps):
         t = open(ps, encoding="utf-8").read()
         ok("PowerShell-History (Wipe-Spur)", "Remove-Item" in t and "cipher" in t, ref=True)
     # Notification-DB
-    wpn = os.path.join(WFS, "C/Users/Daniel/AppData/Local/Microsoft/Windows/Notifications/wpndatabase.db")
+    wpn = os.path.join(WFS, f"C/Users/{WUSER}/AppData/Local/Microsoft/Windows/Notifications/wpndatabase.db")
     if os.path.exists(wpn):
         con = sqlite3.connect(f"file:{wpn}?mode=ro&immutable=1", uri=True)
         n = con.execute("SELECT COUNT(*) FROM Notification").fetchone()[0]
         con.close()
         ok("Notification-DB (Toasts)", n >= 2, f"{n} Notifications")
     # LNK
-    rec = os.path.join(WFS, "C/Users/Daniel/AppData/Roaming/Microsoft/Windows/Recent")
+    rec = os.path.join(WFS, f"C/Users/{WUSER}/AppData/Roaming/Microsoft/Windows/Recent")
     lnk = os.path.join(rec, "Schuldenaufstellung_Jan.xlsx.lnk")
     if os.path.exists(lnk):
         d = open(lnk, "rb").read()

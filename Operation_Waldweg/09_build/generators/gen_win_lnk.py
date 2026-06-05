@@ -8,6 +8,8 @@
 # Finanzen-Ordner und das USB-Laufwerk E:\Backup -> Datei-/USB-Nutzung.
 # =====================================================================
 import os
+import sys; sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import case_master_io as cmio
 import struct
 from datetime import datetime, timezone
 
@@ -15,7 +17,8 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 BUILD = os.path.dirname(HERE)
 ROOT = os.path.dirname(BUILD)
 WIN = os.environ.get("WALDWEG_WIN_FS", os.path.join(ROOT, "03_windows_triage"))
-RECENT = os.path.join(WIN, "C/Users/Daniel/AppData/Roaming/Microsoft/Windows/Recent")
+WUSER = cmio.windows_username()   # Windows-Profilordner aus Fall-Besitzer
+RECENT = os.path.join(WIN, f"C/Users/{WUSER}/AppData/Roaming/Microsoft/Windows/Recent")
 CLSID = bytes.fromhex("0114020000000000c000000000000046")  # 00021401-0000-0000-C000-000000000046
 
 
@@ -48,16 +51,16 @@ def make_lnk(local_path, is_dir, drive_type, serial, vol_label, ctime, atime, wt
 
 
 LNKS = [
-    ("Schuldenaufstellung_Jan.xlsx.lnk", r"C:\Users\Daniel\Documents\Finanzen\Schuldenaufstellung_Jan.xlsx",
+    ("Schuldenaufstellung_Jan.xlsx.lnk", rf"C:\Users\{WUSER}\Documents\Finanzen\Schuldenaufstellung_Jan.xlsx",
      False, 3, 0x9C5E1A2B, "OS", "2026-01-20T21:00:00+01:00", "2026-01-25T09:05:00+01:00", "2026-01-24T22:15:00+01:00", 18342,
      "context", "LNK auf die spaeter geloeschte Schuldenaufstellung -> belegt frueheres Vorhandensein"),
-    ("Finanzen.lnk", r"C:\Users\Daniel\Documents\Finanzen", True, 3, 0x9C5E1A2B, "OS",
+    ("Finanzen.lnk", rf"C:\Users\{WUSER}\Documents\Finanzen", True, 3, 0x9C5E1A2B, "OS",
      "2025-09-10T10:00:00+01:00", "2026-01-25T09:05:00+01:00", "2026-01-25T09:05:00+01:00", 0,
      "context", "LNK auf den Finanzen-Ordner"),
     ("Backup (E).lnk", r"E:\Backup", True, 2, 0x4C530001, "CRUZER", "2026-01-24T22:50:00+01:00",
      "2026-01-25T07:10:00+01:00", "2026-01-25T07:10:00+01:00", 0,
      "context", "LNK auf USB E:\\Backup (DriveType=removable, Serial) -> USB-Nutzung"),
-    ("Kreditantrag_Sofort.lnk", r"C:\Users\Daniel\Downloads\Kreditantrag_Sofort.pdf", False, 3,
+    ("Kreditantrag_Sofort.lnk", rf"C:\Users\{WUSER}\Downloads\Kreditantrag_Sofort.pdf", False, 3,
      0x9C5E1A2B, "OS", "2026-01-24T22:33:00+01:00", "2026-01-24T22:34:00+01:00", "2026-01-24T22:33:00+01:00", 248123,
      "noise", "LNK auf heruntergeladenen Kreditantrag"),
 ]

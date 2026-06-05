@@ -23,7 +23,8 @@ ROOT = os.path.dirname(BUILD)
 sys.path.insert(0, HERE)
 import case_master_io as cmio
 WIN = os.environ.get("WALDWEG_WIN_FS", os.path.join(ROOT, "03_windows_triage"))
-EDGE = os.path.join(WIN, "C/Users/Daniel/AppData/Local/Microsoft/Edge/User Data/Default")
+WUSER = cmio.windows_username()   # Windows-Profilordner aus Fall-Besitzer
+EDGE = os.path.join(WIN, f"C/Users/{WUSER}/AppData/Local/Microsoft/Edge/User Data/Default")
 TMP = "/tmp/edge_build"
 
 
@@ -39,9 +40,9 @@ FALLBACK_URLS = [
 ]
 DOWNLOADS = [
     # (start, target_path, url, bytes, mime, referrer)
-    ("2026-01-24T22:33:00+01:00", r"C:\Users\Daniel\Downloads\Kreditantrag_Sofort.pdf",
+    ("2026-01-24T22:33:00+01:00", rf"C:\Users\{WUSER}\Downloads\Kreditantrag_Sofort.pdf",
      "https://www.check24.de/kredit/antrag.pdf", 248123, "application/pdf", "https://www.check24.de/kredit/"),
-    ("2026-01-24T22:48:00+01:00", r"C:\Users\Daniel\Downloads\rufus-4.4p.exe",
+    ("2026-01-24T22:48:00+01:00", rf"C:\Users\{WUSER}\Downloads\rufus-4.4p.exe",
      "https://github.com/pbatard/rufus/releases/download/v4.4/rufus-4.4p.exe", 1456789,
      "application/x-msdownload", "https://rufus.ie/"),
 ]

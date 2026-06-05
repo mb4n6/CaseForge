@@ -23,7 +23,9 @@ ROOT = os.path.dirname(BUILD)
 import sys
 sys.path.insert(0, HERE)
 import caseforge_rng as cfr
+import case_master_io as cmio
 WIN = os.environ.get("WALDWEG_WIN_FS", os.path.join(ROOT, "03_windows_triage"))
+WUSER = cmio.windows_username()   # Windows-Profilordner aus Fall-Besitzer
 C = os.path.join(WIN, "C")
 SID = cfr.win_sid()
 COMPUTER = cfr.win_computer_name()
@@ -47,7 +49,7 @@ def filetime(iso):
 def recycle_bin():
     d = os.path.join(C, "$Recycle.Bin", SID)
     ensure(d)
-    orig = r"C:\Users\Daniel\Documents\Finanzen\Schuldenaufstellung_Jan.xlsx"
+    orig = rf"C:\Users\{WUSER}\Documents\Finanzen\Schuldenaufstellung_Jan.xlsx"
     content = b"PK\x03\x04 (synthetischer geloeschter XLSX-Inhalt) Schuldenaufstellung Januar"
     name = orig.encode("utf-16-le") + b"\x00\x00"
     i = struct.pack("<Q", 2) + struct.pack("<Q", len(content)) + filetime("2026-01-25T08:10:00+00:00")
@@ -104,9 +106,9 @@ def scheduled_tasks():
                                 cmd=r"C:\Program Files (x86)\Microsoft\EdgeUpdate\MicrosoftEdgeUpdate.exe"))
     reg(os.path.join(base, "Microsoft/EdgeUpdate/MicrosoftEdgeUpdateTaskMachineCore"), "noise", "Edge-Update-Task")
     with open(os.path.join(base, "BackupFinanzen"), "w", encoding="utf-16") as f:
-        f.write(TASK_XML.format(created="2026-01-20T21:00:00", author=f"{COMPUTER}\\Daniel",
+        f.write(TASK_XML.format(created="2026-01-20T21:00:00", author=f"{COMPUTER}\\{WUSER}",
                                 desc="Tägliche Sicherung Finanzordner auf USB.", start="2026-01-20T22:00:00",
-                                cmd=r"C:\Windows\System32\robocopy.exe C:\Users\Daniel\Documents\Finanzen E:\Backup /MIR"))
+                                cmd=rf"C:\Windows\System32\robocopy.exe C:\Users\{WUSER}\Documents\Finanzen E:\Backup /MIR"))
     reg(os.path.join(base, "BackupFinanzen"), "context",
         "Geplanter Task 'BackupFinanzen' -> Sicherung Finanzordner auf USB (E:) — passt zu USB-Nutzung")
 
@@ -114,8 +116,8 @@ def scheduled_tasks():
 # ---------------- Zone.Identifier (Sidecar) ----------------
 def zone_identifier():
     targets = [
-        ("C/Users/Daniel/Downloads/Bedienungsanleitung_Router.pdf", "https://example-isp.de/router/manual.pdf"),
-        ("C/Users/Daniel/Downloads/kontoauszug_export.csv", "https://onlinebanking.sparkasse.de/export"),
+        (f"C/Users/{WUSER}/Downloads/Bedienungsanleitung_Router.pdf", "https://example-isp.de/router/manual.pdf"),
+        (f"C/Users/{WUSER}/Downloads/kontoauszug_export.csv", "https://onlinebanking.sparkasse.de/export"),
     ]
     for rel, host in targets:
         src = os.path.join(WIN, rel)

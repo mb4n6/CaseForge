@@ -116,6 +116,27 @@ def device_owner(device_type, cm=None):
     return None
 
 
+def _clean_username(name):
+    """Vorname -> Windows-tauglicher Profilordnername (ASCII, ohne Sonderzeichen)."""
+    import re
+    first = (name or "").strip().split()[0] if name else ""
+    first = (first.replace("ä", "ae").replace("ö", "oe").replace("ü", "ue")
+             .replace("ß", "ss").replace("Ä", "Ae").replace("Ö", "Oe").replace("Ü", "Ue"))
+    first = re.sub(r"[^A-Za-z0-9]", "", first)
+    return first or "User"
+
+
+def windows_username(cm=None):
+    """Windows-Profilordnername aus dem Windows-Geraete-Besitzer (fall-adaptiv).
+    Referenzfall -> 'Daniel'. Fallback 'Daniel', wenn nicht ableitbar."""
+    cm = cm or load_master()
+    owner = device_owner("windows", cm)
+    if owner:
+        nm = name_of(owner, cm, owner)
+        return _clean_username(nm)
+    return "Daniel"
+
+
 # ---------------------------------------------------------------------
 # Nachrichten je Kanal (strukturierte Konvention)
 # ---------------------------------------------------------------------

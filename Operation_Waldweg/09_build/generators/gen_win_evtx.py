@@ -11,10 +11,12 @@ import sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import evtx_writer as ew
 import caseforge_rng as cfr
+import case_master_io as cmio
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(os.path.dirname(HERE))
 WIN = os.environ.get("WALDWEG_WIN_FS", os.path.join(ROOT, "03_windows_triage"))
+WUSER = cmio.windows_username()   # Windows-Profilordner aus Fall-Besitzer
 LOGS = os.path.join(WIN, "C/Windows/System32/winevt/Logs")
 COMP = cfr.win_computer_name()
 
@@ -24,13 +26,13 @@ def build_security():
     ch = "Security"
     events = [
         (1001, "2026-01-25T05:40:00+00:00", ew.event_template(sec, 4624, COMP, ch, {
-            "TargetUserName": "Daniel", "LogonType": "2", "WorkstationName": COMP,
+            "TargetUserName": WUSER, "LogonType": "2", "WorkstationName": COMP,
             "IpAddress": "-"})),  # interaktive Anmeldung
         (1002, "2026-01-25T06:33:00+00:00", ew.event_template(sec, 4648, COMP, ch, {
-            "TargetUserName": "Daniel", "TargetServerName": "localhost",
+            "TargetUserName": WUSER, "TargetServerName": "localhost",
             "ProcessName": r"C:\Windows\System32\runas.exe"})),
         (1003, "2026-01-25T11:25:00+00:00", ew.event_template(sec, 4634, COMP, ch, {
-            "TargetUserName": "Daniel", "LogonType": "2"})),  # Abmeldung
+            "TargetUserName": WUSER, "LogonType": "2"})),  # Abmeldung
     ]
     return ew.build(events)
 

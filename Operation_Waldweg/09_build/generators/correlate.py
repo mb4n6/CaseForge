@@ -9,6 +9,8 @@
 # Abgleich. Ausgabe: Master_Timeline.csv + Verifikationsreport (stdout).
 # =====================================================================
 import os
+import sys; sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import case_master_io as cmio
 import sqlite3
 import sys
 import csv
@@ -21,6 +23,7 @@ ROOT = os.path.dirname(BUILD)
 IOS = os.environ.get('WALDWEG_IOS_FS', '/tmp/ios_build')
 AND = os.environ.get('WALDWEG_AND_FS', '/tmp/and_build')
 WIN = os.environ.get('WALDWEG_WIN_FS', '/tmp/win_build')
+WUSER = cmio.windows_username()   # Windows-Profilordner aus Fall-Besitzer
 
 TZ = timezone(timedelta(hours=1))  # Europe/Berlin (Winterzeit)
 APPLE = 978307200
@@ -164,7 +167,7 @@ def load_android():
 # Windows
 # ---------------------------------------------------------------------
 def load_windows():
-    edge = os.path.join(WIN, 'C/Users/Daniel/AppData/Local/Microsoft/Edge/User Data/Default/History')
+    edge = os.path.join(WIN, f'C/Users/{WUSER}/AppData/Local/Microsoft/Edge/User Data/Default/History')
     if os.path.exists(edge):
         con = sqlite3.connect(f"file:{edge}?mode=ro", uri=True)
         for t,url in con.execute("SELECT last_visit_time,url FROM urls ORDER BY last_visit_time"):

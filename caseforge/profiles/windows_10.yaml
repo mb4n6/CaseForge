@@ -9,6 +9,8 @@ key_facts:
   - "ShimCache/AppCompatCache-Format weicht von Win11 ab"
   - "Kein Recall (Copilot+); Edge=Chromium wie Win11"
 artifact_overrides:
+  shimcache: true            # ShimCache/AppCompatCache im SYSTEM-Hive
+  usnjrnl: true              # $UsnJrnl:$J (USN_RECORD_V2)
   mft: true                  # $MFT (FILE-Records) erzeugen
   srum: true                 # SRUDB.dat (ESE-Header-Stub) erzeugen
   pca: false                 # Program Compatibility Assistant fehlt unter Win10

@@ -11,6 +11,8 @@ key_facts:
 generators: [android.core, android.location, android.extra, android.apps]
 notes: "Samsung-spezifisch: com.sec.* Provider; Pixel-Profil ggf. abweichend."
 artifact_overrides:
+  netpolicy: true            # data/system/netpolicy.xml
+  recent_tasks: true         # recent_tasks (ABX)
   scoped_storage: true
   media_provider: module
   privacy_dashboard: false

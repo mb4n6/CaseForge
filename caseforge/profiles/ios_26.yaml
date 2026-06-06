@@ -9,6 +9,7 @@ key_facts:
   - "shutdown.log-Verhalten in 26.0 veraendert, in 26.2 restauriert"
   - "BIOME/SEGB wie iOS 17/18; mehr 'shared data' bei logischer Extraktion"
 artifact_overrides:
+  powerlog: true             # CurrentPowerlog.PLSQL
   knowledgec: false
   biome: true
   chat_properties: true      # neue PLIST-Spalte in sms.db chat-Tabelle

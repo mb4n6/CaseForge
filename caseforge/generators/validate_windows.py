@@ -230,6 +230,33 @@ def gate_extended():
         import struct as _st2
         sig = _st2.unpack_from("<I", open(sru, "rb").read(8), 4)[0]
         ok("SRUDB.dat ESE-Signatur", sig == 0x89ABCDEF, hex(sig))
+    # $UsnJrnl:$J (USN_RECORD_V2) — existenz-gesteuert
+    jpath = os.path.join(WFS, "C/$Extend/$UsnJrnl_$J")
+    if os.path.exists(jpath):
+        import struct as _st3
+        jb = open(jpath, "rb").read()
+        rl = _st3.unpack_from("<I", jb, 0)[0]
+        maj = _st3.unpack_from("<H", jb, 4)[0]
+        nlen = _st3.unpack_from("<H", jb, 0x38)[0]
+        nm = jb[0x3C:0x3C + nlen].decode("utf-16-le", "replace")
+        print("$UsnJrnl:$J:")
+        ok("USN_RECORD_V2 parsebar", maj == 2 and 0 < rl <= len(jb), f"v{maj}, name={nm!r}")
+    # ShimCache / AppCompatCache (SYSTEM-Hive) — existenz-gesteuert
+    if os.path.exists(P_SYSTEM):
+        try:
+            from regipy.registry import RegistryHive as _RHs
+            sm = _RHs(P_SYSTEM).get_key(r"\ControlSet001\Control\Session Manager\AppCompatCache")
+            blob = [v.value for v in sm.iter_values() if v.name == "AppCompatCache"]
+            if blob:
+                v = blob[0]
+                if isinstance(v, str):          # regipy liefert Binaerwerte als Hex-String
+                    b = bytes.fromhex(v)
+                else:
+                    b = bytes(v)
+                print("ShimCache (AppCompatCache):")
+                ok("AppCompatCache 10ts-Entries", b"10ts" in b, f"{b.count(b'10ts')} Eintraege")
+        except Exception:
+            pass
     # Office File MRU + ComDlg32 (NTUSER)
     try:
         from regipy.registry import RegistryHive as _RH

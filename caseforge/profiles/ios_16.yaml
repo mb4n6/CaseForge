@@ -9,6 +9,7 @@ key_facts:
   - "BIOME erst im Aufbau -> Aktivitaet primaer in knowledgeC"
   - "WhatsApp Core-Data (ChatStorage.sqlite); App-Container <GUID>"
 artifact_overrides:
+  powerlog: true             # CurrentPowerlog.PLSQL
   knowledgec: true           # klassische Aktivitaets-DB vorhanden
   biome: reduced             # BIOME nur teilweise
   chat_properties: false

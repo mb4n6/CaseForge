@@ -126,6 +126,20 @@ def gate_extended():
             ok("ABX dekodierbar (Round-Trip) + op-Eintraege", len(ops) >= 1, f"{len(ops)} ops")
         except Exception as e:
             ok("ABX dekodierbar (Round-Trip)", False, str(e)[:40])
+    # netpolicy.xml — existenz-gesteuert
+    npx = os.path.join(fs, "data/system/netpolicy.xml")
+    if os.path.exists(npx):
+        txt = open(npx, encoding="utf-8").read()
+        print("netpolicy.xml:")
+        ok("netpolicy uid-policy-Eintraege", txt.count("uid-policy") >= 1, f"{txt.count('uid-policy')}")
+    # recent_tasks (ABX) — existenz-gesteuert
+    rtd = os.path.join(fs, "data/system_ce/0/recent_tasks")
+    if os.path.isdir(rtd):
+        rfiles = [x for x in os.listdir(rtd) if x.endswith(".xml")]
+        if rfiles:
+            print("recent_tasks (ABX):")
+            head = open(os.path.join(rtd, rfiles[0]), "rb").read(4)
+            ok("recent_tasks ABX-Magic", head == b"ABX\x00", f"{len(rfiles)} Tasks")
     # usagestats
     us = os.path.join(fs, "data/system/usagestats/0/daily")
     if os.path.isdir(us):

@@ -8,6 +8,7 @@ key_facts:
   - "BIOME/SEGB ausgeweitet; knowledgeC.db entfaellt (wie iOS 17)"
   - "Reorganisierte Log-/Sysdiag-Pfade; Apple-Intelligence geraeteabhaengig"
 artifact_overrides:
+  powerlog: true             # CurrentPowerlog.PLSQL
   knowledgec: false
   biome: true
   chat_properties: false

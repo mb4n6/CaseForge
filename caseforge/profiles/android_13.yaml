@@ -8,6 +8,8 @@ key_facts:
   - "Scoped Storage: Media-Provider external.db (com.google.android.providers.media.module)"
   - "Privacy Dashboard (ABX) ab Android 12 etabliert"
 artifact_overrides:
+  netpolicy: true            # data/system/netpolicy.xml
+  recent_tasks: true         # recent_tasks (ABX)
   scoped_storage: true
   media_provider: module      # ab Android 11: ...providers.media.module
   privacy_dashboard: false

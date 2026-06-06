@@ -88,9 +88,9 @@ python3 forge.py validate --root ../examples/operation_waldweg   # -> 12/12, lö
 
 | Plattform | Profile | Versionstypische Artefakte (Flag) |
 |---|---|---|
-| Windows | `windows_10`, `windows_11` | **PCA** nur Win11 22H2+ (`pca`); **`$MFT`** mit Fixups, `$SI/$FN`, Non-Resident-`$DATA`-Runs + NTFS-Systemrecords (`mft`); **SRUM `SRUDB.dat`** als ESE-Header-Stub (`srum`) |
-| iOS | `ios_16`, `ios_17`, `ios_18`, `ios_26` | **`knowledgeC.db`** (3-Tabellen-Modell) ≤ iOS 16 vs. **BIOME/SEGB** ≥ 17 (`knowledgec`); `chat_properties`-PLIST + `shutdown.log` ab iOS 26 |
-| Android | `android_13`, `android_14`, `android_15` | **Scoped-Storage `external.db`** (`module`/`legacy`-Pfad) (`scoped_storage`); **Privacy Dashboard** `/system/appops/discrete` als **voll-faithful ABX** auf `android_15` (`privacy_dashboard`) |
+| Windows | `windows_10`, `windows_11` | **PCA** nur Win11 22H2+ (`pca`); **`$MFT`** mit Fixups, `$SI/$FN`, Non-Resident-`$DATA`-Runs + NTFS-Systemrecords (`mft`); **`$UsnJrnl:$J`** (USN_RECORD_V2) (`usnjrnl`); **ShimCache/AppCompatCache** im SYSTEM-Hive (`shimcache`); **SRUM `SRUDB.dat`** als ESE-Header-Stub (`srum`) |
+| iOS | `ios_16`, `ios_17`, `ios_18`, `ios_26` | **`knowledgeC.db`** (3-Tabellen-Modell) ≤ iOS 16 vs. **BIOME/SEGB** ≥ 17 (`knowledgec`); `chat_properties`-PLIST + `shutdown.log` ab iOS 26; **Powerlog `CurrentPowerlog.PLSQL`** (`powerlog`) |
+| Android | `android_13`, `android_14`, `android_15` | **Scoped-Storage `external.db`** (`module`/`legacy`-Pfad) (`scoped_storage`); **Privacy Dashboard** `/system/appops/discrete` als **voll-faithful ABX** (`privacy_dashboard`); **`netpolicy.xml`** + **`recent_tasks`** (ABX) (`netpolicy`/`recent_tasks`) |
 
 Eine neue Version = ein neues `profiles/<name>.yaml`. Der Referenzfall trägt keine Overrides; die
 versionstypischen Artefakte bleiben dort aus. Über `artifact_classes` je Gerät im Spec lassen sich

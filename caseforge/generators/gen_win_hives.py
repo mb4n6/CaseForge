@@ -37,10 +37,36 @@ SID = cfr.win_sid()                 # seed-gesteuert (Referenz-Seed -> Originalw
 COMPUTER = cfr.win_computer_name()
 
 
-def filetime(iso):
+def filetime_int(iso):
     dt = datetime.fromisoformat(iso)
+    if dt.tzinfo is None:
+        dt = dt.replace(tzinfo=timezone.utc)
     epoch = datetime(1601, 1, 1, tzinfo=timezone.utc)
-    return struct.pack("<Q", int((dt - epoch).total_seconds() * 10_000_000))
+    return int((dt - epoch).total_seconds() * 10_000_000)
+
+
+def filetime(iso):
+    return struct.pack("<Q", filetime_int(iso))
+
+
+def shimcache_blob(entries):
+    """Win10/11 AppCompatCache (ShimCache) Binaerblob: Header (0x34) + '10ts'-Entries.
+    entries = [(pfad, iso_letzte_aenderung), ...] -> AppCompatCacheParser/RegRipper-parsebar."""
+    body = bytearray()
+    for path, iso in entries:
+        p = path.encode("utf-16-le")
+        inner = struct.pack("<H", len(p)) + p + struct.pack("<Q", filetime_int(iso)) + struct.pack("<I", 0)
+        body += b"10ts" + b"\x00\x00\x00\x00" + struct.pack("<I", len(inner)) + inner
+    header = struct.pack("<I", 0x34) + b"\x00" * (0x34 - 4)
+    return bytes(header + body)
+
+
+SHIMCACHE_ENTRIES = [
+    (r"C:\Windows\System32\robocopy.exe", "2026-01-25T08:11:00+00:00"),
+    (r"C:\Users\PUBLIC\rufus-4.4p.exe", "2026-01-24T22:48:00+00:00"),
+    (r"C:\Program Files\7-Zip\7zFM.exe", "2026-01-23T19:05:00+00:00"),
+    (r"C:\Windows\System32\cipher.exe", "2026-01-25T08:12:00+00:00"),
+]
 
 
 def systemtime(iso):
@@ -182,6 +208,10 @@ def system_tree():
             "DaylightName": ("sz", "Mitteleuropäische Sommerzeit")}},
         "Windows": {"values": {"ShutdownTime": ("binary", filetime("2026-01-25T11:30:00+00:00"))}},
     }
+    # ShimCache / AppCompatCache (Ausfuehrungs-/Existenznachweis) — profilgesteuert (Flag shimcache)
+    if cmio.device_profile_flag("windows", "shimcache", False):
+        control["Session Manager"] = {"subkeys": {"AppCompatCache": {"values": {
+            "AppCompatCache": ("binary", shimcache_blob(SHIMCACHE_ENTRIES))}}}}
     services = {
         "Tcpip": {"values": {"Start": ("dword", 1), "Type": ("dword", 1),
                              "DisplayName": ("sz", "TCP/IP-Protokolltreiber")},

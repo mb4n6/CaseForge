@@ -114,6 +114,18 @@ REGISTRY: List[Generator] = [
     Generator("win.srum", "windows", "win>=10", "gen_win_srum.py", ["telemetry"],
               ["C/Windows/System32/sru/SRUDB.dat"], "ese-stub", "SrumECmd / esedbexport",
               "validate_windows.py", notes="ESE-Header-Stub (Profil-Flag srum); kein voll-faithful ESE"),
+    Generator("win.usnjrnl", "windows", "win>=10", "gen_win_usnjrnl.py", ["filesystem"],
+              ["C/$Extend/$UsnJrnl_$J"], "ntfs-usn", "MFTECmd ($J) / UsnJrnl2Csv",
+              "validate_windows.py", notes="USN_RECORD_V2 (Profil-Flag usnjrnl)"),
+    # win.hives erzeugt zusaetzlich ShimCache/AppCompatCache im SYSTEM-Hive (Profil-Flag shimcache).
+
+    # ---- weitere iOS/Android (profilgesteuert) ----
+    Generator("ios.powerlog", "ios", "ios>=14", "gen_ios_powerlog.py", ["activity", "power"],
+              ["private/var/mobile/Library/BatteryLife/CurrentPowerlog.PLSQL"], "sqlite",
+              "iLEAPP (Powerlog)", "validate_ios.py", notes="Profil-Flag powerlog"),
+    Generator("android.system", "android", "android>=12", "gen_android_system.py", ["system"],
+              ["data/system/netpolicy.xml", "data/system_ce/0/recent_tasks/*"], "xml/abx",
+              "ALEAPP", "validate_android.py", notes="Profil-Flags netpolicy/recent_tasks"),
 
     # ---- Cloud / Cross-device ----
     Generator("cloud.exports", "cloud", "*", "gen_cloud.py", ["cloud_location", "cloud_sync"],

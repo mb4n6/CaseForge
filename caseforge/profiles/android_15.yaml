@@ -8,6 +8,8 @@ key_facts:
   - "Scoped Storage konsequent; Media-Provider external.db (module-Pfad)"
   - "Erweiterte Permission-/Privacy-Telemetrie (Privacy Dashboard)"
 artifact_overrides:
+  netpolicy: true            # data/system/netpolicy.xml
+  recent_tasks: true         # recent_tasks (ABX)
   scoped_storage: true
   media_provider: module
   privacy_dashboard: true

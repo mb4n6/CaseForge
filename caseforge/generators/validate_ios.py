@@ -189,6 +189,14 @@ def gate_extra():
     if os.path.exists(slp):
         txt = open(slp, encoding="utf-8").read()
         ok("shutdown.log (iOS 26)", "remaining client pid" in txt)
+    # Powerlog (CurrentPowerlog.PLSQL) — existenz-gesteuert
+    pl = os.path.join(IOS_FS, "private/var/mobile/Library/BatteryLife/CurrentPowerlog.PLSQL")
+    if os.path.exists(pl):
+        print("Powerlog (PLSQL):")
+        con = sqlite3.connect(f"file:{pl}?mode=ro&immutable=1", uri=True)
+        n = con.execute("SELECT COUNT(*) FROM PLAppTimeService_Aggregate_AppRunTime").fetchone()[0]
+        con.close()
+        ok("Powerlog App-Runtime-Tabelle", n >= 1, f"{n} Zeilen")
 
 
 def main():

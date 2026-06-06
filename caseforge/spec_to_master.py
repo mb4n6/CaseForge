@@ -101,6 +101,9 @@ def build_master(spec, base):
         meta["deliktart"] = spec["deliktart"]
     if spec.get("lernziel"):
         meta["lernziel"] = spec["lernziel"]
+    # Eingewobene forensische Problemstellungen (Wissensbasis) -> meta (fuer Report/Dozent)
+    if spec.get("forensic_problems"):
+        meta["forensic_problems"] = list(spec["forensic_problems"])
     # Seed: Spec-Wert hat Vorrang; sonst NEUEN Zufalls-Seed vergeben (nicht den
     # Referenz-Seed erben!), damit jeder Fall eigene Identifikatoren/Mengen erhaelt.
     # Reproduzierbar, da der Seed im Master gespeichert wird.

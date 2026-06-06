@@ -1,0 +1,51 @@
+# =====================================================================
+# CaseForge Wissensbasis — Taxonomie der forensischen Problemstellungen
+# ---------------------------------------------------------------------
+# Kontrolliertes Vokabular fuer Kategorien, Subdomains, Schwierigkeit
+# und Status. Erweiterbar: neue Subdomain hier eintragen, dann in den
+# Problem-Eintraegen verwenden. knowledge_base.py prueft Eintraege
+# tolerant gegen diese Listen (Warnung, kein harter Fehler).
+# =====================================================================
+
+categories:
+  computer_forensics:
+    label_de: Computerforensik
+    label_en: Computer forensics
+    desc: Datentraeger-/Host-Forensik (Windows, Dateisysteme, Registry, Logs)
+  mobile_forensics:
+    label_de: Mobilfunkforensik
+    label_en: Mobile forensics
+    desc: Smartphone-/Geraeteforensik (iOS, Android, Standort, Messaging, Cell)
+  app_analysis:
+    label_de: App-Analyse
+    label_en: App analysis
+    desc: Applikations-/Datenbankanalyse (Schema-Reversing, App-Artefakte, Verschluesselung)
+
+# Subdomains = feinere Tags (frei kombinierbar, plattformuebergreifend)
+subdomains:
+  - location            # Standort/Ortung (Cell, WiFi, GNSS, Maps)
+  - messaging           # Chat/SMS/Messenger
+  - calls               # Anruf-/Telefonie-Artefakte
+  - browser             # Browser-Verlauf/Downloads
+  - registry            # Windows-Registry
+  - filesystem          # NTFS/$MFT/$UsnJrnl/Journaling
+  - eventlog            # Windows Event Logs / Unified Logs
+  - telemetry           # SRUM/Powerlog/usagestats/Aktivitaet
+  - antiforensics       # Loeschung, Timestomping, Verschleierung
+  - cloud_sync          # Cloud-/Geraete-Synchronisation
+  - usb_exfiltration    # Wechseldatentraeger/Datenabfluss
+  - app_schema          # App-DB-Schema, Reversing, Normalisierung
+  - encryption          # Verschluesselung/Obfuskation/Schluesselableitung
+  - account_binding     # Geraet-/Konto-Zuordnung
+  - media               # Bilder/Video/EXIF/Thumbnails
+  - timeline            # Cross-Device-Zeitleisten-Korrelation
+
+difficulty:
+  - basic
+  - intermediate
+  - advanced
+
+provenance_status:
+  - draft        # frisch angelernt, noch nicht freigegeben
+  - approved     # menschlich freigegeben -> beim Fallbau nutzbar
+  - deprecated   # ausgemustert

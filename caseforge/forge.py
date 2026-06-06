@@ -88,6 +88,22 @@ def cmd_propose(args):
     lang = i18n.short(ui.get("language"))
     ui["language"] = i18n.locale(lang)
     print(f"[Sprache/Language: {i18n.endonym(lang)} ({i18n.locale(lang)})]")
+    # Problemstellungs-Auswahl (Wissensbasis): auto | match | none | id1,id2,...
+    probsel = getattr(args, "problems", None) or ui.get("problems")
+    if probsel == "match":
+        import knowledge_base as kb
+        text = f"{ui.get('deliktart','')} {ui.get('lernziel','')}"
+        plats = [d.get("platform") for d in ui.get("devices", []) if d.get("platform")] or None
+        ids = [e["id"] for e, _ in kb.match(text, platforms=plats, k=4)]
+        ui["problems"] = ids
+        print(f"[Problemstellungen (match)]: {', '.join(ids) or '(keine)'}")
+    elif probsel and probsel not in ("auto", "none"):
+        ui["problems"] = [s.strip() for s in str(probsel).split(",") if s.strip()]
+        print(f"[Problemstellungen (fix)]: {', '.join(ui['problems'])}")
+    elif probsel:
+        ui["problems"] = probsel
+        if probsel == "auto":
+            print("[Problemstellungen: auto — LLM waehlt aus der Wissensbasis]")
     prompt = llm.build_prompt(ui)
     outdir = os.path.join(HERE, "out")
     if args.backend == "ollama":
@@ -100,6 +116,89 @@ def cmd_propose(args):
         print(f"-> out/proposal_raw.txt ({len(raw)} Zeichen)")
     else:
         print(llm.propose_cowork(prompt, outdir))
+
+
+def _parse_yaml_block(raw):
+    """Extrahiert ein YAML-Dokument aus LLM-Rohtext (toleriert Code-Zaeune/Vorspann)."""
+    import yaml
+    txt = raw.strip()
+    if "```" in txt:  # Code-Zaeune entfernen
+        parts = txt.split("```")
+        # nimm den laengsten Block, der wie YAML aussieht
+        cand = max(parts, key=len)
+        txt = cand.lstrip()
+        if txt.lower().startswith(("yaml", "yml")):
+            txt = txt.split("\n", 1)[1] if "\n" in txt else txt
+    try:
+        obj = yaml.safe_load(txt)
+        return obj if isinstance(obj, dict) else None
+    except Exception:
+        return None
+
+
+def cmd_teach(args):
+    """Anlernen einer Problemstellung: Freitext -> LLM-Struktur -> menschliche Freigabe."""
+    import knowledge_base as kb
+    if args.approve:
+        print(f"Freigegeben -> {kb.approve(args.approve, by=getattr(args, 'by', None))}")
+        return
+    if args.list_drafts:
+        ds = kb.list_drafts()
+        print(f"{len(ds)} Entwuerfe (knowledge/incoming/):")
+        for e in ds:
+            pv = e.get("provenance", {}) or {}
+            print(f"  - {e.get('id')}  ({pv.get('source','?')}/{pv.get('status','?')})")
+        return
+    if not args.input:
+        print("Bitte --input <freitext.txt> angeben  (oder --list-drafts / --approve <id>)."); sys.exit(1)
+    import llm
+    freetext = open(args.input, encoding="utf-8").read()
+    prompt = llm.build_teach_prompt(freetext)
+    outdir = os.path.join(HERE, "out"); os.makedirs(outdir, exist_ok=True)
+    if args.backend == "ollama":
+        url = getattr(args, "url", None) or "http://localhost:11434"
+        to = getattr(args, "timeout", None) or 1800
+        print(f"[ollama] {args.model} @ {url} (Wissens-Extraktion) ...")
+        raw = llm.propose_ollama(prompt, model=args.model, url=url, timeout=to)
+        entry = _parse_yaml_block(raw)
+        if not entry:
+            p = os.path.join(outdir, "teach_raw.txt"); open(p, "w", encoding="utf-8").write(raw)
+            print(f"Kein YAML parsebar -> {p} (manuell nach knowledge/incoming/ uebernehmen)."); sys.exit(1)
+        path = kb.save_draft(entry)
+        errs = kb.validate_entry(entry)
+        print(f"Entwurf abgelegt -> {os.path.relpath(path, HERE)}")
+        if errs:
+            print("  [WARN] Schema-Hinweise (vor Freigabe beheben):")
+            for e in errs:
+                print(f"    - {e}")
+        print(f"Pruefen, dann freigeben:  forge.py teach --approve {entry.get('id')}")
+    else:
+        p = os.path.join(outdir, "teach_prompt.md")
+        open(p, "w", encoding="utf-8").write(prompt)
+        print(f"[cowork] Teach-Prompt-Bundle geschrieben: {p}\n"
+              "In Claude Cowork ausfuehren -> YAML-Antwort als "
+              "knowledge/incoming/<id>.draft.yaml speichern, dann 'forge.py teach --approve <id>'.")
+
+
+def cmd_problems(args):
+    """Wissensbasis durchsuchen/anzeigen (manuelle Auswahl unterstuetzen)."""
+    import knowledge_base as kb
+    if args.show:
+        e = kb.get(args.show)
+        if not e:
+            print(f"Nicht gefunden: {args.show}"); sys.exit(1)
+        import yaml as _y; e.pop("_path", None)
+        print(_y.safe_dump(e, allow_unicode=True, sort_keys=False, width=100)); return
+    if args.match:
+        plats = args.platform.split(",") if args.platform else None
+        res = kb.match(args.match, platforms=plats, category=args.category, k=args.k)
+        print(f"Top {len(res)} fuer {args.match!r}:")
+        for e, sc in res:
+            print(f"  [{sc:>2}] {e['id']:<34} {e.get('title')}")
+        return
+    items = kb.filter_entries(category=args.category, platform=args.platform, status="approved")
+    print(f"{len(items)} Problemstellungen (approved):\n")
+    print(kb.summary_for_prompt(items) or "  (keine)")
 
 
 def cmd_init(args):
@@ -157,6 +256,17 @@ def cmd_build(args):
     # CLI-Overrides (--seed/--scope) in den Fall-Master schreiben (nur Fall-Master, nicht REF)
     if (getattr(args, "seed", None) or getattr(args, "scope", None)) and master != REF_MASTER:
         _patch_master_meta(master, seed=getattr(args, "seed", None), scope=getattr(args, "scope", None))
+    # Wissensbasis: gewaehlte Problemstellungen aktivieren ihre Artefaktklassen
+    # auf bereits eingeschraenkten Geraeten (Slim-/Teilfaelle bleiben vollstaendig).
+    if spec and spec.get("forensic_problems"):
+        try:
+            import knowledge_base as kb
+            enable = kb.case_hook_digest(spec["forensic_problems"]).get("enable_artifact_classes", [])
+            for d in spec.get("devices", []):
+                if d.get("artifact_classes"):
+                    d["artifact_classes"] = sorted(set(d["artifact_classes"]) | set(enable))
+        except Exception as e:
+            print(f"[WARN] Problemstellungs-Klassen nicht angewandt: {e}")
     mods = _modules_for(spec, args.platform)
     env = _env(root, master)
     print(f"Build -> {root}\ncase_master: {master}\nGeneratoren ({len(mods)}): {', '.join(m[:-3] for m in mods)}")
@@ -246,8 +356,30 @@ def main():
     p.add_argument("--model", default="qwen2.5:32b-instruct")
     p.add_argument("--input"); p.add_argument("--delikt"); p.add_argument("--lernziel"); p.add_argument("--assets", type=int)
     p.add_argument("--lang", help="Ausgabesprache des Fall-Vorschlags (de|en|fr|es|tr | Locale wie en-US)")
+    p.add_argument("--problems", help="Problemstellungen aus der Wissensbasis: 'auto' (LLM waehlt), "
+                                      "'match' (deterministisch nach Delikt/Lernziel), 'none', oder id1,id2,...")
     p.add_argument("--url", default="http://localhost:11434", help="ollama-Server-URL")
     p.add_argument("--timeout", type=int, default=1800, help="ollama Read-Timeout pro Chunk (Sekunden)")
+
+    # ---- teach: Problemstellung anlernen (Freitext -> LLM -> Freigabe) ----
+    t = sub.add_parser("teach"); t.set_defaults(func=cmd_teach)
+    t.add_argument("--input", help="Freitext-Datei eines Experten (zu strukturieren)")
+    t.add_argument("--backend", choices=["cowork", "ollama"], default="cowork")
+    t.add_argument("--model", default="qwen2.5:32b-instruct")
+    t.add_argument("--url", default="http://localhost:11434")
+    t.add_argument("--timeout", type=int, default=1800)
+    t.add_argument("--list-drafts", dest="list_drafts", action="store_true", help="Entwuerfe in incoming/ zeigen")
+    t.add_argument("--approve", help="Entwurf <id> freigeben -> nach knowledge/problems/")
+    t.add_argument("--by", help="Name der freigebenden Person (provenance.reviewed_by)")
+
+    # ---- problems: Wissensbasis durchsuchen ----
+    pr = sub.add_parser("problems"); pr.set_defaults(func=cmd_problems)
+    pr.add_argument("--show", help="eine Problemstellung im Detail (id)")
+    pr.add_argument("--match", help="Freitext -> Ranking passender Problemstellungen")
+    pr.add_argument("--platform", help="Filter/Match-Plattform(en), Komma-Liste")
+    pr.add_argument("--category", choices=["computer_forensics", "mobile_forensics", "app_analysis"])
+    pr.add_argument("-k", type=int, default=5)
+
     i = sub.add_parser("init"); i.set_defaults(func=cmd_init)
     i.add_argument("--name", required=True); i.add_argument("--from", dest="frm")
     for name, fn in (("build", cmd_build), ("validate", cmd_validate), ("run", cmd_run),

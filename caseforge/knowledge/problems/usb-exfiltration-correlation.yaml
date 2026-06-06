@@ -1,0 +1,45 @@
+id: usb-exfiltration-correlation
+title: USB-Datenabfluss ueber mehrere Windows-Artefakte korrelieren
+category: computer_forensics
+subdomains: [usb_exfiltration, registry, filesystem]
+platforms: [windows]
+difficulty: advanced
+learning_objective: >-
+  Lernende belegen das Anstecken eines Wechseldatentraegers und einen folgenden
+  Datenabfluss, indem sie Registry, Dateisystem-Journal und Verknuepfungen
+  zu einer Kette zusammenfuehren.
+description: >-
+  Ein USB-Stick wurde angesteckt und Dateien darauf kopiert. Kein Einzelartefakt
+  beweist den Abfluss; erst die Kombination aus USBSTOR/MountedDevices,
+  ShellBags, LNK-Zielen und $UsnJrnl-Schreibvorgaengen ergibt ein belastbares
+  Bild.
+artifact_classes: [registry, filesystem, shortcuts]
+registry_refs: [win.hives, win.usnjrnl, win.lnk]
+tools: ["RegRipper (usbstor/mountdev)", "MFTECmd ($J)", LECmd / LnkParse3]
+case_hooks:
+  enable_artifact_classes: [registry, filesystem, shortcuts]
+  planted_inconsistency:
+    title: USB-Abfluss nur in Kombination belegbar
+    detail: >-
+      Geraet in USBSTOR registriert, Zieldateien als LNK referenziert, Kopier-
+      vorgaenge im $UsnJrnl — einzeln je harmlos, zusammen belastend.
+    sources: [SYSTEM (USBSTOR), Recent/*.lnk, "$Extend/$UsnJrnl_$J"]
+  timeline_hint: >-
+    Ereignisse: USB-Anstecken, Datei-Oeffnen vom Stick, Kopie auf den Stick.
+detection_method: >-
+  USBSTOR-Seriennummer + MountedDevices der Laufwerksbuchstabe zuordnen,
+  ShellBags/LNK auf Wechsellaufwerk-Pfade pruefen, $UsnJrnl auf FILE_CREATE/
+  DATA_OVERWRITE der Zieldateien filtern und alles zeitlich gegen die Anstecke
+  legen.
+pitfalls:
+  - Einzelartefakt (nur USBSTOR) als Abfluss-Beweis ueberinterpretieren.
+  - Laufwerksbuchstabe ohne MountedDevices-Abgleich annehmen.
+ethics:
+  sensitive: false
+provenance:
+  source: expert
+  author: CaseForge Seed
+  created: '2026-06-06'
+  status: approved
+references:
+  - SANS Windows Forensic Analysis (USB Device Tracking)

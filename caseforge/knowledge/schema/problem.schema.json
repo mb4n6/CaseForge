@@ -1,0 +1,82 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CaseForge Forensic Problem (Problemstellung)",
+  "description": "Ein wiederverwendbarer Baustein forensischen Expertenwissens: eine charakteristische forensische Problemstellung/Herausforderung, die ein Fall den Lernenden stellen soll. Mensch-kuratiert oder LLM-extrahiert + freigegeben. Wird beim Fallbau manuell oder per LLM ausgewaehlt und deterministisch in den Case-Spec eingewoben.",
+  "type": "object",
+  "required": ["id", "title", "category", "platforms", "difficulty",
+               "learning_objective", "description", "artifact_classes",
+               "detection_method", "provenance"],
+  "additionalProperties": false,
+  "properties": {
+    "id": {"type": "string", "pattern": "^[a-z0-9]+(?:[_-][a-z0-9]+)*$",
+           "description": "stabiler Slug, z.B. 'loc-wifi-vs-cell-conflict'"},
+    "title": {"type": "string", "description": "kurzer sprechender Titel"},
+    "category": {"enum": ["computer_forensics", "mobile_forensics", "app_analysis"],
+                 "description": "Computerforensik | Mobilfunkforensik | App-Analyse"},
+    "subdomains": {"type": "array", "items": {"type": "string"},
+                   "description": "freie, kontrollierte Tags aus taxonomy.yaml, z.B. 'location','antiforensics','messaging','registry'"},
+    "platforms": {"type": "array", "minItems": 1,
+                  "items": {"enum": ["ios", "android", "windows", "cloud", "crossdevice"]},
+                  "description": "auf welchen Plattformen die Problemstellung greift"},
+    "difficulty": {"enum": ["basic", "intermediate", "advanced"]},
+    "learning_objective": {"type": "string",
+                           "description": "didaktisches Ziel in einem Satz (das, was die/der Lernende koennen soll)"},
+    "description": {"type": "string",
+                    "description": "die forensische Problemstellung in Expertensprache (worum geht es, warum ist es schwierig)"},
+    "artifact_classes": {"type": "array", "minItems": 1, "items": {"type": "string"},
+                         "description": "betroffene Artefaktklassen aus registry.artifact_classes() (z.B. 'location','messaging','registry','filesystem','telemetry','app_sandbox')"},
+    "registry_refs": {"type": "array", "items": {"type": "string"},
+                      "description": "optionale Generator-IDs aus registry.py (z.B. 'win.mft','ios.location'), die die Spuren tragen"},
+    "tools": {"type": "array", "items": {"type": "string"},
+              "description": "relevante Forensik-Tools zur Auswertung/Validierung"},
+    "case_hooks": {
+      "type": "object",
+      "description": "Wie die Problemstellung deterministisch in einen Case-Spec einwebt.",
+      "additionalProperties": false,
+      "properties": {
+        "enable_artifact_classes": {"type": "array", "items": {"type": "string"},
+          "description": "Artefaktklassen, die auf den passenden Geraeten aktiviert werden sollen"},
+        "planted_inconsistency": {
+          "type": "object",
+          "description": "Vorlage fuer einen geplanten Widerspruch (planted_inconsistencies-Eintrag).",
+          "properties": {
+            "title": {"type": "string"},
+            "detail": {"type": "string"},
+            "sources": {"type": "array", "items": {"type": "string"},
+                        "description": "die ≥2 widerspruechlichen Artefaktquellen"}
+          }
+        },
+        "timeline_hint": {"type": "string",
+          "description": "Hinweis fuer den LLM, welche Timeline-Ereignisse die Spur erzeugen"}
+      }
+    },
+    "detection_method": {"type": "string",
+      "description": "Experten-Loesungsweg: wie weist man die Spur nach / loest den Widerspruch auf (Dozenten-/Lehrwissen)"},
+    "pitfalls": {"type": "array", "items": {"type": "string"},
+                 "description": "typische Fehlschluesse / red herrings"},
+    "ethics": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "sensitive": {"type": "boolean", "default": false,
+          "description": "true bei sensiblen Delikten -> nur Artefakt-STRUKTUREN/Metadaten, keine inkriminierenden Inhalte"},
+        "notes": {"type": "string"}
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "required": ["source", "status"],
+      "additionalProperties": false,
+      "properties": {
+        "source": {"enum": ["expert", "llm_extracted", "llm_extracted_reviewed"],
+                   "description": "Herkunft des Wissens (Mensch / LLM / LLM+menschlich geprueft)"},
+        "author": {"type": "string"},
+        "created": {"type": "string", "description": "ISO-Datum"},
+        "reviewed_by": {"type": "string"},
+        "status": {"enum": ["draft", "approved", "deprecated"],
+                   "description": "nur 'approved' wird beim Fallbau verwendet"}
+      }
+    },
+    "references": {"type": "array", "items": {"type": "string"}}
+  }
+}

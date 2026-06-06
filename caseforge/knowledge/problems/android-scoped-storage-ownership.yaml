@@ -1,0 +1,39 @@
+id: android-scoped-storage-ownership
+title: Medien-Eigentuemerschaft unter Android Scoped Storage zuordnen
+category: app_analysis
+subdomains: [app_schema, media, storage]
+platforms: [android]
+difficulty: intermediate
+learning_objective: >-
+  Lernende ordnen Mediendateien der erzeugenden App zu, indem sie die
+  MediaStore-external.db (owner_package_name, _data) statt nur des Dateipfads
+  auswerten.
+description: >-
+  Seit Scoped Storage (Android 10+) liegt nicht mehr jede Datei frei im
+  gemeinsamen Speicher; die MediaStore-DB verknuepft Mediendateien mit der
+  erzeugenden App (owner_package_name). Lernende muessen Provider-Pfad
+  (module vs. legacy) und Eigentuemer korrekt lesen.
+artifact_classes: [storage, media]
+registry_refs: [android.scoped]
+tools: [ALEAPP (MediaStore), "DB Browser for SQLite"]
+case_hooks:
+  enable_artifact_classes: [storage, media]
+  timeline_hint: >-
+    Lege Mediendateien an, die ueber external.db einer bestimmten App
+    (owner_package_name) zugeordnet sind.
+detection_method: >-
+  external.db files-Tabelle abfragen (_data, owner_package_name, date_added),
+  module- vs legacy-Provider-Pfad beachten und die Eigentuemer-App gegen die
+  installierten Pakete plausibilisieren.
+pitfalls:
+  - Aus dem Dateipfad allein auf die erzeugende App schliessen.
+  - module-Provider-Pfad uebersehen (com.google.android.providers.media.module).
+ethics:
+  sensitive: false
+provenance:
+  source: expert
+  author: CaseForge Seed
+  created: '2026-06-06'
+  status: approved
+references:
+  - Android Scoped Storage / MediaStore external.db

@@ -1,0 +1,44 @@
+id: ntfs-timestomping-si-vs-fn
+title: Timestomping erkennen — $STANDARD_INFORMATION vs. $FILE_NAME
+category: computer_forensics
+subdomains: [filesystem, antiforensics]
+platforms: [windows]
+difficulty: advanced
+learning_objective: >-
+  Lernende erkennen manipulierte Zeitstempel, indem sie die $SI-Zeiten gegen die
+  schwerer faelschbaren $FN-Zeiten im $MFT abgleichen.
+description: >-
+  Ein Tatwerkzeug (z.B. ein nachtraeglich platziertes Tool) wurde per
+  Timestomping mit alten $SI-Zeitstempeln versehen, um unauffaellig zu wirken.
+  Die $FILE_NAME-Zeiten (vom Kernel gesetzt) widersprechen jedoch den
+  $STANDARD_INFORMATION-Zeiten.
+artifact_classes: [filesystem]
+registry_refs: [win.mft, win.usnjrnl]
+tools: [MFTECmd / analyzeMFT, "MFTECmd ($J)"]
+case_hooks:
+  enable_artifact_classes: [filesystem]
+  planted_inconsistency:
+    title: $SI vs. $FN divergieren
+    detail: >-
+      $SI-Created weit in der Vergangenheit, $FN-Created im Tatzeitfenster —
+      klassisches Timestomping-Muster.
+    sources: ["$MFT $STANDARD_INFORMATION", "$MFT $FILE_NAME"]
+  timeline_hint: >-
+    Lege eine Datei an, deren angezeigte (SI-)Erstellung lange vor ihrer
+    tatsaechlichen (FN-)Erstellung liegt.
+detection_method: >-
+  Im $MFT je Datei $SI- und $FN-Zeiten getrennt auslesen; grobe Divergenz
+  (insb. SI < FN oder Sub-Sekunden-Nullen bei SI) als Manipulationsindiz werten
+  und mit $UsnJrnl-Ereignissen gegenpruefen.
+pitfalls:
+  - Nur die im Explorer sichtbaren ($SI-)Zeiten betrachten.
+  - Legitime Kopiervorgaenge vorschnell als Timestomping deuten.
+ethics:
+  sensitive: false
+provenance:
+  source: expert
+  author: CaseForge Seed
+  created: '2026-06-06'
+  status: approved
+references:
+  - NTFS $MFT $SI/$FN Zeitstempel-Semantik

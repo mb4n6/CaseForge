@@ -1,0 +1,46 @@
+id: loc-wifi-vs-cell-conflict
+title: Quellkonflikt — gecachte WiFi-Assoziation vs. zeitgleiche Mobilfunk-Ortung
+category: mobile_forensics
+subdomains: [location, timeline]
+platforms: [ios, android]
+difficulty: intermediate
+learning_objective: >-
+  Lernende erkennen, dass ein WiFi-Standort-Cache eine veraltete Position
+  konservieren kann, und gewichten ihn gegen eine zeitgleiche, ungenauere
+  Mobilfunk-Ortung statt einer Einzelquelle blind zu vertrauen.
+description: >-
+  Ein Geraet zeigt fuer denselben Zeitpunkt zwei widerspruechliche Positionen:
+  eine praezise, aber GECACHTE WiFi-Assoziation (z.B. "Home"), die eine alte
+  Anwesenheit fortschreibt, und eine grobe, aber AKTUELLE Funkzellen-Ortung in
+  Tatortnaehe. Wer nur den genaueren WiFi-Punkt liest, verortet die Person falsch.
+artifact_classes: [location]
+registry_refs: [ios.location, android.location]
+tools: [iLEAPP (LocationD), ALEAPP (Loc)]
+case_hooks:
+  enable_artifact_classes: [location]
+  planted_inconsistency:
+    title: WiFi-Cache vs. Cell-Ortung
+    detail: >-
+      Gecachte WiFi-BSSID-Assoziation "Home" (Zeitstempel aelter) gegen
+      zeitgleiche, groessere Cell-Ortung nahe Tatort.
+    sources: [cache_encryptedB.db (locationd), location_cache.db (GMS)]
+  timeline_hint: >-
+    Erzeuge fuer das kritische Zeitfenster sowohl einen alten WiFi-Fix (Home)
+    als auch einen aktuellen Cell-Fix nahe Tatort fuer dieselbe person/device-id.
+detection_method: >-
+  Zeitstempel beider Quellen getrennt dekodieren (Apple-CFAbsolute bzw.
+  Unix-ms), Cache-Charakter der WiFi-Assoziation am aelteren last_seen erkennen,
+  Genauigkeitsradius der Cell-Ortung beachten und beide gegen die uebrige
+  Geraeteaktivitaet (Schritte, App-Nutzung) plausibilisieren.
+pitfalls:
+  - Hoehere WiFi-Genauigkeit mit hoeherer Aktualitaet verwechseln.
+  - Cache-Zeitstempel als Aufenthaltszeitpunkt missdeuten.
+ethics:
+  sensitive: false
+provenance:
+  source: expert
+  author: Operation Waldweg (Referenzfall)
+  created: '2026-01-25'
+  status: approved
+references:
+  - Apple locationd cache_encryptedB.db (CLLocationManager-Cache)

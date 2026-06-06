@@ -1,0 +1,38 @@
+id: ios-activity-source-by-version
+title: iOS-Aktivitaetsquelle haengt von der OS-Version ab (knowledgeC vs. BIOME)
+category: mobile_forensics
+subdomains: [telemetry, timeline]
+platforms: [ios]
+difficulty: advanced
+learning_objective: >-
+  Lernende waehlen die richtige Aktivitaets-Artefaktquelle abhaengig von der
+  iOS-Version und vermeiden, auf einem aktuellen Geraet vergeblich nach
+  knowledgeC.db zu suchen.
+description: >-
+  Bis iOS 16 traegt knowledgeC.db (ZOBJECT) App-Nutzung und Geraetezustaende;
+  ab iOS 17 wandert diese Information in BIOME/SEGB-Streams. Wer die Version
+  ignoriert, uebersieht die App-InFocus-/Lock-Spuren komplett.
+artifact_classes: [activity, device_state]
+registry_refs: [ios.knowledgec, ios.biome, ios.powerlog]
+tools: ["iLEAPP / APOLLO (knowledgeC)", BIOME-Stream-Analyzer (mb4n6)]
+case_hooks:
+  enable_artifact_classes: [activity, device_state]
+  timeline_hint: >-
+    Erzeuge App-InFocus- und ScreenLocked-Ereignisse; der Generator legt sie je
+    nach OS-Profil in knowledgeC.db (<=16) oder BIOME (>=17) ab.
+detection_method: >-
+  Zuerst die iOS-Version bestimmen (Build/Profil), dann die passende Quelle
+  waehlen: knowledgeC.db ZOBJECT-Stream bzw. BIOME-Segmente (SEGB v2) parsen und
+  ZSTREAMNAME/Stream-Typ den Ereignissen zuordnen.
+pitfalls:
+  - Auf iOS 17+ nach knowledgeC.db suchen und "keine Aktivitaet" schliessen.
+  - BIOME-Zeitbasis (Mach Continuous) mit Wall-Clock verwechseln.
+ethics:
+  sensitive: false
+provenance:
+  source: expert
+  author: CaseForge Seed
+  created: '2026-06-06'
+  status: approved
+references:
+  - Apple CoreDuet knowledgeC.db; BIOME/SEGB ab iOS 17

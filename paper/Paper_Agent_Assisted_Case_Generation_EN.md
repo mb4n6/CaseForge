@@ -28,7 +28,12 @@ the data itself is produced **deterministically and model-independently**; a man
 correctness and harmlessness. Realism is not asserted but **demonstrated by cross-checking
 with real open-source forensic tools** (iLEAPP, ALEAPP, regipy, python-evtx, LnkParse3). A
 novel two-tier validation concept separates **format-level** from **solution-level** checks,
-making even freely specified cases independently verifiable. The framework is **multilingual**:
+making even freely specified cases independently verifiable. Beyond the individual case, the
+framework grows into a **forensic expert system**: a knowledge base of reusable *forensic
+problems* spanning computer forensics, mobile forensics and app analysis is **taught** by the
+language model from expert free text (with mandatory human approval) and selected automatically
+or manually at build time — a concrete mechanism for mutually enriching machine and human
+expertise. The framework is **multilingual**:
 the case language is selected up front and flows into the LLM proposal and the case metadata.
 Using the reference case "Operation Waldweg" — a fictional homicide with three devices and
 planted inconsistencies — we show the approach to be sound, reproducible and didactically
@@ -245,7 +250,37 @@ code; for sensitive offences (e.g. child sexual abuse material) **never** incrim
 content, only artifact **structures**/metadata and neutral, didactic placeholders. Every case
 carries the immutable marker `synthetic_training_data_only`.
 
-### 5.6 Multilingualism
+### 5.6 A knowledge base of forensic problems (expert system)
+
+![Knowledge-base loop in CaseForge: when teaching, the LLM structures expert free text into a draft that a human approves — growing the knowledge base of forensic problems. When applying, problems are selected automatically, deterministically or manually, woven into PROPOSE (forensic_problems), reviewed by a human and built deterministically. Two human-in-the-loop points, enclosed by ethics guardrails.](figures/knowledge_base_en.svg)
+
+*Figure 2: The knowledge-base loop — humans enrich the knowledge (teaching, left), the AI composes cases from it (applying, right); the curated corpus is the hub.*
+
+Beyond the individual case, CaseForge maintains a **knowledge base of reusable forensic
+problems** (`knowledge/problems/`) drawn from computer forensics, mobile forensics and app
+analysis. A *forensic problem* is deliberately case-independent and describes a characteristic
+challenge — e.g. the source conflict between a cached Wi-Fi association and a simultaneous
+cell-tower fix, a deleted message recoverable only as a WAL fragment, USB exfiltration across
+correlated Windows artifacts, or timestomping (`$SI` vs. `$FN`). Each entry carries a learning
+objective, the affected artifact classes, a **detection method** (instructor knowledge),
+pitfalls, an ethics flag and its provenance; only human-**approved** entries flow into cases.
+
+This gives the framework a concrete answer to how **machine and human expertise can enrich one
+another** — through a twofold division of labour. During **teaching**, the language model
+structures an expert's **free text** into a schema-conformant draft, which a human approves
+after review. This addresses the classic *knowledge-acquisition bottleneck* of expert-systems
+research: the costly structuring is delegated to the model as a knowledge-engineering assistant,
+while domain authority stays with the human. During **application**, either the model itself
+(`auto`), a deterministic LLM-free matcher (`match`), or the human (explicit selection) picks
+suitable problems; their identifiers land in the spec field `forensic_problems`, activate the
+corresponding artifact classes and appear with their detection method in the case report.
+Determinism, tool validation and ethics guardrails remain untouched — the knowledge base governs
+**selection and composition**, not byte generation. The result is two human-in-the-loop points
+(knowledge approval *and* case review) and two complementary LLM contributions (structuring
+*and* composing): an expert system whose knowledge grows without sacrificing the rigour of
+deterministic, tool-evidenced case generation.
+
+### 5.7 Multilingualism
 
 The case language is selected up front (`forge.py propose --lang <code>`; supported out of the
 box: de, en, fr, es, tr, plus BCP-47 locales). The selection injects a hard output-language
@@ -269,6 +304,7 @@ The framework layer consists of few, clearly separated components:
 | `i18n.py` | Language layer: output-language instruction, framework strings, locale metadata. |
 | `llm.py` | Prompt construction and backends (Cowork, ollama). |
 | `spec_to_master.py` | Adapter spec → `case_master.yaml` (projection of the verified truth). |
+| `knowledge_base.py` + `knowledge/` | Knowledge base of forensic problems: schema, taxonomy, corpus, deterministic matching and the teaching workflow (free text → LLM → approval). |
 | `catalog.py` | Artifact overview per device/platform/OS (MD/CSV). |
 | `gate_common.py` | Format/reference mode of the validation gates. |
 | `forge.py` | CLI orchestrator: `propose · build · validate · run · catalog`. |
@@ -368,8 +404,9 @@ that **arbitrary** new cases can be derived from it, in multiple languages.
 Future work concerns the full spec parametrisation of all content generators (largely
 completed), additional OS profiles (iOS 18, Android 15, Windows 10), broader format coverage
 (ESE/SRUM, $MFT) and the automatic generation of task sheet and solution key per case. In the
-medium term, a library approach is appealing in which educators share curated spec templates,
-growing a checkable repertoire of exercise cases — without touching a single real exhibit.
+medium term, the presented knowledge base of forensic problems is a first step towards a
+**library approach** in which educators share curated problems (and spec templates), growing a
+checkable repertoire of exercise cases — without touching a single real exhibit.
 
 ---
 

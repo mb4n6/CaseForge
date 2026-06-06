@@ -1,0 +1,45 @@
+id: cloud-device-sync-gap
+title: Synchronisationsluecke zwischen Cloud-Standortverlauf und Geraete-Cache
+category: mobile_forensics
+subdomains: [cloud_sync, location, timeline]
+platforms: [cloud, crossdevice]
+difficulty: advanced
+learning_objective: >-
+  Lernende erkennen, dass Cloud- und Geraetequelle denselben Zeitraum
+  unterschiedlich abbilden koennen, und nutzen die Luecke als Indiz statt sie
+  als Fehler abzutun.
+description: >-
+  Der Cloud-Standortverlauf (z.B. Google Location History) und der lokale
+  Geraete-Cache decken sich nicht: ein Zeitabschnitt fehlt in der Cloud, ist
+  aber lokal vorhanden (oder umgekehrt) — etwa durch Offline-Phase oder
+  deaktivierte Sync. Lernende muessen beide Quellen korrelieren.
+artifact_classes: [cloud_location, cloud_sync, location]
+registry_refs: [cloud.exports, android.location, ios.location]
+tools: ["JSON-Viewer", ALEAPP (Loc), "iLEAPP (LocationD)"]
+case_hooks:
+  enable_artifact_classes: [cloud_location, cloud_sync, location]
+  planted_inconsistency:
+    title: Sync-Luecke Cloud vs. Geraet
+    detail: >-
+      Cloud-Location-History fehlt ein Zeitfenster, das der Geraete-Cache
+      abdeckt (oder umgekehrt) — Offline-/Sync-Aus-Phase.
+    sources: [google/location-history.json, "Geraete-Standort-Cache"]
+  timeline_hint: >-
+    Lege fuer ein Zeitfenster nur Geraete-Fixes (keine Cloud-Eintraege) an,
+    um die Sync-Luecke zu erzeugen.
+detection_method: >-
+  Cloud-Export und Geraete-Cache je auf eine gemeinsame Zeitachse bringen,
+  fehlende Intervalle markieren, Ursache (Offline/Sync deaktiviert/Account-
+  Wechsel) hypothetisieren und mit Geraeteaktivitaet/Akku/Netz gegenpruefen.
+pitfalls:
+  - Sync-Luecke als Datenverlust/Fehler statt als Indiz deuten.
+  - Cloud-Zeitzone (UTC) mit lokaler Geraetezeit vermischen.
+ethics:
+  sensitive: false
+provenance:
+  source: expert
+  author: Operation Waldweg (Referenzfall)
+  created: '2026-01-25'
+  status: approved
+references:
+  - Google Location History (Takeout) Struktur

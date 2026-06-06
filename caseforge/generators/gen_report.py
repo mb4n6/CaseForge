@@ -22,6 +22,22 @@ import case_master_io as cmio
 ROOT_ENV = os.environ.get("WALDWEG_OW")           # Fall-Root (von forge gesetzt)
 
 
+def _problem_digest(ids):
+    """Laedt Loesungswege der gewaehlten Problemstellungen aus der Wissensbasis."""
+    try:
+        sys.path.insert(0, os.path.dirname(HERE))  # caseforge/ (Elternverzeichnis)
+        import knowledge_base as kb
+    except Exception:
+        return []
+    out = []
+    for e in kb.get_many(ids):
+        out.append({"id": e.get("id"), "title": e.get("title", e.get("id")),
+                    "learning_objective": e.get("learning_objective", ""),
+                    "method": e.get("detection_method", ""),
+                    "pitfalls": e.get("pitfalls", [])})
+    return out
+
+
 def _root():
     if ROOT_ENV:
         return ROOT_ENV
@@ -93,10 +109,29 @@ def build_report(cm):
             if len(body) > 60:
                 L.append(f"\n_… {len(body) - 60} weitere Eintraege im Katalog._")
 
+    # ---- Dozenten-Teil: Forensische Problemstellungen (Wissensbasis) ----
+    fp = meta.get("forensic_problems") or []
+    if fp:
+        L.append("\n## 6. Forensische Problemstellungen & Loesungswege (Dozent)\n")
+        L.append("_Aus der CaseForge-Wissensbasis eingewoben — kuratiertes Expertenwissen._\n")
+        dig = _problem_digest(fp)
+        if dig:
+            for d in dig:
+                L.append(f"### {d['title']}  `({d['id']})`")
+                if d.get("learning_objective"):
+                    L.append(f"- **Lernziel:** {d['learning_objective']}")
+                if d.get("method"):
+                    L.append(f"- **Loesungsweg:** {d['method']}")
+                for pit in d.get("pitfalls", []) or []:
+                    L.append(f"  - _Fallstrick:_ {pit}")
+                L.append("")
+        else:
+            L.append("- " + ", ".join(fp))
+
     # ---- Dozenten-Teil: Widersprueche + Loesung ----
     pi = cm.get("planted_inconsistencies", [])
     if pi:
-        L.append("\n## 6. Geplante Widersprueche (Dozent)\n")
+        L.append("\n## 7. Geplante Widersprueche (Dozent)\n")
         for x in pi:
             if isinstance(x, dict):
                 L.append(f"- **{x.get('title', x.get('id', '?'))}** — {x.get('detail', '')} "
@@ -105,7 +140,7 @@ def build_report(cm):
                 L.append(f"- {x}")
     sk = cm.get("solution_key")
     if sk:
-        L.append("\n## 7. Loesungsschluessel (Dozent)\n")
+        L.append("\n## 8. Loesungsschluessel (Dozent)\n")
         if isinstance(sk, dict):
             for k, v in sk.items():
                 L.append(f"- **{k}:** {v}")
@@ -113,7 +148,7 @@ def build_report(cm):
             L.append(str(sk))
 
     L.append("\n---\n")
-    L.append("_CaseForge Auto-Report. Dozenten-Abschnitte (6/7) vor Weitergabe an "
+    L.append("_CaseForge Auto-Report. Dozenten-Abschnitte (6/7/8) vor Weitergabe an "
              "Studierende entfernen._")
     return "\n".join(L) + "\n"
 

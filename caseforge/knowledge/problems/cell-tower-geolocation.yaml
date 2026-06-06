@@ -1,0 +1,39 @@
+id: cell-tower-geolocation
+title: Funkzellen-Verortung aus zwischengespeicherten Cell-IDs
+category: mobile_forensics
+subdomains: [location]
+platforms: [android, ios]
+difficulty: intermediate
+learning_objective: >-
+  Lernende uebersetzen gecachte Funkzellen-Parameter (MCC/MNC/LAC/CID) in eine
+  ungefaehre geografische Lage und bewerten deren Genauigkeit gegenueber GNSS.
+description: >-
+  Geraete cachen Funkzellen-Beobachtungen (MCC/MNC/LAC/CID, teils mit
+  Signalstaerke). Daraus laesst sich ein grober Aufenthaltsraum ableiten — ohne
+  GPS, aber mit deutlich groesserem Unsicherheitsradius. Lernende muessen die
+  Felder korrekt interpretieren und die Genauigkeit ehrlich angeben.
+artifact_classes: [location]
+registry_refs: [android.location, ios.location]
+tools: [ALEAPP (Loc), "iLEAPP (LocationD)", "Cell-ID-Datenbanken (extern)"]
+case_hooks:
+  enable_artifact_classes: [location]
+  timeline_hint: >-
+    Lege Cell-Fixes mit mcc/mnc/lac/ci fuer das relevante Zeitfenster an
+    (kind=cell), zusaetzlich zu etwaigen WiFi/GNSS-Fixes.
+detection_method: >-
+  MCC/MNC dem Netzbetreiber/Land zuordnen, LAC+CID gegen eine Zell-Datenbank
+  aufloesen, den Versorgungsbereich als Genauigkeit angeben und Mehrfachzellen
+  zur Eingrenzung nutzen.
+pitfalls:
+  - Zellzentrum als exakte Position ausgeben.
+  - LAC/CID-Format zwischen 2G/3G/4G/5G verwechseln.
+ethics:
+  sensitive: false
+  notes: Nur synthetische, fiktive Zell-Parameter verwenden.
+provenance:
+  source: expert
+  author: CaseForge Seed
+  created: '2026-06-06'
+  status: approved
+references:
+  - 3GPP Cell Identity (CGI/ECGI) Grundlagen

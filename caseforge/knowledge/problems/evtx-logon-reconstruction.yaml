@@ -1,0 +1,38 @@
+id: evtx-logon-reconstruction
+title: Anmeldungen aus Security.evtx rekonstruieren (Logon-Typen)
+category: computer_forensics
+subdomains: [eventlog, timeline]
+platforms: [windows]
+difficulty: basic
+learning_objective: >-
+  Lernende lesen Anmeldeereignisse (4624/4625/4634) samt Logon-Typ aus und
+  unterscheiden interaktive von Netzwerk-/RDP-Anmeldungen.
+description: >-
+  Die Frage "Wer war wann am Rechner aktiv?" wird ueber Windows-Security-Events
+  beantwortet. Lernende muessen Event-IDs und Logon-Typen (2 interaktiv, 3
+  Netzwerk, 10 RemoteInteractive) korrekt interpretieren und BinXML/EVTX
+  parsen.
+artifact_classes: [eventlog]
+registry_refs: [win.evtx]
+tools: [EvtxECmd / python-evtx]
+case_hooks:
+  enable_artifact_classes: [eventlog]
+  timeline_hint: >-
+    Lege Anmelde-/Abmelde-Ereignisse im Tatzeitfenster an (interaktiv +
+    mindestens ein abweichender Logon-Typ).
+detection_method: >-
+  Security.evtx mit EvtxECmd/python-evtx parsen, 4624/4625/4634 filtern, den
+  LogonType je Ereignis bestimmen und die Sitzungen zu einer Aktivitaetsleiste
+  zusammensetzen.
+pitfalls:
+  - Logon-Typ ignorieren und Netzwerkanmeldung als physische Anwesenheit deuten.
+  - Lokale Zeit/UTC-Verschiebung der Event-Zeitstempel uebersehen.
+ethics:
+  sensitive: false
+provenance:
+  source: expert
+  author: CaseForge Seed
+  created: '2026-06-06'
+  status: approved
+references:
+  - Microsoft Security Audit Logon Events (4624/4625/4634)

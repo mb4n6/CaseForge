@@ -1,0 +1,38 @@
+id: app-whatsapp-normalised-schema
+title: WhatsApp-Nachrichten ueber das normalisierte msgstore-Schema joinen
+category: app_analysis
+subdomains: [app_schema, messaging]
+platforms: [android]
+difficulty: intermediate
+learning_objective: >-
+  Lernende rekonstruieren Konversationen aus dem modernen, normalisierten
+  msgstore.db-Schema (message/chat/jid) statt aus dem veralteten
+  key_remote_jid-Modell.
+description: >-
+  Aktuelle WhatsApp-Versionen speichern Nachrichten normalisiert: message
+  verweist ueber chat_row_id auf chat und ueber jid_row_id auf jid. Wer das alte
+  Schema erwartet, joint falsch und verliert Absender/Empfaenger-Zuordnung.
+artifact_classes: [messaging, app_sandbox]
+registry_refs: [android.core, android.apps]
+tools: [ALEAPP, "DB Browser for SQLite"]
+case_hooks:
+  enable_artifact_classes: [messaging, app_sandbox]
+  timeline_hint: >-
+    Erzeuge WhatsApp-Konversationen, sodass der Generator message/chat/jid
+    konsistent befuellt.
+detection_method: >-
+  message JOIN chat ON message.chat_row_id = chat._id JOIN jid ON
+  chat.jid_row_id = jid._id; from_me, timestamp (Unix-ms) und text_data lesen,
+  Gruppen-vs-Einzelchat am jid-Suffix unterscheiden.
+pitfalls:
+  - key_remote_jid-Schema (veraltet) annehmen.
+  - timestamp als Sekunden statt Millisekunden interpretieren.
+ethics:
+  sensitive: false
+provenance:
+  source: expert
+  author: Operation Waldweg (Referenzfall)
+  created: '2026-01-25'
+  status: approved
+references:
+  - WhatsApp msgstore.db (normalisiertes message/jid/chat-Modell)

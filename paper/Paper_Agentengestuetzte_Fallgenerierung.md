@@ -29,7 +29,12 @@ Korrektheit und Unbedenklichkeit. Die Realitätsnähe wird nicht behauptet, sond
 **Gegenprüfung mit realen Open-Source-Forensiktools** (iLEAPP, ALEAPP, regipy, python-evtx,
 LnkParse3) nachgewiesen. Ein neuartiges, zweistufiges Validierungskonzept trennt
 **formatbezogene** von **lösungsbezogenen** Prüfungen und macht so auch frei spezifizierte
-Fälle eigenständig prüfbar. Am Referenzfall „Operation Waldweg" — einem fiktiven
+Fälle eigenständig prüfbar. Über den Einzelfall hinaus wächst das Framework zu einem
+**forensischen Expertensystem**: eine Wissensbasis wiederverwendbarer *Problemstellungen* aus
+Computer-, Mobilfunkforensik und App-Analyse wird per Sprachmodell aus Experten-Freitext
+**angelernt** (mit verpflichtender menschlicher Freigabe) und beim Fallbau automatisch oder
+manuell ausgewählt — ein konkreter Mechanismus, um maschinelles und menschliches Expertenwissen
+wechselseitig anzureichern. Am Referenzfall „Operation Waldweg" — einem fiktiven
 Tötungsdelikt mit drei Geräten und eingebauten Widersprüchen — wird gezeigt, dass der Ansatz
 trag­fähig, reproduzierbar und didaktisch wertvoll ist. Der Beitrag ordnet das Vorgehen in
 die agentenbasierte Werkzeuglandschaft ein und diskutiert Einsatz, Grenzen und
@@ -252,6 +257,38 @@ Missbrauchsdarstellungen) **niemals** inkriminierende Medieninhalte, sondern aus
 Artefakt-**Strukturen**/Metadaten und neutrale, didaktische Platzhalter. Jeder Fall trägt
 unveränderbar das Kennzeichen `synthetic_training_data_only`.
 
+### 5.6 Wissensbasis forensischer Problemstellungen (Expertensystem)
+
+![Wissensbasis-Kreislauf in CaseForge: Beim Anlernen strukturiert das LLM den Experten-Freitext zu einem Entwurf, den der Mensch freigibt — so waechst die Wissensbasis der Problemstellungen. Beim Anwenden werden Problemstellungen automatisch, deterministisch oder manuell ausgewaehlt, ins PROPOSE eingewoben (forensic_problems), vom Menschen geprueft und deterministisch gebaut. Zwei Mensch-in-the-loop-Punkte, eingerahmt von Ethik-Leitplanken.](figures/wissensbasis_de.svg)
+
+*Abbildung 2: Wissensbasis-Kreislauf — der Mensch reichert das Wissen an (Anlernen, links), die KI komponiert daraus Fälle (Anwenden, rechts); kuratierter Korpus als Drehscheibe.*
+
+Über den einzelnen Fall hinaus pflegt CaseForge eine **Wissensbasis wiederverwendbarer
+forensischer Problemstellungen** (`knowledge/problems/`) aus den Domänen Computerforensik,
+Mobilfunkforensik und App-Analyse. Eine *Problemstellung* ist bewusst fallunabhängig und
+beschreibt eine charakteristische Herausforderung — etwa den Quellkonflikt zwischen gecachter
+WiFi-Assoziation und zeitgleicher Mobilfunk-Ortung, eine nur als WAL-Fragment rekonstruierbare
+gelöschte Nachricht, USB-Exfiltration über korrelierte Windows-Artefakte oder Timestomping
+(`$SI` vs. `$FN`). Jeder Eintrag trägt Lernziel, betroffene Artefaktklassen, **Lösungsweg**
+(Dozentenwissen), Fallstricke, ein Ethik-Flag sowie die Herkunft (`provenance`); nur
+menschlich **freigegebene** Einträge fließen in Fälle ein.
+
+Damit beantwortet das Framework die Frage, wie sich **maschinelles und menschliches
+Expertenwissen wechselseitig anreichern** lassen — über eine doppelte Arbeitsteilung. Beim
+**Anlernen** strukturiert das Sprachmodell den **Freitext** einer Expertin/eines Experten
+schema-konform zu einem Entwurf; ein Mensch gibt ihn nach Prüfung frei. Dies adressiert den
+klassischen *knowledge-acquisition bottleneck* der Expertensystem-Forschung: die aufwändige
+Strukturierung übernimmt das Modell als Wissensingenieur-Assistent, die fachliche Hoheit bleibt
+beim Menschen. Beim **Anwenden** wählt entweder das Modell selbst (`auto`), ein
+deterministischer, LLM-freier Matcher (`match`) oder der Mensch (explizite Auswahl) passende
+Problemstellungen aus; ihre Bezeichner landen im Spec-Feld `forensic_problems`, aktivieren die
+zugehörigen Artefaktklassen und erscheinen mit Lösungsweg im Fall-Report. Determinismus,
+Tool-Validierung und Ethik-Leitplanken bleiben unberührt — die Wissensbasis steuert **Auswahl
+und Komposition**, nicht die Byte-Erzeugung. Es entstehen so zwei Mensch-in-the-loop-Punkte
+(Wissens-Freigabe *und* Fall-Review) und zwei komplementäre LLM-Beiträge (Strukturieren *und*
+Komponieren): ein Expertensystem, dessen Wissensschatz wächst, ohne die Strenge der
+deterministischen, tool-belegten Fallerzeugung aufzugeben.
+
 ---
 
 ## 6. Implementierung: CaseForge-Architektur
@@ -266,6 +303,7 @@ Die Framework-Schicht besteht aus wenigen, klar getrennten Komponenten:
 | `prompts/case_proposal_system.md` | System-Prompt des Fall-Designers inklusive Ethik-Regeln. |
 | `llm.py` | Prompt-Konstruktion und Backends (Cowork, ollama). |
 | `spec_to_master.py` | Adapter Spec → `case_master.yaml` (Projektion der verifizierten Wahrheit). |
+| `knowledge_base.py` + `knowledge/` | Wissensbasis forensischer Problemstellungen: Schema, Taxonomie, Korpus, deterministisches Matching und Anlern-Workflow (Freitext → LLM → Freigabe). |
 | `catalog.py` | Artefaktübersicht je Gerät/Plattform/OS (MD/CSV). |
 | `gate_common.py` | Format-/Referenz-Modus der Validierungs-Gates. |
 | `forge.py` | CLI-Orchestrator: `propose · build · validate · run · catalog`. |
@@ -367,9 +405,10 @@ lassen.
 Künftige Arbeiten betreffen die vollständige Spec-Parametrisierung aller Inhalts­generatoren,
 zusätzliche OS-Profile (iOS 18, Android 15, Windows 10), die Ausweitung der Formatabdeckung
 (ESE/SRUM, $MFT) sowie die automatische Erzeugung von Aufgabenstellung und Lösungsschlüssel je
-Fall. Mittelfristig erscheint ein Bibliotheks-Ansatz reizvoll, bei dem Lehrende kuratierte
-Spec-Vorlagen teilen und so ein wachsendes, prüfbares Repertoire an Übungsfällen entsteht — ohne
-ein einziges reales Asservat zu berühren.
+Fall. Die vorgestellte Wissensbasis forensischer Problemstellungen ist ein erster Schritt zu
+einem **Bibliotheks-Ansatz**, bei dem Lehrende kuratierte Problemstellungen (und Spec-Vorlagen)
+teilen und so ein wachsendes, prüfbares Repertoire an Übungsfällen entsteht — ohne ein einziges
+reales Asservat zu berühren.
 
 ---
 

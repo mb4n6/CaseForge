@@ -25,6 +25,11 @@
     },
     "deliktart": {"type": "string", "description": "z.B. Toetungsdelikt, BtM-Handel, Betrug, CSAM-Triage(ohne Inhalte), Stalking, Einbruch"},
     "lernziel": {"type": "string", "description": "didaktischer Fokus, z.B. 'Cross-Device-Timeline', 'verschluesselte Messenger', 'USB-Exfiltration'"},
+    "forensic_problems": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "IDs der eingewobenen forensischen Problemstellungen aus der Wissensbasis (knowledge/problems/). Steuern Artefaktklassen, planted_inconsistencies und Loesungswege; vom LLM (auto) oder manuell gewaehlt, vom Menschen verifiziert."
+    },
     "persons": {
       "type": "array",
       "items": {"type": "object", "required": ["id", "name", "role"], "properties": {

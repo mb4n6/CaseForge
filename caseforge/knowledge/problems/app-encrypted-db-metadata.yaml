@@ -1,0 +1,41 @@
+id: app-encrypted-db-metadata
+title: Verschluesselte/obfuskierte App-Datenbank — Aussage aus Metadaten
+category: app_analysis
+subdomains: [app_schema, encryption]
+platforms: [android, ios]
+difficulty: advanced
+learning_objective: >-
+  Lernende ziehen forensische Aussagen aus Datei-/Container-Metadaten, wenn der
+  App-Datenbankinhalt verschluesselt (z.B. SQLCipher) oder obfuskiert ist.
+description: >-
+  Eine relevante App legt ihre Daten in einer verschluesselten DB ab; der Inhalt
+  ist ohne Schluessel nicht lesbar. Lernende muessen erkennen, was DENNOCH
+  aussagekraeftig ist: Existenz, Groesse, Zeitstempel, WAL-Praesenz, begleitende
+  Klartext-Praefs/Logs und Account-Bindung.
+artifact_classes: [app_sandbox, storage]
+registry_refs: [android.apps, ios.apps]
+tools: [ALEAPP, iLEAPP, "Hex-/Header-Analyse"]
+case_hooks:
+  enable_artifact_classes: [app_sandbox]
+  timeline_hint: >-
+    Lege eine App-Sandbox mit verschluesselter DB (nur Struktur/Metadaten) plus
+    begleitende Klartext-shared_prefs/Logs an — KEINE inkriminierenden Inhalte.
+detection_method: >-
+  Datei-Header auf SQLCipher/Unbekannt pruefen, Groesse/Zeitstempel und
+  WAL/-journal werten, Klartext-Begleitdateien (shared_prefs, Tokens, Logs)
+  und Account-Bindung auswerten, App-Version aus dem Paket bestimmen.
+pitfalls:
+  - Verschluesselte DB als "leer/irrelevant" abtun.
+  - Begleitende Klartext-Praefs uebersehen.
+ethics:
+  sensitive: true
+  notes: >-
+    Nur Artefakt-STRUKTUREN/Metadaten und neutrale Platzhalter; keine echten
+    Schluessel, kein inkriminierender Klartext.
+provenance:
+  source: expert
+  author: CaseForge Seed
+  created: '2026-06-06'
+  status: approved
+references:
+  - SQLCipher Dateiheader-Charakteristik

@@ -34,6 +34,50 @@ def _registry_summary():
     return "\n".join(lines)
 
 
+def _problems_block(user_input: dict) -> str:
+    """Katalog der verfuegbaren Problemstellungen + Auswahl-/Einweb-Anweisung.
+
+    Steuerung ueber user_input['problems']:
+      - 'auto'            : LLM waehlt selbst eine kohaerente Teilmenge.
+      - [id, id, ...]      : diese Problemstellungen sind VERBINDLICH einzubauen.
+      - 'none' / fehlt     : kein Problemstellungs-Block (Alt-Verhalten).
+    """
+    sel = user_input.get("problems")
+    if not sel or sel == "none":
+        return ""
+    try:
+        import knowledge_base as kb
+    except Exception:
+        return ""
+    catalog = kb.summary_for_prompt(status="approved")
+    if not catalog:
+        return ""
+    if isinstance(sel, list):
+        forced = ", ".join(sel)
+        instruct = (f"VERBINDLICH einzubauen sind genau diese Problemstellungen: {forced}. "
+                    "Webe jede davon konkret in den Fall ein.")
+    else:  # 'auto'
+        instruct = ("Waehle EIGENSTAENDIG 2-4 zueinander passende Problemstellungen aus dem "
+                    "Katalog, die zu Delikt und Lernziel passen und sich zu einem kohaerenten "
+                    "Fall fuegen.")
+    return f"""
+## Verfuegbare forensische Problemstellungen (Wissensbasis)
+Jede Zeile: id [kategorie/plattformen/schwierigkeit] Titel | Lernziel | Artefaktklassen.
+{catalog}
+
+## ANWEISUNG ZU PROBLEMSTELLUNGEN
+{instruct}
+Fuer JEDE gewaehlte Problemstellung gilt:
+- Trage ihre id in das Feld `forensic_problems` (Array) des Case-Specs ein.
+- Aktiviere die zugehoerigen Artefaktklassen auf den passenden Geraeten
+  (devices[].artifact_classes).
+- Falls die Problemstellung einen Widerspruch beschreibt, lege einen passenden
+  `planted_inconsistencies`-Eintrag an (mit Bezug auf die id) und loese ihn im
+  `solution_key`.
+- Erzeuge die noetigen Timeline-Ereignisse, damit die Spur real entsteht.
+"""
+
+
 def build_prompt(user_input: dict) -> str:
     system = open(os.path.join(HERE, "prompts", "case_proposal_system.md"), encoding="utf-8").read()
     schema = open(os.path.join(HERE, "schema", "case_spec.schema.json"), encoding="utf-8").read()
@@ -48,7 +92,7 @@ def build_prompt(user_input: dict) -> str:
 
 ## Verfuegbare Generatoren / Artefaktklassen (Registry)
 {_registry_summary()}
-
+{_problems_block(user_input)}
 ## Verfuegbare Forensik-Tools (Validierung)
 {', '.join(R.parsers())}
 
@@ -60,6 +104,41 @@ def build_prompt(user_input: dict) -> str:
 
 ## DEINE AUSGABE
 Gib einen vollstaendigen Case-Spec als JSON (Schema-konform) + einen `_proposal_summary`-Block aus.
+"""
+
+
+def build_teach_prompt(freetext: str) -> str:
+    """Prompt fuer das ANLERNEN: Freitext eines Experten -> strukturierte Problemstellung.
+
+    Bundelt Extraktions-System-Prompt + Taxonomie + Registry-Klassen + Schema +
+    den Freitext. Ausgabe des LLM: ein YAML-Dokument (status: draft).
+    """
+    sysmd = os.path.join(HERE, "knowledge", "prompts", "knowledge_extraction_system.md")
+    system = open(sysmd, encoding="utf-8").read()
+    schema = open(os.path.join(HERE, "knowledge", "schema", "problem.schema.json"), encoding="utf-8").read()
+    tax_path = os.path.join(HERE, "knowledge", "taxonomy.yaml")
+    taxonomy = open(tax_path, encoding="utf-8").read() if os.path.exists(tax_path) else ""
+    classes = ", ".join(R.artifact_classes())
+    gen_ids = ", ".join(g.id for g in R.REGISTRY)
+    return f"""{system}
+
+## Taxonomie (erlaubte Kategorien / Subdomains / Schwierigkeit / Status)
+{taxonomy}
+
+## Erlaubte Artefaktklassen (registry.artifact_classes)
+{classes}
+
+## Bekannte Generator-IDs (registry_refs)
+{gen_ids}
+
+## problem.schema.json
+{schema}
+
+## EXPERTEN-FREITEXT (zu strukturieren)
+{freetext}
+
+## DEINE AUSGABE
+Nur EIN YAML-Dokument der Problemstellung (status: draft), schema-konform, ohne Code-Zaeune.
 """
 
 

@@ -1,0 +1,44 @@
+id: win-program-execution-triangulation
+title: Programmausfuehrung trotz geloeschter Datei nachweisen
+category: computer_forensics
+subdomains: [registry, telemetry, antiforensics]
+platforms: [windows]
+difficulty: intermediate
+learning_objective: >-
+  Lernende belegen die Ausfuehrung eines spaeter geloeschten Programms ueber
+  mehrere unabhaengige Ausfuehrungsartefakte statt ueber die (fehlende) Datei.
+description: >-
+  Ein Tool wurde ausgefuehrt und danach geloescht. Die EXE fehlt, doch
+  ShimCache/AppCompatCache, Amcache, UserAssist und SRUM-Telemetrie belegen die
+  Ausfuehrung. Lernende muessen die unterschiedliche Aussagekraft (Existenz vs.
+  tatsaechliche Ausfuehrung) der Quellen kennen.
+artifact_classes: [registry, telemetry]
+registry_refs: [win.hives, win.srum]
+tools: ["RegRipper (amcache/userassist/shimcache)", SrumECmd / esedbexport]
+case_hooks:
+  enable_artifact_classes: [registry, telemetry]
+  planted_inconsistency:
+    title: Ausfuehrung ohne Datei
+    detail: >-
+      EXE geloescht; Ausfuehrung nur ueber ShimCache/Amcache/UserAssist/SRUM
+      rekonstruierbar.
+    sources: [SYSTEM (AppCompatCache), Amcache.hve, NTUSER (UserAssist), SRUDB.dat]
+  timeline_hint: >-
+    Ereignis: verdaechtiges Tool ausfuehren, danach loeschen.
+detection_method: >-
+  ShimCache (Pfad+Groesse, nicht zwingend Ausfuehrung) gegen Amcache
+  (SHA1/Installationsspur), UserAssist (GUI-Start mit Zaehler) und SRUM
+  (Prozess-Ressourcennutzung) abgleichen; nur die Kombination belegt eine
+  tatsaechliche Ausfuehrung sicher.
+pitfalls:
+  - ShimCache-Eintrag als Ausfuehrungsbeweis missverstehen.
+  - UserAssist-ROT13-Kodierung uebersehen.
+ethics:
+  sensitive: false
+provenance:
+  source: expert
+  author: CaseForge Seed
+  created: '2026-06-06'
+  status: approved
+references:
+  - Windows Program Execution Artifacts (ShimCache/Amcache/UserAssist/SRUM)

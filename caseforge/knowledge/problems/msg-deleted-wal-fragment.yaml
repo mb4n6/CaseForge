@@ -1,0 +1,43 @@
+id: msg-deleted-wal-fragment
+title: Geloeschte Messenger-Nachricht nur als WAL-Fragment rekonstruierbar
+category: mobile_forensics
+subdomains: [messaging, antiforensics]
+platforms: [ios, android]
+difficulty: intermediate
+learning_objective: >-
+  Lernende rekonstruieren eine in der Haupttabelle geloeschte Nachricht aus dem
+  Write-Ahead-Log (WAL) einer SQLite-Datenbank und verstehen, warum sie im
+  Standard-Export fehlt.
+description: >-
+  Eine fallrelevante Nachricht wurde aus message/chat geloescht und erscheint
+  nicht mehr im normalen iLEAPP/ALEAPP-Report. Ihr Inhalt liegt aber noch als
+  nicht eingecheckter Frame im -wal (bzw. in freien SQLite-Seiten).
+artifact_classes: [messaging]
+registry_refs: [ios.sms, android.core]
+tools: [iLEAPP (iMessage), ALEAPP, "SQLite WAL-Parser / DB Browser"]
+case_hooks:
+  enable_artifact_classes: [messaging]
+  planted_inconsistency:
+    title: Geloeschte Nachricht
+    detail: >-
+      Nachricht in Haupttabelle entfernt, Inhalt nur im WAL-Frame vorhanden.
+    sources: [sms.db-wal, "freie Seiten / msgstore.db"]
+  timeline_hint: >-
+    Markiere genau eine kritische Nachricht als deleted:true, damit der
+    Generator sie ausschliesslich als WAL-Fragment ablegt.
+detection_method: >-
+  -wal/-shm sichern, WAL-Frames parsen (oder DB im WAL-Modus oeffnen, Checkpoint
+  vermeiden), geloeschte Zeilen aus Frame-Diffs rekonstruieren und Zeitstempel
+  gegen die ungeloeschte Konversation einordnen.
+pitfalls:
+  - Voreiliger Checkpoint/VACUUM zerstoert das Fragment.
+  - Annahme, der iLEAPP-Standardreport sei vollstaendig.
+ethics:
+  sensitive: false
+provenance:
+  source: expert
+  author: Operation Waldweg (Referenzfall)
+  created: '2026-01-25'
+  status: approved
+references:
+  - SQLite Write-Ahead Logging (WAL) Format

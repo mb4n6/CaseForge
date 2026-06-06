@@ -31,7 +31,8 @@ einzige Wahrheitsquelle; alle Geräteartefakte werden daraus deterministisch pro
 
 | Datei | Rolle |
 |------|------|
-| `forge.py` | CLI-Orchestrator: `propose · build · validate · run · report · catalog`. |
+| `forge.py` | CLI-Orchestrator: `propose · build · validate · run · report · catalog · teach · problems`. |
+| `knowledge_base.py` | Wissensbasis forensischer **Problemstellungen** (s. §10): Laden/Validieren/Matching, Prompt-Katalog, Anlern-Workflow. |
 | `registry.py` | Metadaten-Verzeichnis aller Generatoren (Plattform, OS-min, Artefaktklasse, Pfade, Format, **Gegenprüf-Tool**); steuert Auswahl und Katalog. |
 | `spec_to_master.py` | Adapter **Spec → `case_master.yaml`**: projiziert den verifizierten Spec auf den generator-tauglichen Master (Meta/Delikt/Personen/Geräte/Timeline/Inkonsistenzen, OS-Profil → `os_version`/Flags). Vergibt einen Zufalls-Seed, wenn keiner angegeben ist. Wird von `build --spec` automatisch aufgerufen. |
 | `llm.py` | Baut den Prompt aus Eingabe + Registry + Profilen + Schema; Backends **cowork** und **ollama** (gestreamt, mit Modell-/Verbindungs-Vorprüfung). |
@@ -166,3 +167,50 @@ Im System-Prompt verankert: nur synthetische Daten; keine realen Personendaten; 
 reproduzierbaren Tat-/Beschaffungsanleitungen; bei sensiblen Delikten **nie** inkriminierende
 Medieninhalte, sondern nur Artefakt-Strukturen/Metadaten. Jeder Fall trägt
 `disclaimer: synthetic_training_data_only`.
+
+## 10. Wissensbasis & Problemstellungen (forensisches Expertensystem)
+
+CaseForge wächst zu einem **forensischen Expertensystem**: kuratiertes Expertenwissen wird als
+wiederverwendbarer Fundus *forensischer Problemstellungen* abgelegt
+(`knowledge/problems/*.yaml`) — charakteristische Herausforderungen aus **Computerforensik**,
+**Mobilfunkforensik** und **App-Analyse** (z. B. Quellkonflikt WiFi-Cache vs. Cell-Ortung,
+gelöschte WAL-Nachricht, USB-Exfiltration, Timestomping `$SI`/`$FN`, Cloud-Sync-Lücke). Jede
+Problemstellung trägt Lernziel, betroffene Artefaktklassen, **Lösungsweg** (Dozentenwissen),
+Fallstricke, Ethik-Flag und Herkunft (`provenance`).
+
+**Anlernen — Freitext → LLM → menschliche Freigabe.** Die niedrigste Hürde: ein/e Experte/in
+schreibt formlos (auch aus einer echten, anonymisierten Fallbeobachtung), das LLM strukturiert
+den Text schema-konform zu einem **Entwurf**, ein Mensch gibt frei.
+
+```bash
+python3 forge.py teach --input expertentext.txt            # Cowork: schreibt out/teach_prompt.md
+#   -> in Claude Cowork ausführen, YAML-Antwort als knowledge/incoming/<id>.draft.yaml sichern
+python3 forge.py teach --input expertentext.txt --backend ollama   # offline: legt Entwurf direkt an
+python3 forge.py teach --list-drafts                       # Entwürfe sichten
+python3 forge.py teach --approve <id> --by "Name"          # Freigabe -> knowledge/problems/
+```
+
+Das Anlernen ist damit das menschliche **Anreichern** des KI-/Framework-Wissens; Determinismus,
+Tool-Validierung und Ethik der erzeugten Fälle bleiben unberührt — die Wissensbasis steuert nur,
+**welche** Artefaktklassen und Widersprüche ein Fall trägt.
+
+**Auswahl beim Fallbau — manuell oder LLM-automatisch.**
+
+```bash
+python3 forge.py problems --list                           # Katalog (approved)
+python3 forge.py problems --match "USB-Datenabfluss Windows" --platform windows
+python3 forge.py problems --show usb-exfiltration-correlation
+
+python3 forge.py propose --problems auto    --input eingabe.json   # LLM wählt passende aus
+python3 forge.py propose --problems match   --input eingabe.json   # deterministisch (offline) nach Delikt/Lernziel
+python3 forge.py propose --problems loc-wifi-vs-cell-conflict,msg-deleted-wal-fragment ...  # fix
+```
+
+Die gewählten IDs landen im Case-Spec-Feld `forensic_problems`, aktivieren ihre Artefaktklassen,
+liefern `planted_inconsistencies`-Vorlagen und erscheinen mit Lösungsweg im **Fall-Report**
+(Dozenten-Abschnitt 6). `knowledge/schema/problem.schema.json` und `knowledge/taxonomy.yaml`
+definieren Struktur und kontrolliertes Vokabular; `python3 knowledge_base.py validate` prüft den
+gesamten Korpus.
+
+Konzept und akademische Einordnung (Mensch-KI-Wissensanreicherung): siehe
+`docs/Wissensbasis_Expertensystem.md`.
